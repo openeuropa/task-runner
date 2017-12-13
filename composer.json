@@ -1,0 +1,21 @@
+{
+    "name": "ec-europa/oe-task-runner",
+    "license": "EUPL-1.1",
+    "type": "library",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "consolidation/robo": "^1.2"
+    },
+    "require-dev": {
+        "ec-europa/oe-code-review": "*",
+        "phpunit/phpunit": "^5"
+    },
+    "autoload": {
+        "psr-4": {
+            "EC\\OpenEuropa\\TaskRunner\\": "./src/",
+            "EC\\OpenEuropa\\TaskRunner\\Tests\\": "./tests/"
+        }
+    },
+    "bin": ["bin/run"]
+}
