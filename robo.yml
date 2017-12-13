@@ -1,0 +1,43 @@
+command:
+
+  # Drupal-related command options.
+  drupal:
+
+    # Global options, this will be forwarded to all commands in 'drupal:' namespace.
+    options:
+      root: build
+      base-url: http://127.0.0.1:8888
+
+    # Install Drupal site.
+    site-install:
+      options:
+        site-name: Site name
+        site-mail: info@example.org
+        site-profile: standard
+        site-update: false
+        site-locale: en
+        admin-name: admin
+        admin-password: admin
+        admin-mail: admin@example.org
+        database-host: 127.0.0.1
+        database-port: 3306
+        database-name: drupal
+        database-user: root
+        database-password: root
+
+    # Setup Drupal component, i.e. a theme or a module.
+    component-setup:
+      options:
+        enable:
+          - composer_autoloader
+          - nexteuropa_poetry
+          - nexteuropa_poetry_test
+        disable:
+          - overlay
+          - update
+
+  # Behat commands.
+  behat:
+    setup:
+      options:
+        base-url: ${command.drupal.options.base-url}
