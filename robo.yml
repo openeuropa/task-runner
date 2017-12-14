@@ -41,3 +41,14 @@ command:
     setup:
       options:
         base-url: ${command.drupal.options.base-url}
+
+#
+#drupal:
+#  site:
+#    name:
+#    mail:
+#    profile:
+#    update:
+#    locale:
+#  database:
+#

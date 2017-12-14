@@ -7,10 +7,26 @@ if (file_exists(__DIR__.'/../vendor/autoload.php')) {
     require_once __DIR__ . '/../../../autoload.php';
 }
 
+$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
 $output = new \Symfony\Component\Console\Output\ConsoleOutput();
-$discovery = new \Consolidation\AnnotatedCommand\CommandFileDiscovery();
-$discovery->setSearchPattern('*.php')->setSearchLocations(['Commands']);
-$commandClasses = $discovery->discover(__DIR__.'/../src', '\EC\OpenEuropa\TaskRunner');
+$config = \Robo\Robo::createConfiguration(['robo.yml']);
+$application = new \EC\OpenEuropa\TaskRunner\TaskRunner($config, $input, $output);
 
-$statusCode = \Robo\Robo::run($_SERVER['argv'], $commandClasses, 'TaskRunner', null, $output, 'ec-europa/oe-task-runner');
+$discovery = new \Consolidation\AnnotatedCommand\CommandFileDiscovery();
+$discovery->setSearchPattern('*Command.php')->setSearchLocations(['Commands']);
+
+$commandClasses = $discovery->discover(__DIR__.'/../src/', '\EC\OpenEuropa\TaskRunner');
+$commandFactory = new \Consolidation\AnnotatedCommand\AnnotatedCommandFactory();
+$commandFactory->setIncludeAllPublicMethods(false);
+$commandFactory->commandProcessor()->setFormatterManager(new \Consolidation\OutputFormatters\FormatterManager());
+
+$container = $application->getContainer();
+foreach ($commandClasses as $commandClass) {
+    $commandList = $commandFactory->createCommandsFromClass(new $commandClass());
+    foreach ($commandList as $command) {
+        $container->get('application')->add($command);
+    }
+}
+
+$statusCode = $application->run($input, $output);
 exit($statusCode);
