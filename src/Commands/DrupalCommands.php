@@ -1,16 +1,15 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Commands\Drupal;
+namespace EC\OpenEuropa\TaskRunner\Commands;
 
-use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class SiteInstall.
+ * Class DrupalCommands.
  *
- * @package EC\OpenEuropa\TaskRunner\Commands\Drupal
+ * @package EC\OpenEuropa\TaskRunner\Commands
  */
-class SiteInstallCommand extends AnnotatedCommand
+class DrupalCommands extends BaseCommands
 {
     /**
      * @command drupal:site-install
@@ -53,6 +52,7 @@ class SiteInstallCommand extends AnnotatedCommand
         'database-name'     => InputOption::VALUE_REQUIRED,
     ])
     {
-        return print_r($options, true);
+        $this->yell('safdas');
+        $this->writeln(print_r($options, true));
     }
 }

@@ -1,0 +1,19 @@
+drupal:
+  site:
+    name: Site name
+    mail: info@example.org
+    profile: standard
+    update: false
+    locale: en
+    root: build
+    base-url: http://127.0.0.1:8888
+  admin:
+    name: admin
+    password: admin
+    mail: admin@example.org
+  database:
+    host: 127.0.0.1
+    port: 3306
+    name: drupal
+    user: root
+    password: root

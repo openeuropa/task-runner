@@ -2,12 +2,13 @@
 
 namespace EC\OpenEuropa\TaskRunner;
 
+use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use League\Container\ContainerAwareTrait;
+use Robo\Application;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
 use Robo\Robo;
 use Robo\Runner as RoboRunner;
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -21,7 +22,7 @@ class TaskRunner
     use ConfigAwareTrait;
     use ContainerAwareTrait;
 
-    const APPLICATION_NAME = 'Open Europa Task Runner';
+    const APPLICATION_NAME = 'OpenEuropa Task Runner';
 
     const REPOSITORY = 'ec-europa/oe-task-runner';
 
@@ -32,25 +33,27 @@ class TaskRunner
 
     /**
      * TaskRunner constructor.
-     * @param Config               $config
-     * @param InputInterface|NULL  $input
-     * @param OutputInterface|NULL $output
+     *
+     * @param array $configPaths
      */
-    public function __construct(Config $config, InputInterface $input = null, OutputInterface $output = null)
+    public function __construct(array $configPaths)
     {
-
         // Create application.
+        $config = $this->createConfiguration($configPaths);
         $this->setConfig($config);
         $application = new Application(self::APPLICATION_NAME, $config->get('version'));
 
         // Create and configure container.
-        $container = Robo::createDefaultContainer($input, $output, $application, $config);
-        $this->setContainer($container);
+        $container = Robo::createDefaultContainer(null, null, $application, $config);
+        $container->get('commandFactory')->setIncludeAllPublicMethods(false);
 
-        // Instantiate Robo Runner.
+        // Create and initialize runner.
         $this->runner = new RoboRunner();
         $this->runner->setContainer($container);
-        $this->runner->setSelfUpdateRepository(self::REPOSITORY);
+        $this->runner->registerCommandClasses($application, $this->getCommandClasses());
+
+        // Set processed container.
+        $this->setContainer($container);
     }
 
     /**
@@ -61,5 +64,30 @@ class TaskRunner
     public function run(InputInterface $input, OutputInterface $output)
     {
         return $this->runner->run($input, $output);
+    }
+
+    /**
+     * @return array
+     */
+    private function getCommandClasses()
+    {
+        $discovery = new CommandFileDiscovery();
+        $discovery->setSearchPattern('*Commands.php')->setSearchLocations(['Commands']);
+
+        return $discovery->discover(__DIR__.'/../src/', '\EC\OpenEuropa\TaskRunner');
+    }
+
+    /**
+     * @param array $configPaths
+     * @return Config
+     */
+    private function createConfiguration(array $configPaths)
+    {
+        $configPaths = [
+            __DIR__.'/../config/runner.yml',
+            __DIR__.'/../config/commands/drupal.yml',
+        ] + $configPaths;
+
+        return Robo::createConfiguration($configPaths);
     }
 }

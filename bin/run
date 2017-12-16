@@ -1,32 +1,20 @@
 #!/usr/bin/env php
 <?php
 
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use EC\OpenEuropa\TaskRunner\TaskRunner;
+
 if (file_exists(__DIR__.'/../vendor/autoload.php')) {
     require_once __DIR__.'/../vendor/autoload.php';
 } elseif (file_exists(__DIR__.'/../../../autoload.php')) {
     require_once __DIR__ . '/../../../autoload.php';
 }
 
-$input = new \Symfony\Component\Console\Input\ArgvInput($argv);
-$output = new \Symfony\Component\Console\Output\ConsoleOutput();
-$config = \Robo\Robo::createConfiguration(['robo.yml']);
-$application = new \EC\OpenEuropa\TaskRunner\TaskRunner($config, $input, $output);
-
-$discovery = new \Consolidation\AnnotatedCommand\CommandFileDiscovery();
-$discovery->setSearchPattern('*Command.php')->setSearchLocations(['Commands']);
-
-$commandClasses = $discovery->discover(__DIR__.'/../src/', '\EC\OpenEuropa\TaskRunner');
-$commandFactory = new \Consolidation\AnnotatedCommand\AnnotatedCommandFactory();
-$commandFactory->setIncludeAllPublicMethods(false);
-$commandFactory->commandProcessor()->setFormatterManager(new \Consolidation\OutputFormatters\FormatterManager());
-
-$container = $application->getContainer();
-foreach ($commandClasses as $commandClass) {
-    $commandList = $commandFactory->createCommandsFromClass(new $commandClass());
-    foreach ($commandList as $command) {
-        $container->get('application')->add($command);
-    }
-}
-
-$statusCode = $application->run($input, $output);
+$configPaths = [
+    getcwd().'/runner.yml.dist',
+    getcwd().'/runner.yml',
+];
+$runner = new TaskRunner($configPaths);
+$statusCode = $runner->run(new ArgvInput($argv), new ConsoleOutput());
 exit($statusCode);

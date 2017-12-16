@@ -1,1 +1,1 @@
-# Open Europa Task Runner
+# OpenEuropa Task Runner
