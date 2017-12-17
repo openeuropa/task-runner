@@ -9,6 +9,7 @@ use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
 use Robo\Robo;
 use Robo\Runner as RoboRunner;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,41 +39,53 @@ class TaskRunner
     private $output;
 
     /**
+     * @var InputInterface
+     */
+    private $input;
+
+    /**
+     * @var Application
+     */
+    private $application;
+
+    /**
      * TaskRunner constructor.
      *
+     * TaskRunner constructor.
      * @param array                $configPaths
+     * @param InputInterface       $input
      * @param OutputInterface|null $output
      */
-    public function __construct(array $configPaths = [], OutputInterface $output = null)
+    public function __construct(array $configPaths = [], InputInterface $input = null, OutputInterface $output = null)
     {
         $this->output = is_null($output) ? new ConsoleOutput() : $output;
+        $this->input = is_null($input) ? new ArgvInput() : $input;
 
         // Create application.
         $config = $this->createConfiguration($configPaths);
+        $this->setConfigurationOverrides($config);
         $this->setConfig($config);
-        $application = new Application(self::APPLICATION_NAME, $config->get('version'));
+        $this->application = new Application(self::APPLICATION_NAME, $config->get('version'));
 
         // Create and configure container.
-        $container = Robo::createDefaultContainer(null, $output, $application, $config);
+        $container = Robo::createDefaultContainer($this->input, $this->output, $this->application, $config);
         $container->get('commandFactory')->setIncludeAllPublicMethods(false);
 
         // Create and initialize runner.
         $this->runner = new RoboRunner();
         $this->runner->setContainer($container);
-        $this->runner->registerCommandClasses($application, $this->getCommandClasses());
+        $this->runner->registerCommandClasses($this->application, $this->getCommandClasses());
 
         // Set processed container.
         $this->setContainer($container);
     }
 
     /**
-     * @param InputInterface $input
-     *
      * @return int
      */
-    public function run(InputInterface $input)
+    public function run()
     {
-        return $this->runner->run($input, $this->output);
+        return $this->runner->run($this->input, $this->output, $this->application);
     }
 
     /**
@@ -114,5 +127,32 @@ class TaskRunner
         ] + $configPaths;
 
         return Robo::createConfiguration($configPaths);
+    }
+
+    /**
+     * @param Config $config
+     */
+    private function setConfigurationOverrides(Config $config)
+    {
+        // Also set any `-D config.key=value` options from the commandline.
+        if ($this->input->hasOption('define')) {
+            $configDefinitions = $this->input->getOption('define');
+            foreach ($configDefinitions as $value) {
+                list($key, $value) = $this->splitConfigKeyValue($value);
+                $config->set($key, $value);
+            }
+        }
+    }
+
+    /**
+     * @param $value
+     * @return array
+     */
+    private function splitConfigKeyValue($value)
+    {
+        $parts = explode('=', $value, 2);
+        $parts[] = true;
+
+        return $parts;
     }
 }

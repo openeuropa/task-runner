@@ -25,12 +25,11 @@ class CommandsTest extends TestCase
      */
     public function testSiteInstall($command, array $config, array $expected)
     {
-        $runner = new TaskRunner([], new BufferedOutput());
         $input = new StringInput("{$command} --simulate");
-        $runner->run($input);
+        $output = new BufferedOutput();
+        $runner = new TaskRunner([], $input, $output);
+        $runner->run();
 
-        /** @var \Symfony\Component\Console\Output\BufferedOutput $output */
-        $output = $runner->getOutput();
         foreach ($expected as $row) {
             $this->assertContains($row, $output->fetch());
         }

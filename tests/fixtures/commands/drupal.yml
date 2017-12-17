@@ -1,11 +1,16 @@
 - command: drupal:site-install
   configuration: []
   output:
-    - "./vendor/bin/drush -y --root=./build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+    - "[Simulator] Running ./vendor/bin/drush -y --root=./build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
-- command: 'drupal:site-install --site-name "Test site"'
+- command: 'drupal:site-install --site-name="Test site"'
   configuration: []
   output:
-    - "./vendor/bin/drush -y --root=./build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+    - "[Simulator] Running ./vendor/bin/drush -y --root=./build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+
+- command: 'drupal:site-install --define drupal.site.name="Test Site"'
+  configuration: []
+  output:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=./build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
 

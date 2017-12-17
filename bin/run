@@ -15,5 +15,5 @@ $runner = new TaskRunner([
     getcwd().'/runner.yml',
 ]);
 
-$statusCode = $runner->run(new ArgvInput($argv));
+$statusCode = $runner->run();
 exit($statusCode);
