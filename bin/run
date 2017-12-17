@@ -2,7 +2,6 @@
 <?php
 
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use EC\OpenEuropa\TaskRunner\TaskRunner;
 
 if (file_exists(__DIR__.'/../vendor/autoload.php')) {
@@ -11,10 +10,10 @@ if (file_exists(__DIR__.'/../vendor/autoload.php')) {
     require_once __DIR__ . '/../../../autoload.php';
 }
 
-$configPaths = [
+$runner = new TaskRunner([
     getcwd().'/runner.yml.dist',
     getcwd().'/runner.yml',
-];
-$runner = new TaskRunner($configPaths);
-$statusCode = $runner->run(new ArgvInput($argv), new ConsoleOutput());
+]);
+
+$statusCode = $runner->run(new ArgvInput($argv));
 exit($statusCode);

@@ -1,0 +1,21 @@
+language: php
+
+php:
+  - 5.6
+  - 7
+
+env:
+  global:
+    - PATH=$PATH:/home/travis/.composer/vendor/bin
+
+install:
+  - composer self-update
+  - composer install
+
+script:
+  - cd $TRAVIS_BUILD_DIR
+  - ./vendor/bin/grumphp run
+  - ./vendor/bin/phpunit
+
+notifications:
+  email: false

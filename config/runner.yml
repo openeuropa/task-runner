@@ -1,19 +1,23 @@
+runner:
+  bin-dir: "./vendor/bin"
+
 drupal:
+  core: "8"
+  root: "build"
+  base-url: "http://127.0.0.1:8888"
   site:
-    name: Site name
-    mail: info@example.org
-    profile: standard
-    update: false
-    locale: en
-    root: build
-    base-url: http://127.0.0.1:8888
-  admin:
-    name: admin
-    password: admin
-    mail: admin@example.org
+    name: "Site name"
+    mail: "info@example.org"
+    profile: "standard"
+    update: "false"
+    locale: "en"
+  account:
+    name: "admin"
+    password: "admin"
+    mail: "admin@example.org"
   database:
-    host: 127.0.0.1
-    port: 3306
-    name: drupal
-    user: root
-    password: root
+    host: "127.0.0.1"
+    port: "3306"
+    name: "drupal"
+    user: "root"
+    password: "root"

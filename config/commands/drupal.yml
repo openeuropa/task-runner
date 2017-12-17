@@ -5,8 +5,8 @@ command:
 
     # Global options, this will be forwarded to all commands in 'drupal:' namespace.
     options:
-      root: ${drupal.site.root}
-      base-url: ${drupal.site.base-url}
+      root: ${drupal.root}
+      base-url: ${drupal.base-url}
 
     # Install Drupal site.
     site-install:
@@ -16,9 +16,9 @@ command:
         site-profile: ${drupal.site.profile}
         site-update: ${drupal.site.update}
         site-locale: ${drupal.site.locale}
-        admin-name: ${drupal.admin.name}
-        admin-password: ${drupal.admin.password}
-        admin-mail: ${drupal.admin.mail}
+        account-name: ${drupal.account.name}
+        account-password: ${drupal.account.password}
+        account-mail: ${drupal.account.mail}
         database-host: ${drupal.database.host}
         database-port: ${drupal.database.port}
         database-name: ${drupal.database.name}

@@ -10,6 +10,7 @@ use Robo\Config\Config;
 use Robo\Robo;
 use Robo\Runner as RoboRunner;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -32,19 +33,27 @@ class TaskRunner
     private $runner;
 
     /**
+     * @var ConsoleOutput|OutputInterface
+     */
+    private $output;
+
+    /**
      * TaskRunner constructor.
      *
-     * @param array $configPaths
+     * @param array                $configPaths
+     * @param OutputInterface|null $output
      */
-    public function __construct(array $configPaths)
+    public function __construct(array $configPaths = [], OutputInterface $output = null)
     {
+        $this->output = is_null($output) ? new ConsoleOutput() : $output;
+
         // Create application.
         $config = $this->createConfiguration($configPaths);
         $this->setConfig($config);
         $application = new Application(self::APPLICATION_NAME, $config->get('version'));
 
         // Create and configure container.
-        $container = Robo::createDefaultContainer(null, null, $application, $config);
+        $container = Robo::createDefaultContainer(null, $output, $application, $config);
         $container->get('commandFactory')->setIncludeAllPublicMethods(false);
 
         // Create and initialize runner.
@@ -57,13 +66,29 @@ class TaskRunner
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
+     * @param InputInterface $input
+     *
      * @return int
      */
-    public function run(InputInterface $input, OutputInterface $output)
+    public function run(InputInterface $input)
     {
-        return $this->runner->run($input, $output);
+        return $this->runner->run($input, $this->output);
+    }
+
+    /**
+     * @return RoboRunner
+     */
+    public function getRunner()
+    {
+        return $this->runner;
+    }
+
+    /**
+     * @return ConsoleOutput|OutputInterface
+     */
+    public function getOutput()
+    {
+        return $this->output;
     }
 
     /**
