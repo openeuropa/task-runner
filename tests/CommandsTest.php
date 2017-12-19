@@ -25,13 +25,16 @@ class CommandsTest extends TestCase
      */
     public function testSiteInstall($command, array $config, array $expected)
     {
+        $configFile = __DIR__.'/sandbox/runner.test.yml';
+        file_put_contents($configFile, Yaml::dump($config));
         $input = new StringInput("{$command} --simulate");
         $output = new BufferedOutput();
-        $runner = new TaskRunner([], $input, $output);
+        $runner = new TaskRunner([$configFile], $input, $output);
         $runner->run();
 
+        $text = $output->fetch();
         foreach ($expected as $row) {
-            $this->assertContains($row, $output->fetch());
+            $this->assertContains($row, $text);
         }
     }
 

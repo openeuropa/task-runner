@@ -14,6 +14,7 @@ class DrupalCommands extends BaseCommands
     /**
      * @command drupal:site-install
      *
+     * @option root                 Drupal root.
      * @option site-name            Site name.
      * @option site-mail            Site mail.
      * @option site-profile         Installation profile

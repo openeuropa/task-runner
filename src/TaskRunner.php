@@ -63,7 +63,6 @@ class TaskRunner
 
         // Create application.
         $config = $this->createConfiguration($configPaths);
-        $this->setConfigurationOverrides($config);
         $this->setConfig($config);
         $this->application = new Application(self::APPLICATION_NAME, $config->get('version'));
 
@@ -121,38 +120,11 @@ class TaskRunner
      */
     private function createConfiguration(array $configPaths)
     {
-        $configPaths = [
+        $configPaths = array_merge([
             __DIR__.'/../config/runner.yml',
             __DIR__.'/../config/commands/drupal.yml',
-        ] + $configPaths;
+        ], $configPaths);
 
         return Robo::createConfiguration($configPaths);
-    }
-
-    /**
-     * @param Config $config
-     */
-    private function setConfigurationOverrides(Config $config)
-    {
-        // Also set any `-D config.key=value` options from the commandline.
-        if ($this->input->hasOption('define')) {
-            $configDefinitions = $this->input->getOption('define');
-            foreach ($configDefinitions as $value) {
-                list($key, $value) = $this->splitConfigKeyValue($value);
-                $config->set($key, $value);
-            }
-        }
-    }
-
-    /**
-     * @param $value
-     * @return array
-     */
-    private function splitConfigKeyValue($value)
-    {
-        $parts = explode('=', $value, 2);
-        $parts[] = true;
-
-        return $parts;
     }
 }

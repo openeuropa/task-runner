@@ -1,16 +1,40 @@
 - command: drupal:site-install
   configuration: []
-  output:
+  contains:
     - "[Simulator] Running ./vendor/bin/drush -y --root=./build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
 - command: 'drupal:site-install --site-name="Test site"'
   configuration: []
-  output:
+  contains:
     - "[Simulator] Running ./vendor/bin/drush -y --root=./build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
-- command: 'drupal:site-install --define drupal.site.name="Test Site"'
+
+- command: 'drupal:site-install --site-mail="test@example.com" --site-profile=minimal'
   configuration: []
-  output:
-    - "[Simulator] Running ./vendor/bin/drush -y --root=./build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+  contains:
+    - "site-install minimal"
+    - "--site-mail=test@example.com"
 
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      root: 'test'
+      site:
+        profile: 'minimal'
+  contains:
+    - "./vendor/bin/drush -y --root=./test"
+    - "site-install minimal"
 
+- command: 'drupal:site-install --root="overridden"'
+  configuration:
+    drupal:
+      root: 'test'
+  contains:
+    - "./vendor/bin/drush -y --root=./overridden"
+
+- command: 'drupal:site-install --root="overridden"'
+  configuration:
+    runner:
+      bin-dir: "./bin"
+  contains:
+    - "./bin/drush -y --root=./overridden"
