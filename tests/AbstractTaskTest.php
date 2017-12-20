@@ -2,6 +2,7 @@
 
 namespace EC\OpenEuropa\TaskRunner\Tests;
 
+use EC\OpenEuropa\TaskRunner\TaskRunner;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use PHPUnit\Framework\TestCase;
@@ -15,7 +16,7 @@ use Robo\Collection\CollectionBuilder;
  *
  * @package EC\OpenEuropa\TaskRunner\Tests
  */
-abstract class AbstractTaskTest extends TestCase implements ContainerAwareInterface
+abstract class AbstractTaskTest extends AbstractTest implements ContainerAwareInterface
 {
     use TaskAccessor;
     use ContainerAwareTrait;
@@ -25,8 +26,8 @@ abstract class AbstractTaskTest extends TestCase implements ContainerAwareInterf
      */
     public function setup()
     {
-        $container = Robo::createDefaultContainer(null, new NullOutput());
-        $this->setContainer($container);
+        $runner = new TaskRunner([], null, new NullOutput());
+        $this->setContainer($runner->getContainer());
     }
 
     /**

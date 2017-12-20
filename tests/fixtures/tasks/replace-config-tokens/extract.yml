@@ -1,0 +1,17 @@
+- text: "test ${token.one.two}${token.three}"
+  expected:
+    '${token.one.two}': 'token.one.two'
+    '${token.three}': 'token.three'
+
+- text: "empty"
+  expected: []
+
+- text: 'test ${token.one.${token.three}two},${token.four}'
+  expected:
+    '${token.three}': 'token.three'
+    '${token.four}': 'token.four'
+
+- text: '${toke!2#n.two},${token.four}'
+  expected:
+    '${token.four}': 'token.four'
+

@@ -12,6 +12,11 @@ use Symfony\Component\Console\Input\InputOption;
 class DrupalCommands extends BaseCommands
 {
     /**
+     * Install target site.
+     *
+     * This command will install the target site using configuration values
+     * provided in runner.yml.dist (overridable by runner.yml).
+     *
      * @command drupal:site-install
      *
      * @option root                 Drupal root.

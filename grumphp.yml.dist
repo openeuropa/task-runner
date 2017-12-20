@@ -3,5 +3,6 @@ imports:
 parameters:
   tasks.phpcs.ignore_patterns:
     - vendor/
+    - loadTasks.php
   tasks.phpmd.exclude:
     - vendor/

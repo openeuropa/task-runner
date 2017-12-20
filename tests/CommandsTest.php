@@ -3,6 +3,7 @@
 namespace EC\OpenEuropa\TaskRunner\Tests\Commands;
 
 use EC\OpenEuropa\TaskRunner\TaskRunner;
+use EC\OpenEuropa\TaskRunner\Tests\AbstractTest;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -14,7 +15,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @package EC\OpenEuropa\TaskRunner\Tests\Commands
  */
-class CommandsTest extends TestCase
+class CommandsTest extends AbstractTest
 {
     /**
      * @param string $command
