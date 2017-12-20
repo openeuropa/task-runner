@@ -26,7 +26,7 @@ class CommandsTest extends AbstractTest
      */
     public function testSiteInstall($command, array $config, array $expected)
     {
-        $configFile = __DIR__.'/sandbox/runner.test.yml';
+        $configFile = $this->getSandboxPath('runner.test.yml');
         file_put_contents($configFile, Yaml::dump($config));
         $input = new StringInput("{$command} --simulate");
         $output = new BufferedOutput();

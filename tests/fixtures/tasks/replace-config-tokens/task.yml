@@ -1,0 +1,22 @@
+- source:
+    one: ${drupal.root}
+    two:
+      three: ${drupal.core}
+  expected:
+    one: "build"
+    two:
+      three: "8"
+
+- source:
+    missing: ${this.does.not.exists}
+    not-valid: "drupal.core"
+    ok: ${drupal.core}
+  expected:
+    missing: ""
+    not-valid: "drupal.core"
+    ok: "8"
+
+- source:
+    concat: "${drupal.core}/${drupal.root}"
+  expected:
+    concat: "8/build"

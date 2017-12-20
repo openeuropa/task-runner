@@ -40,4 +40,14 @@ class AbstractTest extends TestCase
     {
         return Yaml::parse(file_get_contents(__DIR__."/fixtures/{$filepath}"));
     }
+
+    /**
+     * @param $name
+     *
+     * @return string
+     */
+    protected function getSandboxPath($name)
+    {
+        return __DIR__."/sandbox/{$name}";
+    }
 }

@@ -4,6 +4,8 @@ namespace EC\OpenEuropa\TaskRunner\Tests\Tasks;
 
 use EC\OpenEuropa\TaskRunner\Tasks\ReplaceConfigTokens\ReplaceConfigTokens;
 use EC\OpenEuropa\TaskRunner\Tests\AbstractTaskTest;
+use Robo\Task\Simulator;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class ReplaceConfigTokensTaskTest.
@@ -16,10 +18,20 @@ class ReplaceConfigTokensTaskTest extends AbstractTaskTest
 
     /**
      * Test task.
+     *
+     * @param array $data
+     * @param array $expected
+     *
+     * @dataProvider testTaskDataProvider
      */
-    public function testTask()
+    public function testTask(array $data, array $expected)
     {
-        $result = $this->taskReplaceConfigTokens()->run();
+        $source = $this->getSandboxPath('source.yml');
+        $destination = $this->getSandboxPath('destination.yml');
+        file_put_contents($source, Yaml::dump($data));
+        $this->taskReplaceConfigTokens($source, $destination)->run();
+        $destinationData = Yaml::parse(file_get_contents($destination));
+        $this->assertEquals($expected, $destinationData);
     }
 
     /**
@@ -30,7 +42,7 @@ class ReplaceConfigTokensTaskTest extends AbstractTaskTest
      */
     public function testExtractTokens($text, array $expected)
     {
-        $task = new ReplaceConfigTokens();
+        $task = new ReplaceConfigTokens(null, null);
         $actual = $this->invokeMethod($task, 'extractTokens', [$text]);
         $this->assertEquals($expected, $actual);
     }
@@ -41,5 +53,13 @@ class ReplaceConfigTokensTaskTest extends AbstractTaskTest
     public function extractTokensDataProvider()
     {
         return $this->getFixtureContent('tasks/replace-config-tokens/extract.yml');
+    }
+
+    /**
+     * @return array
+     */
+    public function testTaskDataProvider()
+    {
+        return $this->getFixtureContent('tasks/replace-config-tokens/task.yml');
     }
 }
