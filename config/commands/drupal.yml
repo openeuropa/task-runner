@@ -1,14 +1,8 @@
 command:
-
-  # Drupal-related command options.
   drupal:
-
-    # Global options, this will be forwarded to all commands in 'drupal:' namespace.
     options:
       root: ${drupal.root}
       base-url: ${drupal.base-url}
-
-    # Install Drupal site.
     site-install:
       options:
         site-name: ${drupal.site.name}

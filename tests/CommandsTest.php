@@ -44,13 +44,6 @@ class CommandsTest extends AbstractTest
      */
     public function commandsDataProvider()
     {
-        $data = [];
-        $finder = new Finder();
-        $finder->files()->name('*.yml')->in(__DIR__.'/fixtures/commands');
-        foreach ($finder as $file) {
-            $data = array_merge($data, Yaml::parse($file->getContents()));
-        }
-
-        return $data;
+        return $this->getFixtureContent('commands.yml');
     }
 }

@@ -1,0 +1,10 @@
+command:
+  setup:
+    behat:
+      options:
+        source: "behat.yml.dist"
+        destination: "behat.yml"
+    phpunit:
+      options:
+        source: "phpunit.xml.dist"
+        destination: "phpunit.xml"

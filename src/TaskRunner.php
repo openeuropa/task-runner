@@ -123,6 +123,7 @@ class TaskRunner
         $configPaths = array_merge([
             __DIR__.'/../config/runner.yml',
             __DIR__.'/../config/commands/drupal.yml',
+            __DIR__.'/../config/commands/setup.yml',
         ], $configPaths);
 
         return Robo::createConfiguration($configPaths);

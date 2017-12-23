@@ -10,7 +10,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @package EC\OpenEuropa\TaskRunner\Tests
  */
-class AbstractTest extends TestCase
+abstract class AbstractTest extends TestCase
 {
 
   /**

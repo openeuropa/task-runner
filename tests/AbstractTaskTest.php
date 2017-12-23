@@ -5,11 +5,8 @@ namespace EC\OpenEuropa\TaskRunner\Tests;
 use EC\OpenEuropa\TaskRunner\TaskRunner;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Output\NullOutput;
 use Robo\TaskAccessor;
-use Robo\Robo;
 use Robo\Collection\CollectionBuilder;
 
 /**

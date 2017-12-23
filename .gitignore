@@ -4,4 +4,4 @@ phpunit.xml
 composer.lock
 behat.yml
 RoboFile.php
-/tests/sandbox/*
+/tests/sandbox/*.yml
