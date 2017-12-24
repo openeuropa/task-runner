@@ -22,9 +22,9 @@ class CommandsTest extends AbstractTest
      * @param array  $config
      * @param array  $expected
      *
-     * @dataProvider commandsDataProvider
+     * @dataProvider simulationDataProvider
      */
-    public function testSiteInstall($command, array $config, array $expected)
+    public function testSimulation($command, array $config, array $expected)
     {
         $configFile = $this->getSandboxPath('runner.test.yml');
         file_put_contents($configFile, Yaml::dump($config));
@@ -40,10 +40,40 @@ class CommandsTest extends AbstractTest
     }
 
     /**
+     * @param string $command
+     * @param string $content
+     * @param string $expected
+     *
+     * @dataProvider setupDataProvider
+     */
+    public function testSetupCommands($command, $content, $expected)
+    {
+        $source = $this->getSandboxPath('source.yml');
+        $destination = $this->getSandboxPath('destination.yml');
+        file_put_contents($source, $content);
+
+        $input = new StringInput("{$command} --source={$source} --destination={$destination}");
+        $output = new BufferedOutput();
+        $runner = new TaskRunner([], $input, $output);
+        $runner->run();
+
+        $actual = file_get_contents($destination);
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
      * @return array
      */
-    public function commandsDataProvider()
+    public function simulationDataProvider()
     {
-        return $this->getFixtureContent('commands.yml');
+        return $this->getFixtureContent('simulation.yml');
+    }
+
+    /**
+     * @return array
+     */
+    public function setupDataProvider()
+    {
+        return $this->getFixtureContent('setup.yml');
     }
 }

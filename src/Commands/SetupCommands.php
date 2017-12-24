@@ -43,7 +43,7 @@ class SetupCommands extends BaseCommands
       'destination' => InputOption::VALUE_REQUIRED,
     ])
     {
-        return $this->taskReplaceConfigTokens($options['source'], $options['destination']);
+        return $this->setupReplace($options);
     }
 
     /**
@@ -75,7 +75,7 @@ class SetupCommands extends BaseCommands
       'destination' => InputOption::VALUE_REQUIRED,
     ])
     {
-        return $this->taskReplaceConfigTokens($options['source'], $options['destination']);
+        return $this->setupReplace($options);
     }
 
 

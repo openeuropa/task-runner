@@ -1,0 +1,39 @@
+- command: setup:replace
+  content: >
+    test1: ${drupal.root}
+    test2: ${drupal.core}
+  expected: >
+    test1: build
+    test2: 8
+
+- command: setup:behat
+  content: >
+    default:
+      extensions:
+        Behat\MinkExtension:
+          base_url: ${drupal.base-url}
+      formatters:
+        progress: ~
+  expected: >
+    default:
+      extensions:
+        Behat\MinkExtension:
+          base_url: http://127.0.0.1:8888
+      formatters:
+        progress: ~
+
+- command: setup:phpunit
+  content: >
+    <?xml version="1.0" encoding="UTF-8"?>
+    <phpunit bootstrap="vendor/autoload.php">
+      <php>
+        <env name="BASE_URL" value="${drupal.base-url}"/>
+      </php>
+    </phpunit>
+  expected: >
+    <?xml version="1.0" encoding="UTF-8"?>
+    <phpunit bootstrap="vendor/autoload.php">
+      <php>
+        <env name="BASE_URL" value="http://127.0.0.1:8888"/>
+      </php>
+    </phpunit>

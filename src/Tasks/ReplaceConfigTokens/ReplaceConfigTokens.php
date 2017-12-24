@@ -17,7 +17,7 @@ class ReplaceConfigTokens extends BaseTask implements BuilderAwareInterface
 {
     use BuilderAwareTrait;
 
-    const TOKEN_REGEX = '/\$\{((\w+\.?)+)\}/';
+    const TOKEN_REGEX = '/\$\{(([A-Za-z_\-]+\.?)+)\}/';
 
     /**
      * Source file.
