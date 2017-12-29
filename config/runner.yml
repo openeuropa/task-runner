@@ -21,3 +21,6 @@ drupal:
     name: "drupal"
     user: "root"
     password: "root"
+
+github:
+  token: "YOUR GITHUB TOKEN"

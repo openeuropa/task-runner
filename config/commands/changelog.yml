@@ -1,0 +1,6 @@
+command:
+  changelog:
+    generate:
+      options:
+        token: ${github.token}
+        tag: ~

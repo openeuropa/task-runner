@@ -2,9 +2,11 @@
 
 namespace EC\OpenEuropa\TaskRunner\Tests\Commands;
 
+use EC\OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use EC\OpenEuropa\TaskRunner\TaskRunner;
 use EC\OpenEuropa\TaskRunner\Tests\AbstractTest;
 use PHPUnit\Framework\TestCase;
+use Robo\Task\Simulator;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Finder\Finder;
@@ -62,6 +64,23 @@ class CommandsTest extends AbstractTest
     }
 
     /**
+     * @param array  $options
+     * @param string $expected
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     *
+     * @dataProvider changelogDataProvider
+     */
+    public function testChangelogCommands(array $options, $expected)
+    {
+        $runner = new TaskRunner();
+        /** @var ChangelogCommands $commands */
+        $commands = $runner->getCommands(ChangelogCommands::class);
+        $this->assertEquals($expected, $commands->generateChangelog($options)->getCommand());
+    }
+
+    /**
      * @return array
      */
     public function simulationDataProvider()
@@ -75,5 +94,13 @@ class CommandsTest extends AbstractTest
     public function setupDataProvider()
     {
         return $this->getFixtureContent('setup.yml');
+    }
+
+    /**
+     * @return array
+     */
+    public function changelogDataProvider()
+    {
+        return $this->getFixtureContent('changelog.yml');
     }
 }

@@ -4,6 +4,7 @@ namespace EC\OpenEuropa\TaskRunner;
 
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use League\Container\ContainerAwareTrait;
+use League\Container\Exception\NotFoundException;
 use Robo\Application;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
@@ -73,7 +74,7 @@ class TaskRunner
         // Create and initialize runner.
         $this->runner = new RoboRunner();
         $this->runner->setContainer($container);
-        $this->runner->registerCommandClasses($this->application, $this->getCommandClasses());
+        $this->runner->registerCommandClasses($this->application, $this->discoverCommandClasses());
 
         // Set processed container.
         $this->setContainer($container);
@@ -104,9 +105,24 @@ class TaskRunner
     }
 
     /**
+     * @param string $class
+     *
+     * @return \EC\OpenEuropa\TaskRunner\Commands\BaseCommands
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function getCommands($class)
+    {
+        $serviceName = "\\{$class}Commands";
+
+        return $this->getContainer()->get($serviceName);
+    }
+
+    /**
      * @return array
      */
-    private function getCommandClasses()
+    private function discoverCommandClasses()
     {
         $discovery = new CommandFileDiscovery();
         $discovery->setSearchPattern('*Commands.php')->setSearchLocations(['Commands']);
@@ -124,6 +140,7 @@ class TaskRunner
             __DIR__.'/../config/runner.yml',
             __DIR__.'/../config/commands/drupal.yml',
             __DIR__.'/../config/commands/setup.yml',
+            __DIR__.'/../config/commands/changelog.yml',
         ], $configPaths);
 
         return Robo::createConfiguration($configPaths);
