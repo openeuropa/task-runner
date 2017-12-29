@@ -38,3 +38,32 @@
       bin-dir: "./bin"
   contains:
     - "./bin/drush -y --root=./overridden"
+
+- command: 'changelog:generate'
+  configuration:
+    github:
+      token: "abc"
+  contains:
+    - "exec('ec-europa/oe-task-runner -t abc')"
+
+- command: 'changelog:generate --token def'
+  configuration:
+    github:
+      token: "abc"
+  contains:
+    - "exec('ec-europa/oe-task-runner -t def')"
+
+- command: 'changelog:generate --tag 1.2.3'
+  configuration:
+    github:
+      token: "abc"
+  contains:
+    - "exec('ec-europa/oe-task-runner -t abc --future-release=1.2.3')"
+
+- command: 'changelog:generate --token 123 --tag 1.2.3'
+  configuration:
+    github:
+      token: "abc"
+  contains:
+    - "exec('ec-europa/oe-task-runner -t 123 --future-release=1.2.3')"
+
