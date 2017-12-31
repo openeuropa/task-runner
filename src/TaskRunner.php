@@ -3,6 +3,9 @@
 namespace EC\OpenEuropa\TaskRunner;
 
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
+use EC\OpenEuropa\TaskRunner\Services\Composer;
+use League\Container\Container;
 use League\Container\ContainerAwareTrait;
 use League\Container\Exception\NotFoundException;
 use Robo\Application;
@@ -70,6 +73,8 @@ class TaskRunner
         // Create and configure container.
         $container = Robo::createDefaultContainer($this->input, $this->output, $this->application, $config);
         $container->get('commandFactory')->setIncludeAllPublicMethods(false);
+        $container->share('task_runner.composer', Composer::class);
+        $this->addInflectors($container);
 
         // Create and initialize runner.
         $this->runner = new RoboRunner();
@@ -144,5 +149,16 @@ class TaskRunner
         ], $configPaths);
 
         return Robo::createConfiguration($configPaths);
+    }
+
+    /**
+     * Register our various inflectors.
+     *
+     * @param \League\Container\Container $container
+     */
+    private function addInflectors(Container $container)
+    {
+        $container->inflector(ComposerAwareInterface::class)
+          ->invokeMethod('setComposer', ['task_runner.composer']);
     }
 }

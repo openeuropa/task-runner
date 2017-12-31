@@ -2,6 +2,8 @@
 
 namespace EC\OpenEuropa\TaskRunner\Commands;
 
+use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
+use EC\OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -9,8 +11,10 @@ use Symfony\Component\Console\Input\InputOption;
  *
  * @package EC\OpenEuropa\TaskRunner\Commands
  */
-class ChangelogCommands extends BaseCommands
+class ChangelogCommands extends BaseCommands implements ComposerAwareInterface
 {
+    use ComposerAwareTrait;
+
     /**
      * Generate a changelog based on GitHub issues and pull requests.
      *
@@ -33,7 +37,7 @@ class ChangelogCommands extends BaseCommands
       'tag' => InputOption::VALUE_OPTIONAL,
     ])
     {
-        $projectName = $this->getFullProjectName();
+        $projectName = $this->getComposer()->getFullProjectName();
         $exec = "{$projectName} -t {$options['token']}";
         if (!empty($options['tag'])) {
             $exec .= " --future-release={$options['tag']}";
@@ -46,18 +50,5 @@ class ChangelogCommands extends BaseCommands
           ->exec($exec);
 
         return $task;
-    }
-
-    /**
-     * Get project name from composer.json.
-     *
-     * @return string
-     *   Project name.
-     */
-    protected function getFullProjectName()
-    {
-        $package = json_decode(file_get_contents('./composer.json'));
-
-        return $package->name;
     }
 }
