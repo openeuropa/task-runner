@@ -65,24 +65,21 @@ class TaskRunner
         $this->output = is_null($output) ? new ConsoleOutput() : $output;
         $this->input = is_null($input) ? new ArgvInput() : $input;
 
-        // Create application.
+        // Create configuration.
         $config = $this->createConfiguration($configPaths);
         $this->setConfig($config);
+
+        // Create application.
         $this->application = new Application(self::APPLICATION_NAME, $config->get('version'));
 
-        // Create and configure container.
-        $container = Robo::createDefaultContainer($this->input, $this->output, $this->application, $config);
-        $container->get('commandFactory')->setIncludeAllPublicMethods(false);
-        $container->share('task_runner.composer', Composer::class);
-        $this->addInflectors($container);
+        // Create container.
+        $container = $this->createContainer($config);
+        $this->setContainer($container);
 
         // Create and initialize runner.
         $this->runner = new RoboRunner();
         $this->runner->setContainer($container);
         $this->runner->registerCommandClasses($this->application, $this->discoverCommandClasses());
-
-        // Set processed container.
-        $this->setContainer($container);
     }
 
     /**
@@ -152,13 +149,19 @@ class TaskRunner
     }
 
     /**
-     * Register our various inflectors.
-     *
-     * @param \League\Container\Container $container
+     * Create and configure container.
      */
-    private function addInflectors(Container $container)
+    private function createContainer(Config $config)
     {
+        $container = Robo::createDefaultContainer($this->input, $this->output, $this->application, $config);
+        $container->get('commandFactory')->setIncludeAllPublicMethods(false);
+        $container->share('task_runner.composer', Composer::class)
+            ->withArgument(getcwd());
+
+        // Add service inflectors.
         $container->inflector(ComposerAwareInterface::class)
           ->invokeMethod('setComposer', ['task_runner.composer']);
+
+        return $container;
     }
 }

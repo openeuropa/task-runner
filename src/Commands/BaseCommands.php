@@ -21,9 +21,8 @@ use Symfony\Component\Console\Input\InputInterface;
  *
  * @package EC\OpenEuropa\TaskRunner\Commands
  */
-class BaseCommands implements BuilderAwareInterface, IOAwareInterface, ContainerAwareInterface, ConfigAwareInterface
+class BaseCommands implements BuilderAwareInterface, IOAwareInterface, ConfigAwareInterface
 {
-    use ContainerAwareTrait;
     use ConfigAwareTrait;
     use LoadAllTasks;
     use IO;

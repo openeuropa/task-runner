@@ -37,7 +37,7 @@ class ChangelogCommands extends BaseCommands implements ComposerAwareInterface
       'tag' => InputOption::VALUE_OPTIONAL,
     ])
     {
-        $projectName = $this->getComposer()->getFullProjectName();
+        $projectName = $this->getComposer()->getName();
         $exec = "{$projectName} -t {$options['token']}";
         if (!empty($options['tag'])) {
             $exec .= " --future-release={$options['tag']}";
