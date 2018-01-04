@@ -59,26 +59,16 @@ class TaskRunner
      */
     public function __construct(InputInterface $input = null, OutputInterface $output = null)
     {
-        // Create application.
-        $this->application = new Application(self::APPLICATION_NAME, null);
-        $this->application
-          ->getDefinition()
-          ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', getcwd()));
-
-        $this->output = is_null($output) ? new ConsoleOutput() : $output;
         $this->input = is_null($input) ? new ArgvInput() : $input;
+        $this->output = is_null($output) ? new ConsoleOutput() : $output;
 
-        // Create configuration.
-        $config = $this->createConfiguration();
-        $this->setConfig($config);
-
-        // Create container.
-        $container = $this->createContainer($config);
-        $this->setContainer($container);
+        $this->application = $this->createApplication();
+        $this->config = $this->createConfiguration();
+        $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config);
 
         // Create and initialize runner.
         $this->runner = new RoboRunner();
-        $this->runner->setContainer($container);
+        $this->runner->setContainer($this->container);
         $this->runner->registerCommandClasses($this->application, $this->discoverCommandClasses());
     }
 
@@ -133,21 +123,28 @@ class TaskRunner
     }
 
     /**
+     * Create default configuration.
+     *
      * @return Config
      */
     private function createConfiguration()
     {
-        return Robo::createConfiguration([
-            __DIR__.'/../config/runner.yml',
-        ]);
+        return Robo::createConfiguration([__DIR__.'/../config/runner.yml']);
     }
 
     /**
      * Create and configure container.
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param \Robo\Application $application
+     * @param \Robo\Config\Config $config
+     *
+     * @return \League\Container\Container|\League\Container\ContainerInterface
      */
-    private function createContainer(Config $config)
+    private function createContainer(InputInterface $input, OutputInterface $output, Application $application, Config $config)
     {
-        $container = Robo::createDefaultContainer($this->input, $this->output, $this->application, $config);
+        $container = Robo::createDefaultContainer($input, $output, $application, $config);
         $container->get('commandFactory')->setIncludeAllPublicMethods(false);
         $container->share('task_runner.composer', Composer::class)
             ->withArgument(getcwd());
@@ -157,5 +154,20 @@ class TaskRunner
           ->invokeMethod('setComposer', ['task_runner.composer']);
 
         return $container;
+    }
+
+    /**
+     * Create application.
+     *
+     * @return \Robo\Application
+     */
+    private function createApplication()
+    {
+        $application = new Application(self::APPLICATION_NAME, null);
+        $application
+          ->getDefinition()
+          ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', getcwd()));
+
+        return $application;
     }
 }
