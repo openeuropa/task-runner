@@ -6,8 +6,7 @@
     "prefer-stable": true,
     "require": {
         "consolidation/robo": "^1.2",
-        "nuvoleweb/robo-config": "dev-master",
-        "composer/semver": "^1.4"
+        "nuvoleweb/robo-config": "~0.2"
     },
     "require-dev": {
         "ec-europa/oe-code-review": "*",
