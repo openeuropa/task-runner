@@ -76,7 +76,7 @@
   contains:
     - "exec('ec-europa/oe-task-runner -t 123 --future-release=1.2.3')"
 
-- command: 'drupal:scaffold'
+- command: 'drupal:component-scaffold'
   configuration: []
   composer: >
     {
@@ -90,7 +90,7 @@
     - "WriteConfiguration('./build/sites/default/drushrc.php'"
     - "AppendConfiguration('./build/sites/default/default.settings.php'"
 
-- command: 'drupal:scaffold'
+- command: 'drupal:component-scaffold'
   configuration:
     drupal:
       root: "./web"
@@ -102,7 +102,7 @@
   contains:
     - "symlink('.', './web/themes/custom/bar')"
 
-- command: 'drupal:scaffold'
+- command: 'drupal:component-scaffold'
   configuration:
     drupal:
       core: "7"
@@ -114,7 +114,7 @@
   contains:
     - "symlink('.', './build/sites/all/modules/custom/bar')"
 
-- command: 'drupal:scaffold'
+- command: 'drupal:component-scaffold'
   configuration:
     drupal:
       core: "7"

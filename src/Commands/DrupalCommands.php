@@ -110,17 +110,43 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
     }
 
     /**
-     * Setup project.
+     * Scaffold Drupal component development.
      *
-     * This command will create the necessary symlinks and scaffolding files.
+     * This command will create the necessary symlinks and scaffolding files for
+     * developing Drupal modules and themes, assuming that a fully built Drupal
+     * site is available at ${drupal.root}.
      *
-     * @command drupal:scaffold
-     * @aliases ds
+     * Running this command will:
+     *
+     * - Prepare a custom project directory using composer.json project name.
+     * - Make Drupal's "./${drupal.root}/sites/default" directory writable.
+     * - Symlink the root of your project at "./${drupal.root}/modules|themes/custom/PROJECT_NAME (or its Drupal 7 variant).
+     * - Setup default Drush configuration files in "./${drupal.root}/sites/default/".
+     * - Exclude ${drupal.root} and "vendor" directories in "./${drupal.root}/sites/default/settings.default.php".
+     * - For Drupal 8: make sure that Twig cache is disabled on ./web/sites/development.services.yml.
+     * - For Drupal 8: Setup local development settings at ./web/sites/default/settings.local.php.
+     *
+     * Configuration content written or appended to setting files above can be
+     * modified by tweaking configuration variable in your "runner.yml" file.
+     *
+     * For more information check the default "config/runner.yml" file at:
+     *
+     * > drupal:
+     * >   ...
+     * >   drush:
+     * >     ...
+     * >   settings:
+     * >     ...
+     *
+     * @command drupal:component-scaffold
+     *
+     * @aliases dcs
      *
      * @return \Robo\Collection\CollectionBuilder
+     *
      * @throws \Robo\Exception\TaskException
      */
-    public function drupalScaffold()
+    public function componentScaffold()
     {
         $collection = $this->collectionBuilder();
 
