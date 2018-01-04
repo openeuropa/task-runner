@@ -140,7 +140,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
      *
      * @command drupal:component-scaffold
      *
-     * @aliases dcs
+     * @aliases drupal:cs,dcs
      *
      * @return \Robo\Collection\CollectionBuilder
      *

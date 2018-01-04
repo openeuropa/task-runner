@@ -32,7 +32,7 @@ Available commands:
  changelog
   changelog:generate         [changelog:g|cg] Generate a changelog based on GitHub issues and pull requests.
  drupal
-  drupal:component-scaffold  [dcs] Scaffold Drupal component development.
+  drupal:component-scaffold  [drupal:cs|dcs] Scaffold Drupal component development.
   drupal:site-install        [drupal:si|dsi] Install target site.
  setup
   setup:behat                [setup:b|sb] Setup Behat.
