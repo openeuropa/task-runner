@@ -84,7 +84,7 @@
       "type": "drupal-module"
     }
   contains:
-    - "symlink('.', 'build/modules/custom/bar')"
+    - "symlink('../../..', 'build/modules/custom/bar')"
     - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
     - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
     - "WriteConfiguration('build/sites/default/drushrc.php'"
@@ -93,14 +93,14 @@
 - command: 'drupal:component-scaffold'
   configuration:
     drupal:
-      root: "./web"
+      root: "web"
   composer: >
     {
       "name": "foo/bar",
       "type": "drupal-theme"
     }
   contains:
-    - "symlink('.', './web/themes/custom/bar')"
+    - "symlink('../../..', 'web/themes/custom/bar')"
 
 - command: 'drupal:component-scaffold'
   configuration:
@@ -112,7 +112,7 @@
       "type": "drupal-module"
     }
   contains:
-    - "symlink('.', 'build/sites/all/modules/custom/bar')"
+    - "symlink('../../../../..', 'build/sites/all/modules/custom/bar')"
 
 - command: 'drupal:component-scaffold'
   configuration:
@@ -124,4 +124,4 @@
       "type": "drupal-theme"
     }
   contains:
-    - "symlink('.', 'build/sites/all/themes/custom/bar')"
+    - "symlink('../../../../..', 'build/sites/all/themes/custom/bar')"

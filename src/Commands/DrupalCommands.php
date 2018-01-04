@@ -122,7 +122,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
      * - Make Drupal's "./${drupal.root}/sites/default" directory writable.
      * - Symlink the root of your project at "./${drupal.root}/modules|themes/custom/PROJECT_NAME (or its Drupal 7 variant).
      * - Setup default Drush configuration files in "./${drupal.root}/sites/default/".
-     * - Exclude ${drupal.root} and "vendor" directories in "./${drupal.root}/sites/default/default.settings.php".
+     * - Exclude ${drupal.root} and "vendor" directories in "./${drupal.root}/sites/default/settings.default.php".
      * - For Drupal 8: make sure that Twig cache is disabled on ./web/sites/development.services.yml.
      * - For Drupal 8: Setup local development settings at ./web/sites/default/settings.local.php.
      *
@@ -149,14 +149,17 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
     public function componentScaffold()
     {
         $collection = $this->collectionBuilder();
+        $extensionRoot = $this->getExtensionRoot();
+        $link = implode('/', array_fill(0, count(explode('/', $extensionRoot)), '..'));
 
         $collection->addTaskList([
             $this->taskFilesystemStack()->chmod($this->getSiteRoot().'/sites', 0775, 0000, true),
-            $this->taskFilesystemStack()->symlink('.', $this->getExtensionDirectory()),
+            $this->taskFilesystemStack()->mkdir($this->getExtensionRoot()),
+            $this->taskFilesystemStack()->symlink($link, $this->getExtensionRoot().'/'.$this->getProjectName()),
             $this->taskWriteConfiguration($this->getSiteRoot().'/sites/default/drushrc.php', $this->getConfig())
-              ->setConfigKey('drupal.drush'),
+            ->setConfigKey('drupal.drush'),
             $this->taskAppendConfiguration($this->getSiteRoot().'/sites/default/default.settings.php', $this->getConfig())
-              ->setConfigKey('drupal.settings'),
+            ->setConfigKey('drupal.settings'),
         ]);
 
         if (file_exists('behat.yml.dist') || $this->isSimulating()) {
@@ -195,16 +198,15 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
     }
 
     /**
-     * Returns extension directory based on Drupal core.
+     * Returns extension root based on Drupal core.
      *
      * @return string
      *
      * @throws \Robo\Exception\TaskException
      */
-    protected function getExtensionDirectory()
+    protected function getExtensionRoot()
     {
         $root = $this->getSiteRoot();
-        $name = $this->getProjectName();
 
         switch ($this->getProjectType()) {
             case 'drupal-module':
@@ -218,9 +220,9 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
         }
 
         if ($this->getConfig()->get('drupal.core') === "7") {
-            return "{$root}/sites/all/{$directory}/custom/{$name}";
+            return "{$root}/sites/all/{$directory}/custom";
         }
 
-        return "{$root}/{$directory}/custom/{$name}";
+        return "{$root}/{$directory}/custom";
     }
 }
