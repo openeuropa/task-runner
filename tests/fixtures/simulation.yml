@@ -77,16 +77,14 @@
     - "exec('ec-europa/oe-task-runner -t 123 --future-release=1.2.3')"
 
 - command: 'drupal:scaffold'
-  configuration:
-    project:
-      name: "drupal/my_module"
-      type: "drupal-module"
+  configuration: []
   composer: >
     {
       "name": "foo/bar",
       "type": "drupal-module"
     }
   contains:
+    - "symlink('.', './build/modules/custom/bar')"
     - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
     - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
     - "WriteConfiguration('./build/sites/default/drushrc.php'"
@@ -94,18 +92,36 @@
 
 - command: 'drupal:scaffold'
   configuration:
-    project:
-      name: "drupal/my_module"
-      type: "drupal-module"
     drupal:
       root: "./web"
+  composer: >
+    {
+      "name": "foo/bar",
+      "type": "drupal-theme"
+    }
+  contains:
+    - "symlink('.', './web/themes/custom/bar')"
+
+- command: 'drupal:scaffold'
+  configuration:
+    drupal:
+      core: "7"
   composer: >
     {
       "name": "foo/bar",
       "type": "drupal-module"
     }
   contains:
-    - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
-    - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
-    - "WriteConfiguration('./web/sites/default/drushrc.php'"
-    - "AppendConfiguration('./web/sites/default/default.settings.php'"
+    - "symlink('.', './build/sites/all/modules/custom/bar')"
+
+- command: 'drupal:scaffold'
+  configuration:
+    drupal:
+      core: "7"
+  composer: >
+    {
+      "name": "foo/bar",
+      "type": "drupal-theme"
+    }
+  contains:
+    - "symlink('.', './build/sites/all/themes/custom/bar')"
