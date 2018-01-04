@@ -122,7 +122,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
      * - Make Drupal's "./${drupal.root}/sites/default" directory writable.
      * - Symlink the root of your project at "./${drupal.root}/modules|themes/custom/PROJECT_NAME (or its Drupal 7 variant).
      * - Setup default Drush configuration files in "./${drupal.root}/sites/default/".
-     * - Exclude ${drupal.root} and "vendor" directories in "./${drupal.root}/sites/default/settings.default.php".
+     * - Exclude ${drupal.root} and "vendor" directories in "./${drupal.root}/sites/default/default.settings.php".
      * - For Drupal 8: make sure that Twig cache is disabled on ./web/sites/development.services.yml.
      * - For Drupal 8: Setup local development settings at ./web/sites/default/settings.local.php.
      *
