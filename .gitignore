@@ -1,4 +1,5 @@
 /vendor/
+/tests/sandbox
 grumphp.yml
 phpunit.xml
 composer.lock
