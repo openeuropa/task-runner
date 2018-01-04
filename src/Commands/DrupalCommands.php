@@ -2,6 +2,8 @@
 
 namespace EC\OpenEuropa\TaskRunner\Commands;
 
+use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
+use EC\OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -9,8 +11,9 @@ use Symfony\Component\Console\Input\InputOption;
  *
  * @package EC\OpenEuropa\TaskRunner\Commands
  */
-class DrupalCommands extends BaseCommands
+class DrupalCommands extends BaseCommands implements ComposerAwareInterface
 {
+    use ComposerAwareTrait;
     use \NuvoleWeb\Robo\Task\Config\Php\loadTasks;
 
     /**
@@ -65,7 +68,7 @@ class DrupalCommands extends BaseCommands
         return $this->taskExec($this->getBin('drush'))
             ->option('-y')
             ->options([
-                'root' => './'.$options['root'],
+                'root' => $options['root'],
                 'site-name' => $options['site-name'],
                 'site-mail' => $options['site-mail'],
                 'locale' => $options['site-locale'],
@@ -100,12 +103,13 @@ class DrupalCommands extends BaseCommands
     public function drupalScaffold()
     {
         $collection = $this->collectionBuilder();
-//        $collection = $this->collectionBuilder()->addTaskList([
-//          $this->taskFilesystemStack()->chmod($this->getSiteRoot() . '/sites', 0775, 0000, TRUE),
-//          $this->taskFilesystemStack()->symlink($this->getProjectRoot(), $this->getSiteRoot() . '/sites/all/modules/' . $this->getProjectName()),
-//          $this->taskWriteConfiguration($this->getSiteRoot() . '/sites/default/drushrc.php', $this->getConfig())->setConfigKey('drush'),
-//          $this->taskAppendConfiguration($this->getSiteRoot() . '/sites/default/default.settings.php', $this->getConfig())->setConfigKey('settings'),
-//        ]);
+
+        $collection->addTaskList([
+            $this->taskFilesystemStack()->chmod($this->getSiteRoot().'/sites', 0775, 0000, true),
+            $this->taskFilesystemStack()->symlink('.', $this->getSiteRoot().'/sites/all/modules/'.$this->getProjectName()),
+            $this->taskWriteConfiguration($this->getSiteRoot().'/sites/default/drushrc.php', $this->getConfig())->setConfigKey('drush'),
+            $this->taskAppendConfiguration($this->getSiteRoot().'/sites/default/default.settings.php', $this->getConfig())->setConfigKey('settings'),
+        ]);
 
         if (file_exists('behat.yml.dist') || $this->isSimulating()) {
             $collection->addTask($this->taskExec($this->getBin('run'))->arg('setup:behat'));
@@ -116,5 +120,21 @@ class DrupalCommands extends BaseCommands
         }
 
         return $collection;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getSiteRoot()
+    {
+        return $this->getConfig()->get('drupal.root', '.');
+    }
+
+    /**
+     * @return string
+     */
+    protected function getProjectName()
+    {
+        return $this->getComposer()->getProject();
     }
 }

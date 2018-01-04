@@ -3,7 +3,7 @@ runner:
 
 drupal:
   core: "8"
-  root: "build"
+  root: "./build"
   base-url: "http://127.0.0.1:8888"
   site:
     name: "Site name"
