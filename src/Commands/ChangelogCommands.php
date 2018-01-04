@@ -16,6 +16,14 @@ class ChangelogCommands extends BaseCommands implements ComposerAwareInterface
     use ComposerAwareTrait;
 
     /**
+     * {@inheritdoc}
+     */
+    public function getConfigurationFile()
+    {
+        return __DIR__.'/../../config/commands/changelog.yml';
+    }
+
+    /**
      * Generate a changelog based on GitHub issues and pull requests.
      *
      * A running Docker installation is required to run this command.

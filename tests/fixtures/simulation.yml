@@ -1,16 +1,18 @@
 - command: drupal:site-install
   configuration: []
+  composer: ''
   contains:
     - "[Simulator] Running ./vendor/bin/drush -y --root=./build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=./build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
 - command: 'drupal:site-install --site-name="Test site"'
   configuration: []
+  composer: ''
   contains:
     - "[Simulator] Running ./vendor/bin/drush -y --root=./build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=./build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
-
 - command: 'drupal:site-install --site-mail="test@example.com" --site-profile=minimal'
   configuration: []
+  composer: ''
   contains:
     - "site-install minimal"
     - "--site-mail=test@example.com"
@@ -21,6 +23,7 @@
       root: './test'
       site:
         profile: 'minimal'
+  composer: ''
   contains:
     - "./vendor/bin/drush -y --root=./test"
     - "site-install minimal"
@@ -29,6 +32,7 @@
   configuration:
     drupal:
       root: './test'
+  composer: ''
   contains:
     - "./vendor/bin/drush -y --root=./overridden"
 
@@ -36,6 +40,7 @@
   configuration:
     runner:
       bin-dir: "./bin"
+  composer: ''
   contains:
     - "./bin/drush -y --root=./overridden"
 
@@ -43,6 +48,7 @@
   configuration:
     github:
       token: "abc"
+  composer: ''
   contains:
     - "exec('ec-europa/oe-task-runner -t abc')"
 
@@ -50,6 +56,7 @@
   configuration:
     github:
       token: "abc"
+  composer: ''
   contains:
     - "exec('ec-europa/oe-task-runner -t def')"
 
@@ -57,6 +64,7 @@
   configuration:
     github:
       token: "abc"
+  composer: ''
   contains:
     - "exec('ec-europa/oe-task-runner -t abc --future-release=1.2.3')"
 
@@ -64,6 +72,7 @@
   configuration:
     github:
       token: "abc"
+  composer: ''
   contains:
     - "exec('ec-europa/oe-task-runner -t 123 --future-release=1.2.3')"
 
@@ -72,6 +81,11 @@
     project:
       name: "drupal/my_module"
       type: "drupal-module"
+  composer: >
+    {
+      "name": "foo/bar",
+      "type": "drupal-module"
+    }
   contains:
     - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
     - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
@@ -85,6 +99,11 @@
       type: "drupal-module"
     drupal:
       root: "./web"
+  composer: >
+    {
+      "name": "foo/bar",
+      "type": "drupal-module"
+    }
   contains:
     - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
     - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"

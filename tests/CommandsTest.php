@@ -22,17 +22,22 @@ class CommandsTest extends AbstractTest
     /**
      * @param string $command
      * @param array  $config
+     * @param string $composer
      * @param array  $expected
      *
      * @dataProvider simulationDataProvider
      */
-    public function testSimulation($command, array $config, array $expected)
+    public function testSimulation($command, array $config, $composer, array $expected)
     {
-        $configFile = $this->getSandboxPath('runner.test.yml');
+        $configFile = $this->getSandboxFilepath('runner.yml');
+        $composerFile = $this->getSandboxFilepath('composer.json');
+
         file_put_contents($configFile, Yaml::dump($config));
-        $input = new StringInput("{$command} --simulate");
+        file_put_contents($composerFile, $composer);
+
+        $input = new StringInput("{$command} --simulate --working-dir=".$this->getSandboxRoot());
         $output = new BufferedOutput();
-        $runner = new TaskRunner([$configFile], $input, $output);
+        $runner = new TaskRunner($input, $output);
         $runner->run();
 
         $text = $output->fetch();
@@ -50,13 +55,13 @@ class CommandsTest extends AbstractTest
      */
     public function testSetupCommands($command, $content, $expected)
     {
-        $source = $this->getSandboxPath('source.yml');
-        $destination = $this->getSandboxPath('destination.yml');
+        $source = $this->getSandboxFilepath('source.yml');
+        $destination = $this->getSandboxFilepath('destination.yml');
         file_put_contents($source, $content);
 
         $input = new StringInput("{$command} --source={$source} --destination={$destination}");
         $output = new BufferedOutput();
-        $runner = new TaskRunner([], $input, $output);
+        $runner = new TaskRunner($input, $output);
         $runner->run();
 
         $actual = file_get_contents($destination);

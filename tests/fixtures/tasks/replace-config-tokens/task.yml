@@ -8,9 +8,9 @@
       three: "8"
 
 - source:
-    missing: ${this.does.not.exists}
+    missing: "${this.does.not.exists}"
     not-valid: "drupal.core"
-    ok: ${drupal.core}
+    ok: "${drupal.core}"
   expected:
     missing: ""
     not-valid: "drupal.core"

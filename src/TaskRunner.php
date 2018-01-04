@@ -11,7 +11,6 @@ use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
 use Robo\Robo;
 use Robo\Runner as RoboRunner;
-use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -55,24 +54,22 @@ class TaskRunner
     /**
      * TaskRunner constructor.
      *
-     * TaskRunner constructor.
-     * @param array                $configPaths
      * @param InputInterface       $input
      * @param OutputInterface|null $output
      */
-    public function __construct(array $configPaths = [], InputInterface $input = null, OutputInterface $output = null)
+    public function __construct(InputInterface $input = null, OutputInterface $output = null)
     {
+        // Create application.
+        $this->application = new Application(self::APPLICATION_NAME, null);
+        $this->application
+          ->getDefinition()
+          ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', getcwd()));
+
         $this->output = is_null($output) ? new ConsoleOutput() : $output;
         $this->input = is_null($input) ? new ArgvInput() : $input;
 
-        // Create application.
-        $this->application = new Application(self::APPLICATION_NAME, null);
-//        $this->application
-//          ->getDefinition()
-//          ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_OPTIONAL, 'Working directory, defaults to current working directory.', getcwd()));
-
         // Create configuration.
-        $config = $this->createConfiguration($configPaths);
+        $config = $this->createConfiguration();
         $this->setConfig($config);
 
         // Create container.
@@ -136,34 +133,13 @@ class TaskRunner
     }
 
     /**
-     * @param array $configPaths
      * @return Config
      */
-    private function createConfiguration(array $configPaths)
+    private function createConfiguration()
     {
-        $configPaths = array_merge([
+        return Robo::createConfiguration([
             __DIR__.'/../config/runner.yml',
-            __DIR__.'/../config/commands/drupal.yml',
-            __DIR__.'/../config/commands/setup.yml',
-            __DIR__.'/../config/commands/changelog.yml',
-        ], $configPaths);
-
-        return Robo::createConfiguration($configPaths);
-    }
-
-    /**
-     * @return bool|string
-     */
-    private function getWorkingDirectory()
-    {
-        $input = clone $this->input;
-        $input->bind($this->application->getDefinition());
-        $option = $input->getOption('working-dir');
-        if (realpath($option) === false) {
-            throw new InvalidOptionException("Working directory '{$option}' does not exists.");
-        }
-
-        return realpath($option);
+        ]);
     }
 
     /**

@@ -20,7 +20,7 @@ class ComposerTest extends AbstractTest
      */
     public function testComposerParsing($content, array $assertions)
     {
-        $filepath = $this->getSandboxPath('composer.json');
+        $filepath = $this->getSandboxFilepath('composer.json');
         file_put_contents($filepath, $content);
 
         $service = new Composer(dirname($filepath));

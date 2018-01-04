@@ -5,6 +5,7 @@ namespace EC\OpenEuropa\TaskRunner\Commands;
 use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use EC\OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use Robo\Exception\TaskException;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -16,6 +17,24 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
 {
     use ComposerAwareTrait;
     use \NuvoleWeb\Robo\Task\Config\Php\loadTasks;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfigurationFile()
+    {
+        return __DIR__.'/../../config/commands/drupal.yml';
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     *
+     * @hook init
+     */
+    public function init(InputInterface $input)
+    {
+        $this->getComposer()->setWorkingDir($input->getOption('working-dir'));
+    }
 
     /**
      * Install target site.
@@ -146,7 +165,6 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
      */
     protected function getProjectType()
     {
-        return 'drupal-module';
         return $this->getComposer()->getType();
     }
 

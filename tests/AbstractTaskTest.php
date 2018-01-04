@@ -5,6 +5,7 @@ namespace EC\OpenEuropa\TaskRunner\Tests;
 use EC\OpenEuropa\TaskRunner\TaskRunner;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
+use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Robo\TaskAccessor;
 use Robo\Collection\CollectionBuilder;
@@ -30,7 +31,7 @@ abstract class AbstractTaskTest extends AbstractTest implements ContainerAwareIn
     public function setup()
     {
         $this->output = new BufferedOutput();
-        $runner = new TaskRunner([], null, $this->output);
+        $runner = new TaskRunner(new StringInput(''), $this->output);
         $this->setContainer($runner->getContainer());
     }
 

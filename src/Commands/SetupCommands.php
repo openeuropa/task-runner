@@ -15,6 +15,14 @@ class SetupCommands extends BaseCommands
     use ReplaceConfigTokens\loadTasks;
 
     /**
+     * {@inheritdoc}
+     */
+    public function getConfigurationFile()
+    {
+        return __DIR__.'/../../config/commands/setup.yml';
+    }
+
+    /**
      * Setup Behat.
      *
      * This command will copy behat.yml.dist in behat.yml and replace

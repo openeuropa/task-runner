@@ -14,7 +14,9 @@ use League\Container\ContainerAwareTrait;
 use Robo\Exception\TaskException;
 use Robo\LoadAllTasks;
 use Robo\Result;
+use Robo\Robo;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -30,14 +32,33 @@ class BaseCommands implements BuilderAwareInterface, IOAwareInterface, ConfigAwa
     use IO;
 
     /**
-     * @param InputInterface $input
-     * @param AnnotationData $annotationData
+     * Path to YAML configuration file containing command defaults.
      *
-     * @hook init
+     * Command classes should implement this method.
+     *
+     * @return null|string
      */
-    public function init(InputInterface $input, AnnotationData $annotationData)
+    public function getConfigurationFile()
     {
-        $this->setInput($input);
+        return __DIR__.'/../../config/commands/base.yml';
+    }
+
+    /**
+     * Command initialization.
+     *
+     * @param \Symfony\Component\Console\Event\ConsoleCommandEvent $event
+     *
+     * @hook pre-command-event *
+     */
+    public function initializeRuntimeConfiguration(ConsoleCommandEvent $event)
+    {
+        $workingDir = $event->getInput()->getOption('working-dir');
+
+        Robo::loadConfiguration([
+            $this->getConfigurationFile(),
+            $workingDir.'/runner.yml.dist',
+            $workingDir.'/runner.yml',
+        ], $this->getConfig());
     }
 
     /**

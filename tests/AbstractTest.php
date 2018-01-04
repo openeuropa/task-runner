@@ -13,15 +13,24 @@ use Symfony\Component\Yaml\Yaml;
 abstract class AbstractTest extends TestCase
 {
 
-  /**
-   * Call protected/private method of a class.
-   *
-   * @param object &$object    Instantiated object that we will run method on.
-   * @param string $methodName Method name to call
-   * @param array  $parameters Array of parameters to pass into method.
-   *
-   * @return mixed Method return.
-   */
+    /**
+     * @inheritDoc
+     */
+    protected function setUp()
+    {
+        array_map('unlink', glob($this->getSandboxRoot()."/*"));
+    }
+
+
+    /**
+     * Call protected/private method of a class.
+     *
+     * @param object &$object    Instantiated object that we will run method on.
+     * @param string $methodName Method name to call
+     * @param array  $parameters Array of parameters to pass into method.
+     *
+     * @return mixed Method return.
+     */
     protected function invokeMethod(&$object, $methodName, array $parameters = array())
     {
         $reflection = new \ReflectionClass(get_class($object));
@@ -46,8 +55,18 @@ abstract class AbstractTest extends TestCase
      *
      * @return string
      */
-    protected function getSandboxPath($name)
+    protected function getSandboxFilepath($name)
     {
-        return __DIR__."/sandbox/{$name}";
+        return $this->getSandboxRoot().'/'.$name;
+    }
+
+    /**
+     * @param $name
+     *
+     * @return string
+     */
+    protected function getSandboxRoot()
+    {
+        return __DIR__."/sandbox";
     }
 }

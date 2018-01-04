@@ -79,4 +79,16 @@ class Composer
     {
         return json_decode(file_get_contents($this->workingDir.'/composer.json'));
     }
+
+    /**
+     * @param string $workingDir
+     *
+     * @return Composer
+     */
+    public function setWorkingDir($workingDir)
+    {
+        $this->workingDir = $workingDir;
+
+        return $this;
+    }
 }

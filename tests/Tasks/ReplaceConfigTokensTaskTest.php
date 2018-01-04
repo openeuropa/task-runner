@@ -26,8 +26,8 @@ class ReplaceConfigTokensTaskTest extends AbstractTaskTest
      */
     public function testTask(array $data, array $expected)
     {
-        $source = $this->getSandboxPath('source.yml');
-        $destination = $this->getSandboxPath('destination.yml');
+        $source = $this->getSandboxFilepath('source.yml');
+        $destination = $this->getSandboxFilepath('destination.yml');
         file_put_contents($source, Yaml::dump($data));
         $this->taskReplaceConfigTokens($source, $destination)->run();
         $destinationData = Yaml::parse(file_get_contents($destination));
