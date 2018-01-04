@@ -11,6 +11,8 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class DrupalCommands extends BaseCommands
 {
+    use \NuvoleWeb\Robo\Task\Config\Php\loadTasks;
+
     /**
      * Install target site.
      *
@@ -82,5 +84,37 @@ class DrupalCommands extends BaseCommands
             ], '=')
             ->arg('site-install')
             ->arg($options['site-profile']);
+    }
+
+    /**
+     * Setup project.
+     *
+     * This command will create the necessary symlinks and scaffolding files.
+     *
+     * @command drupal:scaffold
+     * @aliases ds
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     * @throws \Robo\Exception\TaskException
+     */
+    public function drupalScaffold()
+    {
+        $collection = $this->collectionBuilder();
+//        $collection = $this->collectionBuilder()->addTaskList([
+//          $this->taskFilesystemStack()->chmod($this->getSiteRoot() . '/sites', 0775, 0000, TRUE),
+//          $this->taskFilesystemStack()->symlink($this->getProjectRoot(), $this->getSiteRoot() . '/sites/all/modules/' . $this->getProjectName()),
+//          $this->taskWriteConfiguration($this->getSiteRoot() . '/sites/default/drushrc.php', $this->getConfig())->setConfigKey('drush'),
+//          $this->taskAppendConfiguration($this->getSiteRoot() . '/sites/default/default.settings.php', $this->getConfig())->setConfigKey('settings'),
+//        ]);
+
+        if (file_exists('behat.yml.dist') || $this->isSimulating()) {
+            $collection->addTask($this->taskExec($this->getBin('run'))->arg('setup:behat'));
+        }
+
+        if (file_exists('phpunit.xml.dist') || $this->isSimulating()) {
+            $collection->addTask($this->taskExec($this->getBin('run'))->arg('setup:phpunit'));
+        }
+
+        return $collection;
     }
 }

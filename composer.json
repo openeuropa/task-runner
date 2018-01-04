@@ -5,7 +5,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "consolidation/robo": "^1.2"
+        "consolidation/robo": "^1.2",
+        "nuvoleweb/robo-config": "dev-master",
+        "composer/semver": "^1.4"
     },
     "require-dev": {
         "ec-europa/oe-code-review": "*",

@@ -46,12 +46,19 @@ class BaseCommands implements BuilderAwareInterface, IOAwareInterface, ConfigAwa
      */
     protected function getBin($name)
     {
-        $simulate = $this->input()->getOption('simulate');
         $filename = $this->getConfig()->get('runner.bin-dir').'/'.$name;
-        if (!file_exists($filename) && !$simulate) {
+        if (!file_exists($filename) && !$this->isSimulating()) {
             throw new TaskException($this, "Executable '{$filename}' not found.");
         }
 
         return $filename;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isSimulating()
+    {
+        return (bool) $this->input()->getOption('simulate');
     }
 }

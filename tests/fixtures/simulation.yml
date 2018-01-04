@@ -67,3 +67,8 @@
   contains:
     - "exec('ec-europa/oe-task-runner -t 123 --future-release=1.2.3')"
 
+- command: 'drupal:scaffold'
+  configuration: []
+  contains:
+    - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
+    - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
