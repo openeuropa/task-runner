@@ -14,7 +14,9 @@ use League\Container\ContainerAwareTrait;
 use Robo\Exception\TaskException;
 use Robo\LoadAllTasks;
 use Robo\Result;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class BaseCommands.

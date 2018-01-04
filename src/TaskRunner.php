@@ -5,16 +5,16 @@ namespace EC\OpenEuropa\TaskRunner;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use EC\OpenEuropa\TaskRunner\Services\Composer;
-use League\Container\Container;
 use League\Container\ContainerAwareTrait;
-use League\Container\Exception\NotFoundException;
 use Robo\Application;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
 use Robo\Robo;
 use Robo\Runner as RoboRunner;
+use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -65,12 +65,15 @@ class TaskRunner
         $this->output = is_null($output) ? new ConsoleOutput() : $output;
         $this->input = is_null($input) ? new ArgvInput() : $input;
 
+        // Create application.
+        $this->application = new Application(self::APPLICATION_NAME, null);
+//        $this->application
+//          ->getDefinition()
+//          ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_OPTIONAL, 'Working directory, defaults to current working directory.', getcwd()));
+
         // Create configuration.
         $config = $this->createConfiguration($configPaths);
         $this->setConfig($config);
-
-        // Create application.
-        $this->application = new Application(self::APPLICATION_NAME, $config->get('version'));
 
         // Create container.
         $container = $this->createContainer($config);
@@ -146,6 +149,21 @@ class TaskRunner
         ], $configPaths);
 
         return Robo::createConfiguration($configPaths);
+    }
+
+    /**
+     * @return bool|string
+     */
+    private function getWorkingDirectory()
+    {
+        $input = clone $this->input;
+        $input->bind($this->application->getDefinition());
+        $option = $input->getOption('working-dir');
+        if (realpath($option) === false) {
+            throw new InvalidOptionException("Working directory '{$option}' does not exists.");
+        }
+
+        return realpath($option);
     }
 
     /**

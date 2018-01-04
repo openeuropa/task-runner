@@ -68,7 +68,10 @@
     - "exec('ec-europa/oe-task-runner -t 123 --future-release=1.2.3')"
 
 - command: 'drupal:scaffold'
-  configuration: []
+  configuration:
+    project:
+      name: "drupal/my_module"
+      type: "drupal-module"
   contains:
     - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
     - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
@@ -77,6 +80,9 @@
 
 - command: 'drupal:scaffold'
   configuration:
+    project:
+      name: "drupal/my_module"
+      type: "drupal-module"
     drupal:
       root: "./web"
   contains:

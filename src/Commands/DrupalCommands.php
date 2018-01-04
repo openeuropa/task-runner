@@ -4,6 +4,7 @@ namespace EC\OpenEuropa\TaskRunner\Commands;
 
 use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use EC\OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
+use Robo\Exception\TaskException;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -106,9 +107,11 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
 
         $collection->addTaskList([
             $this->taskFilesystemStack()->chmod($this->getSiteRoot().'/sites', 0775, 0000, true),
-            $this->taskFilesystemStack()->symlink('.', $this->getSiteRoot().'/sites/all/modules/'.$this->getProjectName()),
-            $this->taskWriteConfiguration($this->getSiteRoot().'/sites/default/drushrc.php', $this->getConfig())->setConfigKey('drush'),
-            $this->taskAppendConfiguration($this->getSiteRoot().'/sites/default/default.settings.php', $this->getConfig())->setConfigKey('settings'),
+            $this->taskFilesystemStack()->symlink('.', $this->getExtensionDirectory()),
+            $this->taskWriteConfiguration($this->getSiteRoot().'/sites/default/drushrc.php', $this->getConfig())
+              ->setConfigKey('drupal.drush'),
+            $this->taskAppendConfiguration($this->getSiteRoot().'/sites/default/default.settings.php', $this->getConfig())
+              ->setConfigKey('drupal.settings'),
         ]);
 
         if (file_exists('behat.yml.dist') || $this->isSimulating()) {
@@ -136,5 +139,44 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
     protected function getProjectName()
     {
         return $this->getComposer()->getProject();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getProjectType()
+    {
+        return 'drupal-module';
+        return $this->getComposer()->getType();
+    }
+
+    /**
+     * Returns extension directory based on Drupal core.
+     *
+     * @return string
+     *
+     * @throws \Robo\Exception\TaskException
+     */
+    protected function getExtensionDirectory()
+    {
+        $root = $this->getSiteRoot();
+        $name = $this->getProjectName();
+
+        switch ($this->getProjectType()) {
+            case 'drupal-module':
+                $directory = 'modules';
+                break;
+            case 'drupal-theme':
+                $directory = 'themes';
+                break;
+            default:
+                throw new TaskException($this, "Component scaffolding only supports modules and themes.");
+        }
+
+        if ($this->getConfig()->get('drupal.core') === "7") {
+            return "{$root}/sites/all/{$directory}/custom/{$name}";
+        }
+
+        return "{$root}/{$directory}/custom/{$name}";
     }
 }

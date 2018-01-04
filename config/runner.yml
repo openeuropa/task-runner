@@ -21,6 +21,16 @@ drupal:
     name: "drupal"
     user: "root"
     password: "root"
+  drush:
+    options:
+      exclude: "${drupal.root}"
+  settings:
+    conf:
+      file_scan_ignore_directories:
+        - "node_modules"
+        - "bower_components"
+        - "vendor"
+        - "${drupal.root}"
 
 github:
   token: ~
