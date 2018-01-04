@@ -87,8 +87,8 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
     {
         return $this->taskExec($this->getBin('drush'))
             ->option('-y')
+            ->rawArg("--root=$(pwd)/".$options['root'])
             ->options([
-                'root' => $options['root'],
                 'site-name' => $options['site-name'],
                 'site-mail' => $options['site-mail'],
                 'locale' => $options['site-locale'],

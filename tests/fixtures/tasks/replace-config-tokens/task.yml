@@ -3,7 +3,7 @@
     two:
       three: ${drupal.core}
   expected:
-    one: "./build"
+    one: "build"
     two:
       three: "8"
 
@@ -19,4 +19,4 @@
 - source:
     concat: "${drupal.core}/${drupal.root}"
   expected:
-    concat: "8/./build"
+    concat: "8/build"

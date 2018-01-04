@@ -2,13 +2,13 @@
   configuration: []
   composer: ''
   contains:
-    - "[Simulator] Running ./vendor/bin/drush -y --root=./build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=./build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
 - command: 'drupal:site-install --site-name="Test site"'
   configuration: []
   composer: ''
   contains:
-    - "[Simulator] Running ./vendor/bin/drush -y --root=./build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=./build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
 - command: 'drupal:site-install --site-mail="test@example.com" --site-profile=minimal'
   configuration: []
@@ -20,29 +20,29 @@
 - command: 'drupal:site-install'
   configuration:
     drupal:
-      root: './test'
+      root: 'test'
       site:
         profile: 'minimal'
   composer: ''
   contains:
-    - "./vendor/bin/drush -y --root=./test"
+    - "./vendor/bin/drush -y --root=$(pwd)/test"
     - "site-install minimal"
 
-- command: 'drupal:site-install --root="./overridden"'
+- command: 'drupal:site-install --root="overridden"'
   configuration:
     drupal:
       root: './test'
   composer: ''
   contains:
-    - "./vendor/bin/drush -y --root=./overridden"
+    - "./vendor/bin/drush -y --root=$(pwd)/overridden"
 
-- command: 'drupal:site-install --root="./overridden"'
+- command: 'drupal:site-install --root="overridden"'
   configuration:
     runner:
       bin-dir: "./bin"
   composer: ''
   contains:
-    - "./bin/drush -y --root=./overridden"
+    - "./bin/drush -y --root=$(pwd)/overridden"
 
 - command: 'changelog:generate'
   configuration:
@@ -84,11 +84,11 @@
       "type": "drupal-module"
     }
   contains:
-    - "symlink('.', './build/modules/custom/bar')"
+    - "symlink('.', 'build/modules/custom/bar')"
     - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
     - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
-    - "WriteConfiguration('./build/sites/default/drushrc.php'"
-    - "AppendConfiguration('./build/sites/default/default.settings.php'"
+    - "WriteConfiguration('build/sites/default/drushrc.php'"
+    - "AppendConfiguration('build/sites/default/default.settings.php'"
 
 - command: 'drupal:component-scaffold'
   configuration:
@@ -112,7 +112,7 @@
       "type": "drupal-module"
     }
   contains:
-    - "symlink('.', './build/sites/all/modules/custom/bar')"
+    - "symlink('.', 'build/sites/all/modules/custom/bar')"
 
 - command: 'drupal:component-scaffold'
   configuration:
@@ -124,4 +124,4 @@
       "type": "drupal-theme"
     }
   contains:
-    - "symlink('.', './build/sites/all/themes/custom/bar')"
+    - "symlink('.', 'build/sites/all/themes/custom/bar')"

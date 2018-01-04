@@ -3,7 +3,7 @@
     test1: ${drupal.root}
     test2: ${drupal.core}
   expected: >
-    test1: ./build
+    test1: build
     test2: 8
 
 - command: setup:behat
