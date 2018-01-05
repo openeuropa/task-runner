@@ -117,16 +117,14 @@ class TaskRunner
         $commands = [];
         $autoload = getcwd().'/vendor/autoload.php';
 
-        if (file_exists($autoload)) {
-            /** @var \Composer\Autoload\ClassLoader $classLoader */
-            $classLoader = include $autoload;
-            $discovery = new CommandFileDiscovery();
-            $discovery->setSearchPattern('*Commands.php')->setSearchLocations(['TaskRunner', 'Commands']);
+        /** @var \Composer\Autoload\ClassLoader $classLoader */
+        $classLoader = require $autoload;
+        $discovery = new CommandFileDiscovery();
+        $discovery->setSearchPattern('*Commands.php')->setSearchLocations(['TaskRunner', 'Commands']);
 
-            foreach ($classLoader->getPrefixesPsr4() as $baseNamespace => $directoryList) {
-                $discoveredCommands = $discovery->discover($directoryList, $baseNamespace);
-                $commands = array_merge($commands, $discoveredCommands);
-            }
+        foreach ($classLoader->getPrefixesPsr4() as $baseNamespace => $directoryList) {
+            $discoveredCommands = $discovery->discover($directoryList, $baseNamespace);
+            $commands = array_merge($commands, $discoveredCommands);
         }
 
         return $commands;
