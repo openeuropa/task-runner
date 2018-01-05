@@ -2,14 +2,12 @@
 
 namespace EC\OpenEuropa\TaskRunner\Tests\Commands;
 
+use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use EC\OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use EC\OpenEuropa\TaskRunner\TaskRunner;
 use EC\OpenEuropa\TaskRunner\Tests\AbstractTest;
-use PHPUnit\Framework\TestCase;
-use Robo\Task\Simulator;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -83,6 +81,29 @@ class CommandsTest extends AbstractTest
         /** @var ChangelogCommands $commands */
         $commands = $runner->getCommands(ChangelogCommands::class);
         $this->assertEquals($expected, $commands->generateChangelog($options)->getCommand());
+    }
+
+    /**
+     * Test custom commands.
+     */
+    public function testCustomCommands()
+    {
+        $input = new StringInput("list");
+        $output = new BufferedOutput();
+        $runner = new TaskRunner($input, $output);
+        $runner->run();
+
+        $expected = [
+          "custom:command-four",
+          "custom:command-one",
+          "custom:command-three",
+          "custom:command-two",
+        ];
+
+        $text = $output->fetch();
+        foreach ($expected as $row) {
+            $this->assertContains($row, $text);
+        }
     }
 
     /**

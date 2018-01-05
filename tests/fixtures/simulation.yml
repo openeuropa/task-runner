@@ -1,4 +1,4 @@
-- command: drupal:site-install
+- command: "drupal:site-install"
   configuration: []
   composer: ''
   contains:

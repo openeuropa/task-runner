@@ -106,9 +106,7 @@ class TaskRunner
      */
     public function getCommands($class)
     {
-        $serviceName = "\\{$class}Commands";
-
-        return $this->getContainer()->get($serviceName);
+        return $this->getContainer()->get("{$class}Commands");
     }
 
     /**
@@ -116,10 +114,22 @@ class TaskRunner
      */
     private function discoverCommandClasses()
     {
-        $discovery = new CommandFileDiscovery();
-        $discovery->setSearchPattern('*Commands.php')->setSearchLocations(['Commands']);
+        $commands = [];
+        $autoload = getcwd().'/vendor/autoload.php';
 
-        return $discovery->discover(__DIR__.'/../src/', '\EC\OpenEuropa\TaskRunner');
+        if (file_exists($autoload)) {
+            /** @var \Composer\Autoload\ClassLoader $classLoader */
+            $classLoader = include $autoload;
+            $discovery = new CommandFileDiscovery();
+            $discovery->setSearchPattern('*Commands.php')->setSearchLocations(['TaskRunner', 'Commands']);
+
+            foreach ($classLoader->getPrefixesPsr4() as $baseNamespace => $directoryList) {
+                $discoveredCommands = $discovery->discover($directoryList, $baseNamespace);
+                $commands = array_merge($commands, $discoveredCommands);
+            }
+        }
+
+        return $commands;
     }
 
     /**

@@ -19,7 +19,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "EC\\OpenEuropa\\TaskRunner\\Tests\\": "./tests/"
+            "EC\\OpenEuropa\\TaskRunner\\Tests\\": "./tests/",
+            "EC\\OpenEuropa\\TaskRunner\\My\\Custom\\": "./tests/custom/src/"
         }
     },
     "bin": ["bin/run"]
