@@ -44,6 +44,29 @@
   contains:
     - "./bin/drush -y --root=$(pwd)/overridden"
 
+- command: 'drupal:site-post-install'
+  configuration:
+    drupal:
+      post_install:
+        - "./vendor/bin/drush en views -y"
+        - "./vendor/bin/drush cr"
+  composer: ''
+  contains:
+    - "./vendor/bin/drush en views -y"
+    - "./vendor/bin/drush cr"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      post_install:
+        - "./vendor/bin/drush en views -y"
+        - "./vendor/bin/drush cr"
+  composer: ''
+  contains:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --exclude=build --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+    - "./vendor/bin/drush en views -y"
+    - "./vendor/bin/drush cr"
+
 - command: 'changelog:generate'
   configuration:
     github:

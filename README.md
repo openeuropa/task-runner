@@ -34,9 +34,9 @@ Available commands:
  drupal
   drupal:component-scaffold  [drupal:cs|dcs] Scaffold Drupal component development.
   drupal:site-install        [drupal:si|dsi] Install target site.
+  drupal:site-post-install   [drupal:spi|dspi] Run Drupal post-install commands.
  setup
   setup:behat                [setup:b|sb] Setup Behat.
   setup:phpunit              [setup:p|sp] Setup PHPUnit.
   setup:replace              [setup:p|sp] Replace configuration tokens in a text file.
-
 ```

@@ -63,7 +63,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
      *
      * @param array $options
      *
-     * @return \Robo\Task\Base\Exec
+     * @return \Robo\Collection\CollectionBuilder
      *
      * @throws \Robo\Exception\TaskException
      */
@@ -85,28 +85,65 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
         'database-name'     => InputOption::VALUE_REQUIRED,
     ])
     {
-        return $this->taskExec($this->getBin('drush'))
-            ->option('-y')
-            ->rawArg("--root=$(pwd)/".$options['root'])
-            ->options([
-                'site-name' => $options['site-name'],
-                'site-mail' => $options['site-mail'],
-                'locale' => $options['site-locale'],
-                'account-mail' => $options['account-mail'],
-                'account-name' => $options['account-name'],
-                'account-pass' => $options['account-password'],
-                'exclude' => $options['root'],
-                'db-url' => sprintf(
-                    "mysql://%s:%s@%s:%s/%s",
-                    $options['database-user'],
-                    $options['database-password'],
-                    $options['database-host'],
-                    $options['database-port'],
-                    $options['database-name']
-                ),
-            ], '=')
-            ->arg('site-install')
-            ->arg($options['site-profile']);
+        $installTask = $this->taskExec($this->getBin('drush'))
+          ->option('-y')
+          ->rawArg("--root=$(pwd)/".$options['root'])
+          ->options([
+              'site-name' => $options['site-name'],
+              'site-mail' => $options['site-mail'],
+              'locale' => $options['site-locale'],
+              'account-mail' => $options['account-mail'],
+              'account-name' => $options['account-name'],
+              'account-pass' => $options['account-password'],
+              'exclude' => $options['root'],
+              'db-url' => sprintf(
+                  "mysql://%s:%s@%s:%s/%s",
+                  $options['database-user'],
+                  $options['database-password'],
+                  $options['database-host'],
+                  $options['database-port'],
+                  $options['database-name']
+              ),
+          ], '=')
+          ->arg('site-install')
+          ->arg($options['site-profile']);
+
+        return $this->collectionBuilder()->addTaskList([
+            $installTask,
+            $this->sitePostInstall(),
+        ]);
+    }
+
+    /**
+     * Run Drupal post-install commands.
+     *
+     * Add post install commands in your runner.yaml file under "drupal.post_install"
+     * as shown below:
+     *
+     * > drupal:
+     * >   ...
+     * >   post_install:
+     * >     - ./vendor/bin/drush en views -y
+     * >     - ./vendor/bin/drush cr
+     *
+     * Post install commands will be automatically executed after installing the site.
+     *
+     * @command drupal:site-post-install
+     *
+     * @aliases drupal:spi,dspi
+     *
+     * @return \Robo\Task\Base\ExecStack
+     */
+    public function sitePostInstall()
+    {
+        $commands = $this->getConfig()->get('drupal.post_install');
+        $taskStack = $this->taskExecStack();
+
+        foreach ($commands as $command) {
+            $taskStack->exec($command);
+        }
+
+        return $taskStack;
     }
 
     /**
@@ -156,10 +193,8 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
             $this->taskFilesystemStack()->chmod($this->getSiteRoot().'/sites', 0775, 0000, true),
             $this->taskFilesystemStack()->mkdir($this->getExtensionRoot()),
             $this->taskFilesystemStack()->symlink($link, $this->getExtensionRoot().'/'.$this->getProjectName()),
-            $this->taskWriteConfiguration($this->getSiteRoot().'/sites/default/drushrc.php', $this->getConfig())
-            ->setConfigKey('drupal.drush'),
-            $this->taskAppendConfiguration($this->getSiteRoot().'/sites/default/default.settings.php', $this->getConfig())
-            ->setConfigKey('drupal.settings'),
+            $this->taskWriteConfiguration($this->getSiteRoot().'/sites/default/drushrc.php', $this->getConfig())->setConfigKey('drupal.drush'),
+            $this->taskAppendConfiguration($this->getSiteRoot().'/sites/default/default.settings.php', $this->getConfig())->setConfigKey('drupal.settings'),
         ]);
 
         if (file_exists('behat.yml.dist') || $this->isSimulating()) {
