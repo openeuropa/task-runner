@@ -49,7 +49,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
         $root = $this->getConfig()->get('drupal.root');
         $rootFullPath = realpath($root);
         if ($rootFullPath) {
-            $this->getConfig()->setDefault('drupal.root_absolute', $rootFullPath);
+            $this->getConfig()->set('drupal.root_absolute', $rootFullPath);
         }
     }
 
