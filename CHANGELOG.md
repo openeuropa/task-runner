@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.1.1](https://github.com/ec-europa/oe-task-runner/tree/0.1.1) (2018-01-05)
+[Full Changelog](https://github.com/ec-europa/oe-task-runner/compare/0.1.0...0.1.1)
+
+**Closed issues:**
+
+- Fix Drush "ignored-directories" [\#14](https://github.com/ec-europa/oe-task-runner/issues/14)
+
 ## [0.1.0](https://github.com/ec-europa/oe-task-runner/tree/0.1.0) (2018-01-05)
 **Closed issues:**
 
