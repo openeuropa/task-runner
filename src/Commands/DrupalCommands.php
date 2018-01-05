@@ -5,6 +5,7 @@ namespace EC\OpenEuropa\TaskRunner\Commands;
 use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use EC\OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use Robo\Exception\TaskException;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -34,6 +35,22 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
     public function init(InputInterface $input)
     {
         $this->getComposer()->setWorkingDir($input->getOption('working-dir'));
+    }
+
+    /**
+     * Command initialization.
+     *
+     * @param \Symfony\Component\Console\Event\ConsoleCommandEvent $event
+     *
+     * @hook command-event *
+     */
+    public function initializeDrupalRuntimeConfiguration(ConsoleCommandEvent $event)
+    {
+        $root = $this->getConfig()->get('drupal.root');
+        $rootFullPath = realpath($root);
+        if ($rootFullPath) {
+            $this->getConfig()->setDefault('drupal.root_absolute', $rootFullPath);
+        }
     }
 
     /**

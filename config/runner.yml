@@ -4,7 +4,10 @@ runner:
 drupal:
   core: "8"
   root: "build"
-  base-url: "http://127.0.0.1:8888"
+  # The "root_absolute" is derived at runtime.
+  # @see \EC\OpenEuropa\TaskRunner\Commands\DrupalCommands::initializeDrupalRuntimeConfiguration()
+  root_absolute: ~
+  base_url: "http://127.0.0.1:8888"
   site:
     name: "Site name"
     mail: "info@example.org"

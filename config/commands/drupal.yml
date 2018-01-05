@@ -2,7 +2,7 @@ command:
   drupal:
     options:
       root: ${drupal.root}
-      base-url: ${drupal.base-url}
+      base-url: ${drupal.base_url}
     site-install:
       options:
         site-name: ${drupal.site.name}

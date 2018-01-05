@@ -11,7 +11,7 @@
     default:
       extensions:
         Behat\MinkExtension:
-          base_url: ${drupal.base-url}
+          base_url: ${drupal.base_url}
       formatters:
         progress: ~
   expected: >
@@ -27,7 +27,7 @@
     <?xml version="1.0" encoding="UTF-8"?>
     <phpunit bootstrap="vendor/autoload.php">
       <php>
-        <env name="BASE_URL" value="${drupal.base-url}"/>
+        <env name="BASE_URL" value="${drupal.base_url}"/>
       </php>
     </phpunit>
   expected: >

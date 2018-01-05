@@ -18,7 +18,7 @@
 -
   text: >
     <php>
-      <env name="BASE_URL" value="${drupal.base-url}"/>
+      <env name="BASE_URL" value="${drupal.base_url}"/>
     </php>
   expected:
-    '${drupal.base-url}': 'drupal.base-url'
+    '${drupal.base_url}': 'drupal.base_url'
