@@ -149,18 +149,22 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
      *
      * @aliases drupal:spi,dspi
      *
-     * @return \Robo\Task\Base\ExecStack
+     * @return \Robo\Contract\TaskInterface
      */
     public function sitePostInstall()
     {
         $commands = $this->getConfig()->get('drupal.post_install');
-        $taskStack = $this->taskExecStack();
+        if (!empty($commands)) {
+            $taskStack = $this->taskExecStack();
 
-        foreach ($commands as $command) {
-            $taskStack->exec($command);
+            foreach ($commands as $command) {
+                $taskStack->exec($command);
+            }
+
+            return $taskStack;
         }
 
-        return $taskStack;
+        return $this->taskExec('');
     }
 
     /**
