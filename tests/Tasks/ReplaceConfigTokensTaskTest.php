@@ -40,10 +40,10 @@ class ReplaceConfigTokensTaskTest extends AbstractTaskTest
      *
      * @dataProvider extractTokensDataProvider
      */
-    public function testExtractTokens($text, array $expected)
+    public function testExtractRawTokens($text, array $expected)
     {
         $task = new ReplaceConfigTokens(null, null);
-        $actual = $this->invokeMethod($task, 'extractTokens', [$text]);
+        $actual = $this->invokeMethod($task, 'extractRawTokens', [$text]);
         $this->assertEquals($expected, $actual);
     }
 

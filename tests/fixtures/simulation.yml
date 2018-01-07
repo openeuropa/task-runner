@@ -70,6 +70,15 @@
 - command: 'drupal:site-install'
   configuration:
     drupal:
+      post_install:
+        - "./vendor/bin/drush --root=${drupal.root} en views -y"
+  composer: ''
+  contains:
+    - "./vendor/bin/drush --root=build en views -y"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
       post_install: []
   composer: ''
   contains:

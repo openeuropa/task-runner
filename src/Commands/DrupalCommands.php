@@ -4,6 +4,7 @@ namespace EC\OpenEuropa\TaskRunner\Commands;
 
 use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use EC\OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
+use EC\OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
 use Robo\Exception\TaskException;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,6 +18,7 @@ use Symfony\Component\Console\Input\InputOption;
 class DrupalCommands extends BaseCommands implements ComposerAwareInterface
 {
     use ComposerAwareTrait;
+    use ConfigurationTokensTrait;
     use \NuvoleWeb\Robo\Task\Config\Php\loadTasks;
 
     /**
