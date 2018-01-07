@@ -123,11 +123,30 @@ class TaskRunner
         $discovery->setSearchPattern('*Commands.php')->setSearchLocations(['TaskRunner', 'Commands']);
 
         foreach ($classLoader->getPrefixesPsr4() as $baseNamespace => $directoryList) {
-            $discoveredCommands = $discovery->discover($directoryList, $baseNamespace);
-            $commands = array_merge($commands, $discoveredCommands);
+            if ($this->isTaskRunnerPrefix($baseNamespace, $directoryList)) {
+                $discoveredCommands = $discovery->discover($directoryList, $baseNamespace);
+                $commands = array_merge($commands, $discoveredCommands);
+            }
         }
 
         return $commands;
+    }
+
+    /**
+     * Check whereas given PSR4 prefix is an eligible TaskRunner prefix.
+     *
+     * @param string $baseNamespace
+     * @param array  $directoryList
+     *
+     * @return bool
+     */
+    private function isTaskRunnerPrefix($baseNamespace, array $directoryList)
+    {
+        $directoryList = array_filter($directoryList, function ($path) {
+            return strstr($path, 'TaskRunner/Commands') !== false;
+        });
+
+        return !empty($directoryList) || strstr($baseNamespace, 'OpenEuropa\\TaskRunner') !== false;
     }
 
     /**
@@ -155,7 +174,7 @@ class TaskRunner
         $container = Robo::createDefaultContainer($input, $output, $application, $config);
         $container->get('commandFactory')->setIncludeAllPublicMethods(false);
         $container->share('task_runner.composer', Composer::class)
-            ->withArgument(getcwd());
+          ->withArgument(getcwd());
 
         // Add service inflectors.
         $container->inflector(ComposerAwareInterface::class)
