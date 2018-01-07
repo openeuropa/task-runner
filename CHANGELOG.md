@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.1.2](https://github.com/ec-europa/oe-task-runner/tree/0.1.2) (2018-01-07)
+[Full Changelog](https://github.com/ec-europa/oe-task-runner/compare/0.1.1...0.1.2)
+
+**Closed issues:**
+
+- NEPT-1105: Fix command discovery [\#16](https://github.com/ec-europa/oe-task-runner/issues/16)
+- NEPT-1668: Support configuration token replacement in post install commands [\#15](https://github.com/ec-europa/oe-task-runner/issues/15)
+
+**Merged pull requests:**
+
+- NEPT-1668: Support configuration token replacement in post install commands \#15 [\#18](https://github.com/ec-europa/oe-task-runner/pull/18) ([ademarco](https://github.com/ademarco))
+- NEPT-1105: Fix command discovery \#16 [\#17](https://github.com/ec-europa/oe-task-runner/pull/17) ([ademarco](https://github.com/ademarco))
+
 ## [0.1.1](https://github.com/ec-europa/oe-task-runner/tree/0.1.1) (2018-01-05)
 [Full Changelog](https://github.com/ec-europa/oe-task-runner/compare/0.1.0...0.1.1)
 
