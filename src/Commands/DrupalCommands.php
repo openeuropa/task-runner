@@ -5,6 +5,7 @@ namespace EC\OpenEuropa\TaskRunner\Commands;
 use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use EC\OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use EC\OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
+use EC\OpenEuropa\TaskRunner\Traits\PathUtilitiesTrait;
 use Robo\Exception\TaskException;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,6 +20,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
 {
     use ComposerAwareTrait;
     use ConfigurationTokensTrait;
+    use PathUtilitiesTrait;
     use \NuvoleWeb\Robo\Task\Config\Php\loadTasks;
 
     /**
@@ -193,11 +195,10 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
         $filesystem = $this->taskFilesystemStack();
         $config->get('drupal.setup.symlink');
         foreach ($config->get('drupal.setup.symlink') as $symlink) {
-            $to = $options['root'].'/'.$symlink['to'];
-            $prefix = implode(array_fill(1, count(explode('/', $to)) - 1, '..'), '/');
-
             if (is_dir($symlink['from']) || $this->isSimulating()) {
-                $collection->addTask($filesystem->symlink($prefix.'/'.$symlink['from'], $to));
+                $destination = $options['root'].'/'.$symlink['to'];
+                $source = $this->walkPath($destination, $symlink['from']);
+                $collection->addTask($filesystem->symlink($source, $destination));
             }
         }
 
@@ -253,12 +254,12 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
     {
         $collection = $this->collectionBuilder();
         $extensionRoot = $this->getExtensionRoot();
-        $link = implode('/', array_fill(0, count(explode('/', $extensionRoot)), '..'));
+        $extensionPath = $extensionRoot.'/'.$this->getProjectName();
 
         $collection->addTaskList([
             $this->taskFilesystemStack()->chmod($this->getSiteRoot().'/sites', 0775, 0000, true),
-            $this->taskFilesystemStack()->mkdir($this->getExtensionRoot()),
-            $this->taskFilesystemStack()->symlink($link, $this->getExtensionRoot().'/'.$this->getProjectName()),
+            $this->taskFilesystemStack()->mkdir($extensionRoot),
+            $this->taskFilesystemStack()->symlink($this->walkPath($extensionPath, '.'), $extensionPath),
             $this->taskWriteConfiguration($this->getSiteRoot().'/sites/default/drushrc.php', $this->getConfig())->setConfigKey('drupal.drush'),
             $this->taskAppendConfiguration($this->getSiteRoot().'/sites/default/default.settings.php', $this->getConfig())->setConfigKey('drupal.settings'),
         ]);
