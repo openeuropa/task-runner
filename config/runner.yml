@@ -44,7 +44,7 @@ drupal:
       - from: "custom/profiles"
         to: "profiles/custom"
       - from: "custom/libraries"
-        to: "custom/libraries"
+        to: "libraries/custom"
 
   post_install: []
 

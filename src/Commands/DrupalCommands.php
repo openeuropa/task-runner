@@ -87,21 +87,21 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
      * @throws \Robo\Exception\TaskException
      */
     public function siteInstall(array $options = [
-        'root'              => InputOption::VALUE_REQUIRED,
-        'base-url'          => InputOption::VALUE_REQUIRED,
-        'site-name'         => InputOption::VALUE_REQUIRED,
-        'site-mail'         => InputOption::VALUE_REQUIRED,
-        'site-profile'      => InputOption::VALUE_REQUIRED,
-        'site-update'       => InputOption::VALUE_REQUIRED,
-        'site-locale'       => InputOption::VALUE_REQUIRED,
-        'account-name'      => InputOption::VALUE_REQUIRED,
-        'account-password'  => InputOption::VALUE_REQUIRED,
-        'account-mail'      => InputOption::VALUE_REQUIRED,
-        'database-user'     => InputOption::VALUE_REQUIRED,
-        'database-password' => InputOption::VALUE_REQUIRED,
-        'database-host'     => InputOption::VALUE_REQUIRED,
-        'database-port'     => InputOption::VALUE_REQUIRED,
-        'database-name'     => InputOption::VALUE_REQUIRED,
+      'root'              => InputOption::VALUE_REQUIRED,
+      'base-url'          => InputOption::VALUE_REQUIRED,
+      'site-name'         => InputOption::VALUE_REQUIRED,
+      'site-mail'         => InputOption::VALUE_REQUIRED,
+      'site-profile'      => InputOption::VALUE_REQUIRED,
+      'site-update'       => InputOption::VALUE_REQUIRED,
+      'site-locale'       => InputOption::VALUE_REQUIRED,
+      'account-name'      => InputOption::VALUE_REQUIRED,
+      'account-password'  => InputOption::VALUE_REQUIRED,
+      'account-mail'      => InputOption::VALUE_REQUIRED,
+      'database-user'     => InputOption::VALUE_REQUIRED,
+      'database-password' => InputOption::VALUE_REQUIRED,
+      'database-host'     => InputOption::VALUE_REQUIRED,
+      'database-port'     => InputOption::VALUE_REQUIRED,
+      'database-name'     => InputOption::VALUE_REQUIRED,
     ])
     {
         $installTask = $this->taskExec($this->getBin('drush'))
@@ -193,7 +193,12 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
         $filesystem = $this->taskFilesystemStack();
         $config->get('drupal.setup.symlink');
         foreach ($config->get('drupal.setup.symlink') as $symlink) {
-            $collection->addTask($filesystem->symlink($symlink['from'], $options['root'].'/'.$symlink['to']));
+            $to = $options['root'].'/'.$symlink['to'];
+            $prefix = implode(array_fill(1, count(explode('/', $to)) - 1, '..'), '/');
+
+            if (is_dir($symlink['from']) || $this->isSimulating()) {
+                $collection->addTask($filesystem->symlink($prefix.'/'.$symlink['from'], $to));
+            }
         }
 
         if (file_exists('behat.yml.dist') || $this->isSimulating()) {

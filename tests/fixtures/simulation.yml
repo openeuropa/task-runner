@@ -170,10 +170,10 @@
   configuration: []
   composer: ''
   contains:
-    - "symlink('custom/modules', 'build/modules/custom')"
-    - "symlink('custom/themes', 'build/themes/custom')"
-    - "symlink('custom/profiles', 'build/profiles/custom')"
-    - "symlink('custom/libraries', 'build/custom/libraries')"
+    - "symlink('../../custom/modules', 'build/modules/custom')"
+    - "symlink('../../custom/themes', 'build/themes/custom')"
+    - "symlink('../../custom/profiles', 'build/profiles/custom')"
+    - "symlink('../../custom/libraries', 'build/libraries/custom')"
 
 - command: 'drupal:site-setup'
   configuration:
@@ -181,19 +181,19 @@
       root: 'overridden'
   composer: ''
   contains:
-    - "symlink('custom/modules', 'overridden/modules/custom')"
-    - "symlink('custom/themes', 'overridden/themes/custom')"
-    - "symlink('custom/profiles', 'overridden/profiles/custom')"
-    - "symlink('custom/libraries', 'overridden/custom/libraries')"
+    - "symlink('../../custom/modules', 'overridden/modules/custom')"
+    - "symlink('../../custom/themes', 'overridden/themes/custom')"
+    - "symlink('../../custom/profiles', 'overridden/profiles/custom')"
+    - "symlink('../../custom/libraries', 'overridden/libraries/custom')"
 
 - command: 'drupal:site-setup --root=web'
   configuration: []
   composer: ''
   contains:
-    - "symlink('custom/modules', 'web/modules/custom')"
-    - "symlink('custom/themes', 'web/themes/custom')"
-    - "symlink('custom/profiles', 'web/profiles/custom')"
-    - "symlink('custom/libraries', 'web/custom/libraries')"
+    - "symlink('../../custom/modules', 'web/modules/custom')"
+    - "symlink('../../custom/themes', 'web/themes/custom')"
+    - "symlink('../../custom/profiles', 'web/profiles/custom')"
+    - "symlink('../../custom/libraries', 'web/libraries/custom')"
     - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
     - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
 
