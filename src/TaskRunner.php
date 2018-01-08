@@ -143,7 +143,7 @@ class TaskRunner
     private function isTaskRunnerPrefix($baseNamespace, array $directoryList)
     {
         $directoryList = array_filter($directoryList, function ($path) {
-            return strstr($path, 'TaskRunner/Commands') !== false;
+            return is_dir($path.'/TaskRunner/Commands');
         });
 
         return !empty($directoryList) || strstr($baseNamespace, 'OpenEuropa\\TaskRunner') !== false;
