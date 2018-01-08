@@ -114,7 +114,6 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
               'account-mail' => $options['account-mail'],
               'account-name' => $options['account-name'],
               'account-pass' => $options['account-password'],
-              'exclude' => $options['root'],
               'db-url' => sprintf(
                   "mysql://%s:%s@%s:%s/%s",
                   $options['database-user'],
