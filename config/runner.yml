@@ -27,6 +27,7 @@ drupal:
   drush:
     options:
       ignored-directories: "${drupal.root}"
+      uri: "${drupal.base_url}"
   settings:
     conf:
       file_scan_ignore_directories:
@@ -34,6 +35,17 @@ drupal:
         - "bower_components"
         - "vendor"
         - "${drupal.root}"
+  setup:
+    symlink:
+      - from: "custom/modules"
+        to: "modules/custom"
+      - from: "custom/themes"
+        to: "themes/custom"
+      - from: "custom/profiles"
+        to: "profiles/custom"
+      - from: "custom/libraries"
+        to: "custom/libraries"
+
   post_install: []
 
 github:

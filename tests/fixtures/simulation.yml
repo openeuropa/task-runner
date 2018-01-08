@@ -165,3 +165,35 @@
     }
   contains:
     - "symlink('../../../../..', 'build/sites/all/themes/custom/bar')"
+
+- command: 'drupal:site-setup'
+  configuration: []
+  composer: ''
+  contains:
+    - "symlink('custom/modules', 'build/modules/custom')"
+    - "symlink('custom/themes', 'build/themes/custom')"
+    - "symlink('custom/profiles', 'build/profiles/custom')"
+    - "symlink('custom/libraries', 'build/custom/libraries')"
+
+- command: 'drupal:site-setup'
+  configuration:
+    drupal:
+      root: 'overridden'
+  composer: ''
+  contains:
+    - "symlink('custom/modules', 'overridden/modules/custom')"
+    - "symlink('custom/themes', 'overridden/themes/custom')"
+    - "symlink('custom/profiles', 'overridden/profiles/custom')"
+    - "symlink('custom/libraries', 'overridden/custom/libraries')"
+
+- command: 'drupal:site-setup --root=web'
+  configuration: []
+  composer: ''
+  contains:
+    - "symlink('custom/modules', 'web/modules/custom')"
+    - "symlink('custom/themes', 'web/themes/custom')"
+    - "symlink('custom/profiles', 'web/profiles/custom')"
+    - "symlink('custom/libraries', 'web/custom/libraries')"
+    - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
+    - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
+

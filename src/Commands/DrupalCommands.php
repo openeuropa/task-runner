@@ -169,6 +169,45 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
     }
 
     /**
+     * Setup Drupal site for development.
+     *
+     * @command drupal:site-setup
+     *
+     * @aliases drupal:ss,dss
+     *
+     * @option root Drupal root.
+     *
+     * @param array $options
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     *
+     * @throws \Robo\Exception\TaskException
+     */
+    public function siteSetup(array $options = [
+      'root' => InputOption::VALUE_REQUIRED,
+    ])
+    {
+        $config = $this->getConfig();
+        $collection = $this->collectionBuilder();
+
+        $filesystem = $this->taskFilesystemStack();
+        $config->get('drupal.setup.symlink');
+        foreach ($config->get('drupal.setup.symlink') as $symlink) {
+            $collection->addTask($filesystem->symlink($symlink['from'], $options['root'].'/'.$symlink['to']));
+        }
+
+        if (file_exists('behat.yml.dist') || $this->isSimulating()) {
+            $collection->addTask($this->taskExec($this->getBin('run'))->arg('setup:behat'));
+        }
+
+        if (file_exists('phpunit.xml.dist') || $this->isSimulating()) {
+            $collection->addTask($this->taskExec($this->getBin('run'))->arg('setup:phpunit'));
+        }
+
+        return $collection;
+    }
+
+    /**
      * Scaffold Drupal component development.
      *
      * This command will create the necessary symlinks and scaffolding files for
