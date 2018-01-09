@@ -66,20 +66,20 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
      *
      * @command drupal:site-install
      *
-     * @option root                 Drupal root.
-     * @option site-name            Site name.
-     * @option site-mail            Site mail.
-     * @option site-profile         Installation profile
-     * @option site-update          Whereas to enable the update module or not.
-     * @option site-locale          Default site locale.
-     * @option account-name         Admin account name.
-     * @option account-password     Admin account password.
-     * @option account-mail         Admin email.
-     * @option database-host        Database host.
-     * @option database-port        Database port.
-     * @option database-name        Database name.
-     * @option database-user        Database username.
-     * @option database-password    Database password.
+     * @option root              Drupal root.
+     * @option site-name         Site name.
+     * @option site-mail         Site mail.
+     * @option site-profile      Installation profile
+     * @option site-update       Whereas to enable the update module or not.
+     * @option site-locale       Default site locale.
+     * @option account-name      Admin account name.
+     * @option account-password  Admin account password.
+     * @option account-mail      Admin email.
+     * @option database-host     Database host.
+     * @option database-port     Database port.
+     * @option database-name     Database name.
+     * @option database-user     Database username.
+     * @option database-password Database password.
      *
      * @aliases drupal:si,dsi
      *
@@ -172,7 +172,20 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
     }
 
     /**
-     * Setup Drupal site for development.
+     * Setup local Drupal site development copy.
+     *
+     * This command will create the necessary symlinks and scaffolding files
+     * given that a fully built Drupal site is available at ${drupal.root}.
+     *
+     * Running this command will:
+     *
+     * - Make Drupal's "./${drupal.root}/sites/default" directory writable.
+     * - Symlink custom modules and themes to the proper build location.
+     * - Setup Drupal settings at ./web/sites/default/settings.local.php.
+     * - Setup default Drush configuration files in "./${drupal.root}/sites/default/".
+     *
+     * Configuration content written or appended to setting files above can be
+     * modified by tweaking configuration variable in your "runner.yml" file.
      *
      * @command drupal:site-setup
      *
@@ -190,33 +203,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
       'root' => InputOption::VALUE_REQUIRED,
     ])
     {
-        $config = $this->getConfig();
-        $collection = $this->collectionBuilder();
-
-        $filesystem = $this->taskFilesystemStack();
-        $config->get('drupal.setup.symlink');
-        foreach ($config->get('drupal.setup.symlink') as $symlink) {
-            if (is_dir($symlink['from']) || $this->isSimulating()) {
-                $destination = $options['root'].'/'.$symlink['to'];
-                $source = $this->walkPath($destination, $symlink['from']);
-                $collection->addTask($filesystem->symlink($source, $destination));
-            }
-        }
-
-        $collection->addTaskList([
-            $this->writeDrushConfiguration($this->getSiteRoot().'/sites/default'),
-            $this->writeSiteConfiguration($this->getSiteRoot().'/sites/default'),
-        ]);
-
-        if (file_exists('behat.yml.dist') || $this->isSimulating()) {
-            $collection->addTask($this->taskExec($this->getBin('run'))->arg('setup:behat'));
-        }
-
-        if (file_exists('phpunit.xml.dist') || $this->isSimulating()) {
-            $collection->addTask($this->taskExec($this->getBin('run'))->arg('setup:phpunit'));
-        }
-
-        return $collection;
+        return $this->setupSiteBuild($options['root'], $this->getConfig()->get('drupal.setup.symlink'));
     }
 
     /**
@@ -233,20 +220,11 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
      * - Symlink the root of your project at "./${drupal.root}/modules|themes/custom/PROJECT_NAME (or its Drupal 7 variant).
      * - Setup default Drush configuration files in "./${drupal.root}/sites/default/".
      * - Exclude ${drupal.root} and "vendor" directories in "./${drupal.root}/sites/default/settings.default.php".
-     * - For Drupal 8: make sure that Twig cache is disabled on ./web/sites/development.services.yml.
-     * - For Drupal 8: Setup local development settings at ./web/sites/default/settings.local.php.
+     * - Setup Drupal settings at ./web/sites/default/settings.local.php.
+     * - Setup default Drush configuration files in "./${drupal.root}/sites/default/".
      *
      * Configuration content written or appended to setting files above can be
      * modified by tweaking configuration variable in your "runner.yml" file.
-     *
-     * For more information check the default "config/runner.yml" file at:
-     *
-     * > drupal:
-     * >   ...
-     * >   drush:
-     * >     ...
-     * >   settings:
-     * >     ...
      *
      * @command drupal:component-setup
      *
@@ -258,27 +236,10 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
      */
     public function componentSetup()
     {
-        $collection = $this->collectionBuilder();
-        $extensionRoot = $this->getExtensionRoot();
-        $extensionPath = $extensionRoot.'/'.$this->getProjectName();
+        $symlinks = [];
+        $symlinks[] = ['from' => '.', 'to' => $this->getExtensionPath()];
 
-        $collection->addTaskList([
-            $this->taskFilesystemStack()->chmod($this->getSiteRoot().'/sites', 0775, 0000, true),
-            $this->taskFilesystemStack()->mkdir($extensionRoot),
-            $this->taskFilesystemStack()->symlink($this->walkPath($extensionPath, '.'), $extensionPath),
-            $this->writeDrushConfiguration($this->getSiteRoot().'/sites/default'),
-            $this->writeSiteConfiguration($this->getSiteRoot().'/sites/default'),
-        ]);
-
-        if (file_exists('behat.yml.dist') || $this->isSimulating()) {
-            $collection->addTask($this->taskExec($this->getBin('run'))->arg('setup:behat'));
-        }
-
-        if (file_exists('phpunit.xml.dist') || $this->isSimulating()) {
-            $collection->addTask($this->taskExec($this->getBin('run'))->arg('setup:phpunit'));
-        }
-
-        return $collection;
+        return $this->setupSiteBuild($this->getSiteRoot(), $symlinks);
     }
 
     /**
@@ -312,26 +273,18 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
      *
      * @throws \Robo\Exception\TaskException
      */
-    protected function getExtensionRoot()
+    protected function getExtensionPath()
     {
-        $root = $this->getSiteRoot();
+        $basePath = ($this->getConfig()->get('drupal.core') === "7") ? "sites/all/" : '';
 
         switch ($this->getProjectType()) {
             case 'drupal-module':
-                $directory = 'modules';
-                break;
+                return "{$basePath}modules/custom/".$this->getProjectName();
             case 'drupal-theme':
-                $directory = 'themes';
-                break;
+                return "{$basePath}themes/custom/".$this->getProjectName();
             default:
                 throw new TaskException($this, "Component scaffolding only supports modules and themes.");
         }
-
-        if ($this->getConfig()->get('drupal.core') === "7") {
-            return "{$root}/sites/all/{$directory}/custom";
-        }
-
-        return "{$root}/{$directory}/custom";
     }
 
     /**
@@ -364,5 +317,46 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
         return $this->collectionBuilder()->addTaskList([
             $this->taskAppendConfiguration($path.'/default.settings.php', $this->getConfig())->setConfigKey('drupal.settings'),
         ]);
+    }
+
+    /**
+     * Setup local site build, given its relative root and a list of symlinks.
+     *
+     * @todo: Tunr this into an actual task.
+     *
+     * @param string $root
+     * @param array  $symlinks
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     *
+     * @throws \Robo\Exception\TaskException
+     */
+    protected function setupSiteBuild($root, $symlinks = [])
+    {
+        $collection = $this->collectionBuilder();
+
+        foreach ($symlinks as $symlink) {
+            if (is_dir($symlink['from']) || $this->isSimulating()) {
+                $destination = $root.'/'.$symlink['to'];
+                $source = $this->walkPath($destination, $symlink['from']);
+                $collection->addTask($this->taskFilesystemStack()->symlink($source, $destination));
+            }
+        }
+
+        $collection->addTaskList([
+            $this->taskFilesystemStack()->chmod($this->getSiteRoot().'/sites', 0775, 0000, true),
+            $this->writeDrushConfiguration($this->getSiteRoot().'/sites/default'),
+            $this->writeSiteConfiguration($this->getSiteRoot().'/sites/default'),
+        ]);
+
+        if (file_exists('behat.yml.dist') || $this->isSimulating()) {
+            $collection->addTask($this->taskExec($this->getBin('run'))->arg('setup:behat'));
+        }
+
+        if (file_exists('phpunit.xml.dist') || $this->isSimulating()) {
+            $collection->addTask($this->taskExec($this->getBin('run'))->arg('setup:phpunit'));
+        }
+
+        return $collection;
     }
 }

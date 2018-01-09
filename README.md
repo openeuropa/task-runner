@@ -32,9 +32,10 @@ Available commands:
  changelog
   changelog:generate         [changelog:g|cg] Generate a changelog based on GitHub issues and pull requests.
  drupal
-  drupal:component-scaffold  [drupal:cs|dcs] Scaffold Drupal component development.
-  drupal:site-install        [drupal:si|dsi] Install target site.
-  drupal:site-post-install   [drupal:spi|dspi] Run Drupal post-install commands.
+  drupal:component-setup    [drupal:component-scaffold|drupal:cs|dcs] Scaffold Drupal component development.
+  drupal:site-install       [drupal:si|dsi] Install target site.
+  drupal:site-post-install  [drupal:spi|dspi] Run Drupal post-install commands.
+  drupal:site-setup         [drupal:site-scaffold|drupal:ss|dss] Setup Drupal site for development.
  setup
   setup:behat                [setup:b|sb] Setup Behat.
   setup:phpunit              [setup:p|sp] Setup PHPUnit.
