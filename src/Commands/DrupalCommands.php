@@ -322,7 +322,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
     /**
      * Setup local site build, given its relative root and a list of symlinks.
      *
-     * @todo: Tunr this into an actual task.
+     * @todo: Turn this into an actual task.
      *
      * @param string $root
      * @param array  $symlinks
