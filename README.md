@@ -4,7 +4,13 @@
 
 PHP task runner based on Robo.
 
-After installation run `./vendor/bin/run` and check each command's help:
+Install it with Composer:
+
+```
+$ composer ec-europa/oe-task-runner
+```
+
+After installation run `./vendor/bin/run` and check each command's help section:
 
 ```bash
 $ ./vendor/bin/run
@@ -27,17 +33,17 @@ Options:
   -v|vv|vvv, --verbose                 Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 
 Available commands:
-  help                       Displays help for a command
-  list                       Lists commands
+  help                      Displays help for a command
+  list                      Lists commands
  changelog
-  changelog:generate         [changelog:g|cg] Generate a changelog based on GitHub issues and pull requests.
+  changelog:generate        [changelog:g|cg] Generate a changelog based on GitHub issues and pull requests.
  drupal
   drupal:component-setup    [drupal:component-scaffold|drupal:cs|dcs] Scaffold Drupal component development.
   drupal:site-install       [drupal:si|dsi] Install target site.
   drupal:site-post-install  [drupal:spi|dspi] Run Drupal post-install commands.
-  drupal:site-setup         [drupal:site-scaffold|drupal:ss|dss] Setup Drupal site for development.
+  drupal:site-setup         [drupal:site-scaffold|drupal:ss|dss] Setup local Drupal site development copy.
  setup
-  setup:behat                [setup:b|sb] Setup Behat.
-  setup:phpunit              [setup:p|sp] Setup PHPUnit.
-  setup:replace              [setup:p|sp] Replace configuration tokens in a text file.
+  setup:behat               [setup:b|sb] Setup Behat.
+  setup:phpunit             [setup:p|sp] Setup PHPUnit.
+  setup:replace             [setup:p|sp] Replace configuration tokens in a text file.
 ```
