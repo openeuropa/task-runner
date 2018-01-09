@@ -10,6 +10,7 @@ use Robo\Exception\TaskException;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class DrupalCommands.
@@ -175,7 +176,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
      *
      * @command drupal:site-setup
      *
-     * @aliases drupal:ss,dss
+     * @aliases drupal:site-scaffold,drupal:ss,dss
      *
      * @option root Drupal root.
      *
@@ -201,6 +202,11 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
                 $collection->addTask($filesystem->symlink($source, $destination));
             }
         }
+
+        $collection->addTaskList([
+            $this->writeDrushConfiguration($this->getSiteRoot().'/sites/default'),
+            $this->writeSiteConfiguration($this->getSiteRoot().'/sites/default'),
+        ]);
 
         if (file_exists('behat.yml.dist') || $this->isSimulating()) {
             $collection->addTask($this->taskExec($this->getBin('run'))->arg('setup:behat'));
@@ -242,15 +248,15 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
      * >   settings:
      * >     ...
      *
-     * @command drupal:component-scaffold
+     * @command drupal:component-setup
      *
-     * @aliases drupal:cs,dcs
+     * @aliases drupal:component-scaffold,drupal:cs,dcs
      *
      * @return \Robo\Collection\CollectionBuilder
      *
      * @throws \Robo\Exception\TaskException
      */
-    public function componentScaffold()
+    public function componentSetup()
     {
         $collection = $this->collectionBuilder();
         $extensionRoot = $this->getExtensionRoot();
@@ -260,8 +266,8 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
             $this->taskFilesystemStack()->chmod($this->getSiteRoot().'/sites', 0775, 0000, true),
             $this->taskFilesystemStack()->mkdir($extensionRoot),
             $this->taskFilesystemStack()->symlink($this->walkPath($extensionPath, '.'), $extensionPath),
-            $this->taskWriteConfiguration($this->getSiteRoot().'/sites/default/drushrc.php', $this->getConfig())->setConfigKey('drupal.drush'),
-            $this->taskAppendConfiguration($this->getSiteRoot().'/sites/default/default.settings.php', $this->getConfig())->setConfigKey('drupal.settings'),
+            $this->writeDrushConfiguration($this->getSiteRoot().'/sites/default'),
+            $this->writeSiteConfiguration($this->getSiteRoot().'/sites/default'),
         ]);
 
         if (file_exists('behat.yml.dist') || $this->isSimulating()) {
@@ -326,5 +332,37 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
         }
 
         return "{$root}/{$directory}/custom";
+    }
+
+    /**
+     * Write Drush configuration files to the specified directory.
+     *
+     * @param string $path
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     */
+    protected function writeDrushConfiguration($path)
+    {
+        $config = $this->getConfig();
+        $yaml = Yaml::dump($config->get('drupal.drush'));
+
+        return $this->collectionBuilder()->addTaskList([
+            $this->taskWriteConfiguration($path.'/drushrc.php', $config)->setConfigKey('drupal.drush'),
+            $this->taskWriteToFile($path.'/drush.yml')->text($yaml),
+        ]);
+    }
+
+    /**
+     * Write Drupal site configuration files to the specified directory.
+     *
+     * @param string $path
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     */
+    protected function writeSiteConfiguration($path)
+    {
+        return $this->collectionBuilder()->addTaskList([
+            $this->taskAppendConfiguration($path.'/default.settings.php', $this->getConfig())->setConfigKey('drupal.settings'),
+        ]);
     }
 }

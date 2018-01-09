@@ -127,8 +127,9 @@
     - "symlink('../../..', 'build/modules/custom/bar')"
     - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
     - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
-    - "WriteConfiguration('build/sites/default/drushrc.php'"
     - "AppendConfiguration('build/sites/default/default.settings.php'"
+    - "WriteConfiguration('build/sites/default/drushrc.php'"
+    - "File\\Write('build/sites/default/drush.yml')"
 
 - command: 'drupal:component-scaffold'
   configuration:
@@ -141,6 +142,8 @@
     }
   contains:
     - "symlink('../../..', 'web/themes/custom/bar')"
+    - "WriteConfiguration('web/sites/default/drushrc.php'"
+    - "File\\Write('web/sites/default/drush.yml')"
 
 - command: 'drupal:component-scaffold'
   configuration:
@@ -174,6 +177,9 @@
     - "symlink('../../custom/themes', 'build/themes/custom')"
     - "symlink('../../custom/profiles', 'build/profiles/custom')"
     - "symlink('../../custom/libraries', 'build/libraries/custom')"
+    - "AppendConfiguration('build/sites/default/default.settings.php'"
+    - "WriteConfiguration('build/sites/default/drushrc.php'"
+    - "File\\Write('build/sites/default/drush.yml')"
 
 - command: 'drupal:site-setup'
   configuration:
@@ -185,6 +191,9 @@
     - "symlink('../../custom/themes', 'overridden/themes/custom')"
     - "symlink('../../custom/profiles', 'overridden/profiles/custom')"
     - "symlink('../../custom/libraries', 'overridden/libraries/custom')"
+    - "AppendConfiguration('overridden/sites/default/default.settings.php'"
+    - "WriteConfiguration('overridden/sites/default/drushrc.php'"
+    - "File\\Write('overridden/sites/default/drush.yml')"
 
 - command: 'drupal:site-setup --root=web'
   configuration: []
@@ -196,4 +205,7 @@
     - "symlink('../../custom/libraries', 'web/libraries/custom')"
     - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
     - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
+    - "AppendConfiguration('build/sites/default/default.settings.php'"
+    - "WriteConfiguration('build/sites/default/drushrc.php'"
+    - "File\\Write('build/sites/default/drush.yml')"
 
