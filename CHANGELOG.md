@@ -1,5 +1,20 @@
 # Change Log
 
+## [0.2.0](https://github.com/ec-europa/oe-task-runner/tree/0.2.0) (2018-01-09)
+[Full Changelog](https://github.com/ec-europa/oe-task-runner/compare/0.1.2...0.2.0)
+
+**Closed issues:**
+
+- NEPT-1105: Implement Drupal site setup command [\#23](https://github.com/ec-europa/oe-task-runner/issues/23)
+- NEPT-1627: Fix command discovery for custom namespaces [\#21](https://github.com/ec-europa/oe-task-runner/issues/21)
+- NEPT-1105: Remove exclude flag from Drush site install [\#19](https://github.com/ec-europa/oe-task-runner/issues/19)
+
+**Merged pull requests:**
+
+- NEPT-1105: Implement Drupal site setup command \#23 [\#24](https://github.com/ec-europa/oe-task-runner/pull/24) ([ademarco](https://github.com/ademarco))
+- NEPT-1627: Fix command discovery for custom namespaces \#21 [\#22](https://github.com/ec-europa/oe-task-runner/pull/22) ([ademarco](https://github.com/ademarco))
+- NEPT-1105: Remove exclude flag from Drush site install \#19 [\#20](https://github.com/ec-europa/oe-task-runner/pull/20) ([ademarco](https://github.com/ademarco))
+
 ## [0.1.2](https://github.com/ec-europa/oe-task-runner/tree/0.1.2) (2018-01-07)
 [Full Changelog](https://github.com/ec-europa/oe-task-runner/compare/0.1.1...0.1.2)
 
