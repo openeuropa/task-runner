@@ -105,7 +105,7 @@ class SetupCommands extends BaseCommands
      * @option source      Source configuration file.
      * @option destination Destination configuration file.
      *
-     * @aliases setup:p,sp
+     * @aliases setup:r,sr
      *
      * @param array $options
      *
