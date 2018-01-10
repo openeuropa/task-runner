@@ -38,5 +38,5 @@ Available commands:
  setup
   setup:behat                [setup:b|sb] Setup Behat.
   setup:phpunit              [setup:p|sp] Setup PHPUnit.
-  setup:replace              [setup:p|sp] Replace configuration tokens in a text file.
+  setup:replace              [setup:r|sr] Replace configuration tokens in a text file.
 ```
