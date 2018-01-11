@@ -91,6 +91,8 @@ class CommandsTest extends AbstractTest
         $input = new StringInput("list");
         $output = new BufferedOutput();
         $runner = new TaskRunner($input, $output);
+        $classLoader = require __DIR__.'/../vendor/autoload.php';
+        $runner->registerExternalCommands($classLoader);
         $runner->run();
 
         $expected = [

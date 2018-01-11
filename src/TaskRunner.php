@@ -2,6 +2,7 @@
 
 namespace EC\OpenEuropa\TaskRunner;
 
+use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use EC\OpenEuropa\TaskRunner\Services\Composer;
@@ -51,6 +52,8 @@ class TaskRunner
      */
     private $application;
 
+    private $classLoader;
+
     /**
      * TaskRunner constructor.
      *
@@ -69,7 +72,7 @@ class TaskRunner
         // Create and initialize runner.
         $this->runner = new RoboRunner();
         $this->runner->setContainer($this->container);
-        $this->runner->registerCommandClasses($this->application, $this->discoverCommandClasses());
+        $this->runner->registerCommandClasses($this->application, $this->getCommandDiscovery()->discover(__DIR__, 'EC\\OpenEuropa\\TaskRunner'));
     }
 
     /**
@@ -78,22 +81,6 @@ class TaskRunner
     public function run()
     {
         return $this->runner->run($this->input, $this->output, $this->application);
-    }
-
-    /**
-     * @return RoboRunner
-     */
-    public function getRunner()
-    {
-        return $this->runner;
-    }
-
-    /**
-     * @return ConsoleOutput|OutputInterface
-     */
-    public function getOutput()
-    {
-        return $this->output;
     }
 
     /**
@@ -110,43 +97,36 @@ class TaskRunner
     }
 
     /**
-     * @return array
+     * @param \Composer\Autoload\ClassLoader $classLoader
      */
-    private function discoverCommandClasses()
+    public function registerExternalCommands(ClassLoader $classLoader)
     {
         $commands = [];
-        $autoload = getcwd().'/vendor/autoload.php';
-
-        /** @var \Composer\Autoload\ClassLoader $classLoader */
-        $classLoader = require $autoload;
-        $discovery = new CommandFileDiscovery();
-        $discovery->setSearchPattern('*Commands.php')->setSearchLocations(['TaskRunner', 'Commands']);
+        $discovery = $this->getCommandDiscovery();
 
         foreach ($classLoader->getPrefixesPsr4() as $baseNamespace => $directoryList) {
-            if ($this->isTaskRunnerPrefix($baseNamespace, $directoryList)) {
+            $directoryList = array_filter($directoryList, function ($path) {
+                return is_dir($path.'/TaskRunner/Commands');
+            });
+
+            if (!empty($directoryList)) {
                 $discoveredCommands = $discovery->discover($directoryList, $baseNamespace);
                 $commands = array_merge($commands, $discoveredCommands);
             }
         }
 
-        return $commands;
+        $this->runner->registerCommandClasses($this->application, $commands);
     }
 
     /**
-     * Check whereas given PSR4 prefix is an eligible TaskRunner prefix.
-     *
-     * @param string $baseNamespace
-     * @param array  $directoryList
-     *
-     * @return bool
+     * @return \Consolidation\AnnotatedCommand\CommandFileDiscovery
      */
-    private function isTaskRunnerPrefix($baseNamespace, array $directoryList)
+    private function getCommandDiscovery()
     {
-        $directoryList = array_filter($directoryList, function ($path) {
-            return is_dir($path.'/TaskRunner/Commands');
-        });
+        $discovery = new CommandFileDiscovery();
+        $discovery->setSearchPattern('*Commands.php')->setSearchLocations(['TaskRunner', 'Commands']);
 
-        return !empty($directoryList) || strstr($baseNamespace, 'OpenEuropa\\TaskRunner') !== false;
+        return $discovery;
     }
 
     /**
