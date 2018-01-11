@@ -4,12 +4,16 @@ namespace EC\OpenEuropa\TaskRunner;
 
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use EC\OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use EC\OpenEuropa\TaskRunner\Services\Composer;
+use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Robo\Application;
+use Robo\Collection\CollectionBuilder;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
+use Robo\Contract\BuilderAwareInterface;
 use Robo\Robo;
 use Robo\Runner as RoboRunner;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -52,8 +56,6 @@ class TaskRunner
      */
     private $application;
 
-    private $classLoader;
-
     /**
      * TaskRunner constructor.
      *
@@ -65,14 +67,24 @@ class TaskRunner
         $this->input = is_null($input) ? new ArgvInput() : $input;
         $this->output = is_null($output) ? new ConsoleOutput() : $output;
 
-        $this->application = $this->createApplication();
         $this->config = $this->createConfiguration();
+        $this->application = $this->createApplication();
         $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config);
 
         // Create and initialize runner.
         $this->runner = new RoboRunner();
         $this->runner->setContainer($this->container);
         $this->runner->registerCommandClasses($this->application, $this->getCommandDiscovery()->discover(__DIR__, 'EC\\OpenEuropa\\TaskRunner'));
+
+        foreach ($this->getConfig()->get('commands', []) as $name => $tasks) {
+            /** @var \Consolidation\AnnotatedCommand\AnnotatedCommandFactory $commandFactory */
+            $commandFileName = DynamicCommands::class."Commands";
+            $commandClass = $this->container->get($commandFileName);
+            $commandFactory = $this->container->get('commandFactory');
+            $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
+            $command = $commandFactory->createCommand($commandInfo, $commandClass)->setName($name);
+            $this->application->add($command);
+        }
     }
 
     /**
