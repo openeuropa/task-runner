@@ -44,11 +44,10 @@ class BaseCommands implements BuilderAwareInterface, IOAwareInterface, ConfigAwa
      */
     public function initializeRuntimeConfiguration(ConsoleCommandEvent $event)
     {
-        $workingDir = $event->getInput()->getOption('working-dir');
-
+        chdir($event->getInput()->getOption('working-dir'));
         Robo::loadConfiguration([
-            $workingDir.'/runner.yml.dist',
-            $workingDir.'/runner.yml',
+            'runner.yml.dist',
+            'runner.yml',
             $this->getConfigurationFile(),
         ], $this->getConfig());
     }

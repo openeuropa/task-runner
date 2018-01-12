@@ -5,6 +5,7 @@ namespace EC\OpenEuropa\TaskRunner\Tasks\ProcessConfigFile;
 use EC\OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
 use Robo\Common\BuilderAwareTrait;
 use Robo\Contract\BuilderAwareInterface;
+use Robo\Exception\TaskException;
 use Robo\Task\BaseTask;
 use Robo\Task\File\Replace;
 use Robo\Task\Filesystem\FilesystemStack;
@@ -59,9 +60,14 @@ class ProcessConfigFile extends BaseTask implements BuilderAwareInterface
 
     /**
      * @return \Robo\Result
+     * @throws \Robo\Exception\TaskException
      */
     public function run()
     {
+        if (!file_exists($this->source)) {
+            throw new TaskException($this, "Source file '{$this->source}' does not exists.");
+        }
+
         $content = file_get_contents($this->source);
         $tokens = $this->extractProcessedTokens($content);
 

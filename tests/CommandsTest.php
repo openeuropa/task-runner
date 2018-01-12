@@ -46,18 +46,20 @@ class CommandsTest extends AbstractTest
 
     /**
      * @param string $command
+     * @param string $source
+     * @param string $destination
      * @param string $content
      * @param string $expected
      *
      * @dataProvider setupDataProvider
      */
-    public function testSetupCommands($command, $content, $expected)
+    public function testSetupCommands($command, $source, $destination, $content, $expected)
     {
-        $source = $this->getSandboxFilepath('source.yml');
-        $destination = $this->getSandboxFilepath('destination.yml');
+        $source = $this->getSandboxFilepath($source);
+        $destination = $this->getSandboxFilepath($destination);
         file_put_contents($source, $content);
 
-        $input = new StringInput("{$command} --source={$source} --destination={$destination}");
+        $input = new StringInput("{$command} --working-dir=".$this->getSandboxRoot());
         $output = new BufferedOutput();
         $runner = new TaskRunner($input, $output);
         $runner->run();

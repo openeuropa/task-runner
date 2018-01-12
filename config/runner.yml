@@ -77,5 +77,7 @@ github:
   token: ~
 
 commands:
-  test:command:
-    - { task: "symlink", from: "this", to: "that" }
+  setup:behat:
+    - { task: "process", source: "behat.yml.dist", destination: "behat.yml" }
+  setup:phpunit:
+    - { task: "process", source: "phpunit.xml.dist", destination: "phpunit.xml" }
