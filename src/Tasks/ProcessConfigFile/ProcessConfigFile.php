@@ -1,6 +1,6 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Tasks\ReplaceConfigTokens;
+namespace EC\OpenEuropa\TaskRunner\Tasks\ProcessConfigFile;
 
 use EC\OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
 use Robo\Common\BuilderAwareTrait;
@@ -10,11 +10,11 @@ use Robo\Task\File\Replace;
 use Robo\Task\Filesystem\FilesystemStack;
 
 /**
- * Class ReplaceConfigTokens
+ * Class ProcessConfigFile
  *
- * @package EC\OpenEuropa\TaskRunner\Tasks\ReplaceConfigTokens
+ * @package EC\OpenEuropa\TaskRunner\Tasks\ProcessConfigFile
  */
-class ReplaceConfigTokens extends BaseTask implements BuilderAwareInterface
+class ProcessConfigFile extends BaseTask implements BuilderAwareInterface
 {
     use BuilderAwareTrait;
     use ConfigurationTokensTrait;
@@ -44,7 +44,7 @@ class ReplaceConfigTokens extends BaseTask implements BuilderAwareInterface
     protected $replace;
 
     /**
-     * ReplaceConfigTokens constructor.
+     * ProcessConfigFile constructor.
      *
      * @param string $source
      * @param string $destination

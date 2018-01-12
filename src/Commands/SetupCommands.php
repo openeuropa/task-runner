@@ -2,7 +2,7 @@
 
 namespace EC\OpenEuropa\TaskRunner\Commands;
 
-use EC\OpenEuropa\TaskRunner\Tasks\ReplaceConfigTokens as ReplaceConfigTokens;
+use EC\OpenEuropa\TaskRunner\Tasks\ProcessConfigFile as ProcessConfigFile;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 class SetupCommands extends BaseCommands
 {
-    use ReplaceConfigTokens\loadTasks;
+    use ProcessConfigFile\loadTasks;
 
     /**
      * {@inheritdoc}
@@ -116,6 +116,6 @@ class SetupCommands extends BaseCommands
       'destination' => InputOption::VALUE_REQUIRED,
     ])
     {
-        return $this->taskReplaceConfigTokens($options['source'], $options['destination']);
+        return $this->taskProcessConfigFile($options['source'], $options['destination']);
     }
 }

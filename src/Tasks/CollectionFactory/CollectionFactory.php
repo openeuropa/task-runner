@@ -22,7 +22,7 @@ use Robo\TaskAccessor;
 class CollectionFactory extends BaseTask implements BuilderAwareInterface
 {
     use LoadAllTasks;
-    use TaskRunner\Tasks\ReplaceConfigTokens\loadTasks;
+    use TaskRunner\Tasks\ProcessConfigFile\loadTasks;
 
     /**
      * @var array
@@ -106,7 +106,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface
                 return $this->taskFilesystemStack()->mirror($task['from'], $task['to']);
 
             case "process":
-                return $this->taskReplaceConfigTokens($task['source'], $task['destination']);
+                return $this->taskProcessConfigFile($task['source'], $task['destination']);
 
             default:
                 throw new TaskException($this, "Task '{$task['task']}' not supported.");
