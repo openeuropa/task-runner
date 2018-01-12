@@ -7,13 +7,10 @@ use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use EC\OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use EC\OpenEuropa\TaskRunner\Services\Composer;
-use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Robo\Application;
-use Robo\Collection\CollectionBuilder;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
-use Robo\Contract\BuilderAwareInterface;
 use Robo\Robo;
 use Robo\Runner as RoboRunner;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -76,15 +73,8 @@ class TaskRunner
         $this->runner->setContainer($this->container);
         $this->runner->registerCommandClasses($this->application, $this->getCommandDiscovery()->discover(__DIR__, 'EC\\OpenEuropa\\TaskRunner'));
 
-        foreach ($this->getConfig()->get('commands', []) as $name => $tasks) {
-            /** @var \Consolidation\AnnotatedCommand\AnnotatedCommandFactory $commandFactory */
-            $commandFileName = DynamicCommands::class."Commands";
-            $commandClass = $this->container->get($commandFileName);
-            $commandFactory = $this->container->get('commandFactory');
-            $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
-            $command = $commandFactory->createCommand($commandInfo, $commandClass)->setName($name);
-            $this->application->add($command);
-        }
+        // Register commands defined in runner.yml file.
+        $this->registerDynamicCommands($this->application);
     }
 
     /**
@@ -188,5 +178,21 @@ class TaskRunner
           ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', getcwd()));
 
         return $application;
+    }
+
+    /**
+     * @param \Robo\Application $application
+     */
+    private function registerDynamicCommands(Application $application)
+    {
+        foreach ($this->getConfig()->get('commands', []) as $name => $tasks) {
+            /** @var \Consolidation\AnnotatedCommand\AnnotatedCommandFactory $commandFactory */
+            $commandFileName = DynamicCommands::class."Commands";
+            $commandClass = $this->container->get($commandFileName);
+            $commandFactory = $this->container->get('commandFactory');
+            $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
+            $command = $commandFactory->createCommand($commandInfo, $commandClass)->setName($name);
+            $application->add($command);
+        }
     }
 }

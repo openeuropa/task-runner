@@ -75,3 +75,7 @@ github:
 
   # GitHub OAuth token.
   token: ~
+
+commands:
+  test:command:
+    - { task: "symlink", from: "this", to: "that" }
