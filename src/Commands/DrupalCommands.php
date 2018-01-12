@@ -3,9 +3,10 @@
 namespace EC\OpenEuropa\TaskRunner\Commands;
 
 use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
+use EC\OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use EC\OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use EC\OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
-use EC\OpenEuropa\TaskRunner\Traits\PathUtilitiesTrait;
+use EC\OpenEuropa\TaskRunner\Traits\FilesystemAwareTrait;
 use Robo\Exception\TaskException;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,11 +18,11 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @package EC\OpenEuropa\TaskRunner\Commands
  */
-class DrupalCommands extends BaseCommands implements ComposerAwareInterface
+class DrupalCommands extends BaseCommands implements ComposerAwareInterface, FilesystemAwareInterface
 {
     use ComposerAwareTrait;
     use ConfigurationTokensTrait;
-    use PathUtilitiesTrait;
+    use FilesystemAwareTrait;
     use \NuvoleWeb\Robo\Task\Config\Php\loadTasks;
 
     /**
@@ -337,9 +338,8 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
 
         foreach ($symlinks as $symlink) {
             if (is_dir($symlink['from']) || $this->isSimulating()) {
-                $destination = $root.'/'.$symlink['to'];
-                $source = $this->walkPath($destination, $symlink['from']);
-                $collection->addTask($this->taskFilesystemStack()->symlink($source, $destination));
+                $source = $this->getFilesystem()->makePathRelative($symlink['from'], $symlink['to']);
+                $collection->addTask($this->taskFilesystemStack()->symlink($source, $root.'/'.$symlink['to']));
             }
         }
 

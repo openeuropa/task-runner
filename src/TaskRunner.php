@@ -7,6 +7,7 @@ use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use EC\OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use EC\OpenEuropa\TaskRunner\Services\Composer;
+use EC\OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Robo\Application;
 use Robo\Common\ConfigAwareTrait;
@@ -18,6 +19,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class Application.
@@ -155,12 +157,14 @@ class TaskRunner
     {
         $container = Robo::createDefaultContainer($input, $output, $application, $config);
         $container->get('commandFactory')->setIncludeAllPublicMethods(false);
-        $container->share('task_runner.composer', Composer::class)
-          ->withArgument(getcwd());
+        $container->share('task_runner.composer', Composer::class)->withArgument(getcwd());
+        $container->share('filesystem', Filesystem::class);
 
         // Add service inflectors.
         $container->inflector(ComposerAwareInterface::class)
           ->invokeMethod('setComposer', ['task_runner.composer']);
+        $container->inflector(FilesystemAwareInterface::class)
+          ->invokeMethod('setFilesystem', ['filesystem']);
 
         return $container;
     }
