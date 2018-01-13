@@ -96,8 +96,8 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
       'database-name'     => InputOption::VALUE_REQUIRED,
     ])
     {
-        $command = $this->getConfig()->get('runner.bin_dir').'/drush';
-        $task = $this->taskDrush($command)
+        $drush = $this->getConfig()->get('runner.bin_dir').'/drush';
+        $task = $this->taskDrush($drush)
           ->root($options['root'])
           ->siteName($options['site-name'])
           ->siteMail($options['site-mail'])
@@ -144,7 +144,6 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
         return $this->taskCollectionFactory($tasks);
     }
 
-
     /**
      * Run Drupal pre-install commands.
      *
@@ -170,20 +169,21 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
         return $this->taskCollectionFactory($tasks);
     }
 
-
     /**
      * Write Drush configuration files to the specified directory.
      *
      * @command drupal:drush-setup
      *
-     * @option root Drupal root.
+     * @option root         Drupal root.
+     * @option config-dir   Directory where to store Drush 9 configuration file.
      *
      * @param array $options
      *
      * @return \Robo\Collection\CollectionBuilder
      */
-    public function setupDrush(array $options = [
+    public function drushSetup(array $options = [
       'root' => InputOption::VALUE_REQUIRED,
+      'config-dir' => InputOption::VALUE_REQUIRED,
     ])
     {
         $config = $this->getConfig();
@@ -191,7 +191,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
 
         return $this->collectionBuilder()->addTaskList([
             $this->taskWriteConfiguration($options['root'].'/sites/default/drushrc.php', $config)->setConfigKey('drupal.drush'),
-            $this->taskWriteToFile($options['root'].'/sites/default/drush.yml')->text($yaml),
+            $this->taskWriteToFile($options['config-dir'].'/drush.yml')->text($yaml),
         ]);
     }
 
@@ -206,7 +206,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
      *
      * @return \Robo\Collection\CollectionBuilder
      */
-    public function setupSettings(array $options = [
+    public function settingsSetup(array $options = [
       'root' => InputOption::VALUE_REQUIRED,
     ])
     {

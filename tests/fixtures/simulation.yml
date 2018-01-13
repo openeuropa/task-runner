@@ -144,14 +144,14 @@
   composer: ''
   contains:
     - "WriteConfiguration('build/sites/default/drushrc.php'"
-    - "File\\Write('build/sites/default/drush.yml')"
+    - "File\\Write('build/drush/drush.yml')"
 
-- command: 'drupal:drush-setup --root=web'
+- command: 'drupal:drush-setup --root=web --config-dir=./drush'
   configuration: []
   composer: ''
   contains:
     - "WriteConfiguration('web/sites/default/drushrc.php'"
-    - "File\\Write('web/sites/default/drush.yml')"
+    - "File\\Write('./drush/drush.yml')"
 
 - command: 'drupal:settings-setup'
   configuration: []
