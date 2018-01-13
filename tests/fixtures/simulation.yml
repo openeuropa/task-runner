@@ -44,46 +44,6 @@
   contains:
     - "./bin/drush -y --root=$(pwd)/overridden"
 
-- command: 'drupal:site-post-install'
-  configuration:
-    drupal:
-      post_install:
-        - "./vendor/bin/drush en views -y"
-        - "./vendor/bin/drush cr"
-  composer: ''
-  contains:
-    - "./vendor/bin/drush en views -y"
-    - "./vendor/bin/drush cr"
-
-- command: 'drupal:site-install'
-  configuration:
-    drupal:
-      post_install:
-        - "./vendor/bin/drush en views -y"
-        - "./vendor/bin/drush cr"
-  composer: ''
-  contains:
-    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
-    - "./vendor/bin/drush en views -y"
-    - "./vendor/bin/drush cr"
-
-- command: 'drupal:site-install'
-  configuration:
-    drupal:
-      post_install:
-        - "./vendor/bin/drush --root=${drupal.root} en views -y"
-  composer: ''
-  contains:
-    - "./vendor/bin/drush --root=build en views -y"
-
-- command: 'drupal:site-install'
-  configuration:
-    drupal:
-      post_install: []
-  composer: ''
-  contains:
-    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
-
 - command: 'changelog:generate'
   configuration:
     github:
@@ -128,96 +88,147 @@
   contains:
     - "exec('foo/bar -t 123 --future-release=1.2.3')"
 
-- command: 'drupal:component-scaffold'
-  configuration: []
-  composer: >
-    {
-      "name": "foo/bar",
-      "type": "drupal-module"
-    }
-  contains:
-    - "symlink('../../../', 'build/modules/custom/bar')"
-    - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
-    - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
-    - "AppendConfiguration('build/sites/default/default.settings.php'"
-    - "WriteConfiguration('build/sites/default/drushrc.php'"
-    - "File\\Write('build/sites/default/drush.yml')"
-
-- command: 'drupal:component-scaffold'
+- command: 'drupal:site-post-install'
   configuration:
     drupal:
-      root: "web"
-  composer: >
-    {
-      "name": "foo/bar",
-      "type": "drupal-theme"
-    }
-  contains:
-    - "symlink('../../../', 'web/themes/custom/bar')"
-    - "WriteConfiguration('web/sites/default/drushrc.php'"
-    - "File\\Write('web/sites/default/drush.yml')"
-
-- command: 'drupal:component-scaffold'
-  configuration:
-    drupal:
-      core: "7"
-  composer: >
-    {
-      "name": "foo/bar",
-      "type": "drupal-module"
-    }
-  contains:
-    - "symlink('../../../../../', 'build/sites/all/modules/custom/bar')"
-
-- command: 'drupal:component-scaffold'
-  configuration:
-    drupal:
-      core: "7"
-  composer: >
-    {
-      "name": "foo/bar",
-      "type": "drupal-theme"
-    }
-  contains:
-    - "symlink('../../../../../', 'build/sites/all/themes/custom/bar')"
-
-- command: 'drupal:site-setup'
-  configuration: []
+      post_install:
+        - "./vendor/bin/drush en views -y"
+        - "./vendor/bin/drush cr"
   composer: ''
   contains:
-    - "symlink('../../custom/modules/', 'build/modules/custom')"
-    - "symlink('../../custom/themes/', 'build/themes/custom')"
-    - "symlink('../../custom/profiles/', 'build/profiles/custom')"
-    - "symlink('../../custom/libraries/', 'build/libraries/custom')"
-    - "AppendConfiguration('build/sites/default/default.settings.php'"
-    - "WriteConfiguration('build/sites/default/drushrc.php'"
-    - "File\\Write('build/sites/default/drush.yml')"
+    - "./vendor/bin/drush en views -y"
+    - "./vendor/bin/drush cr"
 
-- command: 'drupal:site-setup'
+- command: 'drupal:site-install'
   configuration:
     drupal:
-      root: 'overridden'
+      post_install:
+        - "./vendor/bin/drush en views -y"
+        - "./vendor/bin/drush cr"
   composer: ''
   contains:
-    - "symlink('../../custom/modules/', 'overridden/modules/custom')"
-    - "symlink('../../custom/themes/', 'overridden/themes/custom')"
-    - "symlink('../../custom/profiles/', 'overridden/profiles/custom')"
-    - "symlink('../../custom/libraries/', 'overridden/libraries/custom')"
-    - "AppendConfiguration('overridden/sites/default/default.settings.php'"
-    - "WriteConfiguration('overridden/sites/default/drushrc.php'"
-    - "File\\Write('overridden/sites/default/drush.yml')"
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+    - "./vendor/bin/drush en views -y"
+    - "./vendor/bin/drush cr"
 
-- command: 'drupal:site-setup --root=web'
-  configuration: []
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      post_install:
+        - "./vendor/bin/drush --root=${drupal.root} en views -y"
   composer: ''
   contains:
-    - "symlink('../../custom/modules/', 'web/modules/custom')"
-    - "symlink('../../custom/themes/', 'web/themes/custom')"
-    - "symlink('../../custom/profiles/', 'web/profiles/custom')"
-    - "symlink('../../custom/libraries/', 'web/libraries/custom')"
-    - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
-    - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
-    - "AppendConfiguration('build/sites/default/default.settings.php'"
-    - "WriteConfiguration('build/sites/default/drushrc.php'"
-    - "File\\Write('build/sites/default/drush.yml')"
+    - "./vendor/bin/drush --root=build en views -y"
 
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      post_install: []
+  composer: ''
+  contains:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+
+- command: 'custom:run-tasks'
+  configuration:
+    commands:
+      custom:run-tasks:
+        - { task: "symlink", from: "${drupal.root}/modules/custom", to: "../../custom/modules" }
+        - { task: "symlink", from: "${drupal.root}/modules/custom", to: "../../custom/themes" }
+  composer: ''
+  contains:
+    - "[Simulator] { task: symlink, from: build/modules/custom, to: ../../custom/modules }"
+    - "[Simulator] { task: symlink, from: build/modules/custom, to: ../../custom/themes }"
+
+#- command: 'drupal:component-scaffold'
+#  configuration: []
+#  composer: >
+#    {
+#      "name": "foo/bar",
+#      "type": "drupal-module"
+#    }
+#  contains:
+#    - "symlink('../../../', 'build/modules/custom/bar')"
+#    - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
+#    - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
+#    - "AppendConfiguration('build/sites/default/default.settings.php'"
+#    - "WriteConfiguration('build/sites/default/drushrc.php'"
+#    - "File\\Write('build/sites/default/drush.yml')"
+#
+#- command: 'drupal:component-scaffold'
+#  configuration:
+#    drupal:
+#      root: "web"
+#  composer: >
+#    {
+#      "name": "foo/bar",
+#      "type": "drupal-theme"
+#    }
+#  contains:
+#    - "symlink('../../../', 'web/themes/custom/bar')"
+#    - "WriteConfiguration('web/sites/default/drushrc.php'"
+#    - "File\\Write('web/sites/default/drush.yml')"
+#
+#- command: 'drupal:component-scaffold'
+#  configuration:
+#    drupal:
+#      core: "7"
+#  composer: >
+#    {
+#      "name": "foo/bar",
+#      "type": "drupal-module"
+#    }
+#  contains:
+#    - "symlink('../../../../../', 'build/sites/all/modules/custom/bar')"
+#
+#- command: 'drupal:component-scaffold'
+#  configuration:
+#    drupal:
+#      core: "7"
+#  composer: >
+#    {
+#      "name": "foo/bar",
+#      "type": "drupal-theme"
+#    }
+#  contains:
+#    - "symlink('../../../../../', 'build/sites/all/themes/custom/bar')"
+#
+#- command: 'drupal:site-setup'
+#  configuration: []
+#  composer: ''
+#  contains:
+#    - "symlink('../../custom/modules/', 'build/modules/custom')"
+#    - "symlink('../../custom/themes/', 'build/themes/custom')"
+#    - "symlink('../../custom/profiles/', 'build/profiles/custom')"
+#    - "symlink('../../custom/libraries/', 'build/libraries/custom')"
+#    - "AppendConfiguration('build/sites/default/default.settings.php'"
+#    - "WriteConfiguration('build/sites/default/drushrc.php'"
+#    - "File\\Write('build/sites/default/drush.yml')"
+#
+#- command: 'drupal:site-setup'
+#  configuration:
+#    drupal:
+#      root: 'overridden'
+#  composer: ''
+#  contains:
+#    - "symlink('../../custom/modules/', 'overridden/modules/custom')"
+#    - "symlink('../../custom/themes/', 'overridden/themes/custom')"
+#    - "symlink('../../custom/profiles/', 'overridden/profiles/custom')"
+#    - "symlink('../../custom/libraries/', 'overridden/libraries/custom')"
+#    - "AppendConfiguration('overridden/sites/default/default.settings.php'"
+#    - "WriteConfiguration('overridden/sites/default/drushrc.php'"
+#    - "File\\Write('overridden/sites/default/drush.yml')"
+#
+#- command: 'drupal:site-setup --root=web'
+#  configuration: []
+#  composer: ''
+#  contains:
+#    - "symlink('../../custom/modules/', 'web/modules/custom')"
+#    - "symlink('../../custom/themes/', 'web/themes/custom')"
+#    - "symlink('../../custom/profiles/', 'web/profiles/custom')"
+#    - "symlink('../../custom/libraries/', 'web/libraries/custom')"
+#    - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
+#    - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
+#    - "AppendConfiguration('build/sites/default/default.settings.php'"
+#    - "WriteConfiguration('build/sites/default/drushrc.php'"
+#    - "File\\Write('build/sites/default/drush.yml')"
+#

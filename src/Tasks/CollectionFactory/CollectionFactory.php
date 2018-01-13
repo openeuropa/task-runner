@@ -4,13 +4,16 @@ namespace EC\OpenEuropa\TaskRunner\Tasks\CollectionFactory;
 
 use EC\OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
 use Robo\Common\BuilderAwareTrait;
+use Robo\Common\TaskIO;
 use Robo\Contract\BuilderAwareInterface;
+use Robo\Contract\SimulatedInterface;
 use Robo\Exception\TaskException;
 use Robo\LoadAllTasks;
 use Robo\Task as Task;
 use EC\OpenEuropa\TaskRunner as TaskRunner;
 use Robo\Task\BaseTask;
 use Robo\TaskAccessor;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class CollectionFactory
@@ -19,9 +22,10 @@ use Robo\TaskAccessor;
  *
  * @package EC\OpenEuropa\TaskRunner\Tasks\YamlTaskFacorty
  */
-class CollectionFactory extends BaseTask implements BuilderAwareInterface
+class CollectionFactory extends BaseTask implements BuilderAwareInterface, SimulatedInterface
 {
     use LoadAllTasks;
+    use TaskIO;
     use TaskRunner\Tasks\ProcessConfigFile\loadTasks;
 
     /**
@@ -40,8 +44,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface
     }
 
     /**
-     * @return \Robo\Collection\CollectionBuilder|\Robo\Result
-     * @throws \Robo\Exception\TaskException
+     * {@inheritdoc}
      */
     public function run()
     {
@@ -55,7 +58,21 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface
     }
 
     /**
-     * @param array $task
+     * {@inheritdoc}
+     */
+    public function simulate($context)
+    {
+        foreach ($this->tasks as $task) {
+            if (is_array($task)) {
+                $task = Yaml::dump($task, 0);
+            }
+
+            $this->printTaskInfo($task, $context);
+        }
+    }
+
+    /**
+     * @param array|string $task
      *
      * @return \Robo\Contract\TaskInterface
      *
@@ -65,8 +82,12 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface
      *
      * @todo: Tuner this into a proper plugin system.
      */
-    protected function taskFactory(array $task)
+    protected function taskFactory($task)
     {
+        if (is_string($task)) {
+            return $this->taskExec($task);
+        }
+
         $this->secureOption($task, 'force', false);
         $this->secureOption($task, 'umask', 0000);
         $this->secureOption($task, 'recursive', false);
