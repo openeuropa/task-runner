@@ -48,16 +48,20 @@ class CommandsTest extends AbstractTest
      * @param string $command
      * @param string $source
      * @param string $destination
+     * @param array  $config
      * @param string $content
      * @param string $expected
      *
      * @dataProvider setupDataProvider
      */
-    public function testSetupCommands($command, $source, $destination, $content, $expected)
+    public function testSetupCommands($command, $source, $destination, array $config, $content, $expected)
     {
         $source = $this->getSandboxFilepath($source);
         $destination = $this->getSandboxFilepath($destination);
+        $configFile = $this->getSandboxFilepath('runner.yml');
+
         file_put_contents($source, $content);
+        file_put_contents($configFile, Yaml::dump($config));
 
         $input = new StringInput("{$command} --working-dir=".$this->getSandboxRoot());
         $output = new BufferedOutput();

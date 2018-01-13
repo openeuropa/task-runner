@@ -43,7 +43,4 @@ Available commands:
   drupal:site-install       Install target site.
   drupal:site-post-install  Run Drupal post-install commands.
   drupal:site-pre-install   Run Drupal pre-install commands.
- setup
-  setup:behat
-  setup:phpunit
 ```
