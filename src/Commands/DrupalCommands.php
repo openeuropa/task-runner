@@ -23,6 +23,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
     use TaskRunnerTraits\ConfigurationTokensTrait;
     use TaskRunnerTraits\FilesystemAwareTrait;
     use TaskRunnerTasks\CollectionFactory\loadTasks;
+    use TaskRunnerTasks\Drush\loadTasks;
     use NuvoleWebTasks\Config\Php\loadTasks;
 
     /**
@@ -98,30 +99,25 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
       'database-name'     => InputOption::VALUE_REQUIRED,
     ])
     {
-        $installTask = $this->taskExec($this->getBin('drush'))
-          ->option('-y')
-          ->rawArg("--root=$(pwd)/".$options['root'])
-          ->options([
-              'site-name' => $options['site-name'],
-              'site-mail' => $options['site-mail'],
-              'locale' => $options['site-locale'],
-              'account-mail' => $options['account-mail'],
-              'account-name' => $options['account-name'],
-              'account-pass' => $options['account-password'],
-              'db-url' => sprintf(
-                  "mysql://%s:%s@%s:%s/%s",
-                  $options['database-user'],
-                  $options['database-password'],
-                  $options['database-host'],
-                  $options['database-port'],
-                  $options['database-name']
-              ),
-          ], '=')
-          ->arg('site-install')
-          ->arg($options['site-profile']);
+        $command = $this->getConfig()->get('runner.bin_dir').'/drush';
+        $task = $this->taskDrush($command)
+          ->root($options['root'])
+          ->siteName($options['site-name'])
+          ->siteMail($options['site-mail'])
+          ->locale($options['site-locale'])
+          ->accountMail($options['account-mail'])
+          ->accountName($options['account-name'])
+          ->accountPassword($options['account-password'])
+          ->databaseUser($options['database-user'])
+          ->databasePassword($options['database-password'])
+          ->databaseHost($options['database-host'])
+          ->databasePort($options['database-port'])
+          ->databaseName($options['database-name'])
+          ->siteProfile($options['site-profile']);
 
         return $this->collectionBuilder()->addTaskList([
-            $installTask,
+            $this->sitePreInstall(),
+            $task->siteInstall(),
             $this->sitePostInstall(),
         ]);
     }
@@ -142,13 +138,37 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
      *
      * @command drupal:site-post-install
      *
-     * @aliases drupal:spi,dspi
-     *
      * @return \Robo\Contract\TaskInterface
      */
     public function sitePostInstall()
     {
-        $tasks = $this->getConfig()->get('drupal.post_install');
+        $tasks = $this->getConfig()->get('drupal.post_install', []);
+
+        return $this->taskCollectionFactory($tasks);
+    }
+
+
+    /**
+     * Run Drupal pre-install commands.
+     *
+     * Add post install commands in your runner.yaml file under "drupal.pre_install"
+     * as shown below:
+     *
+     * > drupal:
+     * >   ...
+     * >   pre_install:
+     * >     - ./vendor/bin/drush en views -y
+     * >     - ./vendor/bin/drush cr
+     *
+     * Pre-install commands will be automatically executed after installing the site.
+     *
+     * @command drupal:site-pre-install
+     *
+     * @return \Robo\Contract\TaskInterface
+     */
+    public function sitePreInstall()
+    {
+        $tasks = $this->getConfig()->get('drupal.pre_install', []);
 
         return $this->taskCollectionFactory($tasks);
     }

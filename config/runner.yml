@@ -67,7 +67,10 @@ drupal:
       - from: "custom/libraries"
         to: "libraries/custom"
 
-  # List of shell commands to be ran after site installation. Configuration token replacement is supported.
+  # List of shell commands to be before and after the site installation.
+  # You can use same syntax as the "commands:" below or simply calling a shell command.
+  # Configuration token replacement is supported too.
+  pre_install: []
   post_install: []
 
 # GitHub configuration values.
