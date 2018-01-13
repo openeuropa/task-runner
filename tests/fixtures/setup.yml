@@ -1,12 +1,6 @@
-- command: setup:replace
-  content: >
-    test1: ${drupal.root}
-    test2: ${drupal.core}
-  expected: >
-    test1: build
-    test2: 8
-
 - command: setup:behat
+  source: behat.yml.dist
+  destination: behat.yml
   content: >
     default:
       extensions:
@@ -23,6 +17,8 @@
         progress: ~
 
 - command: setup:phpunit
+  source: phpunit.xml.dist
+  destination: phpunit.xml
   content: >
     <?xml version="1.0" encoding="UTF-8"?>
     <phpunit bootstrap="vendor/autoload.php">

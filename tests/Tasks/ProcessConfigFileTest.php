@@ -2,19 +2,19 @@
 
 namespace EC\OpenEuropa\TaskRunner\Tests\Tasks;
 
-use EC\OpenEuropa\TaskRunner\Tasks\ReplaceConfigTokens\ReplaceConfigTokens;
+use EC\OpenEuropa\TaskRunner\Tasks\ProcessConfigFile\ProcessConfigFile;
 use EC\OpenEuropa\TaskRunner\Tests\AbstractTaskTest;
 use Robo\Task\Simulator;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class ReplaceConfigTokensTaskTest.
+ * Class ProcessConfigFileTest.
  *
  * @package EC\OpenEuropa\TaskRunner\Tests\Tasks
  */
-class ReplaceConfigTokensTaskTest extends AbstractTaskTest
+class ProcessConfigFileTest extends AbstractTaskTest
 {
-    use \EC\OpenEuropa\TaskRunner\Tasks\ReplaceConfigTokens\loadTasks;
+    use \EC\OpenEuropa\TaskRunner\Tasks\ProcessConfigFile\loadTasks;
 
     /**
      * Test task.
@@ -29,7 +29,7 @@ class ReplaceConfigTokensTaskTest extends AbstractTaskTest
         $source = $this->getSandboxFilepath('source.yml');
         $destination = $this->getSandboxFilepath('destination.yml');
         file_put_contents($source, Yaml::dump($data));
-        $this->taskReplaceConfigTokens($source, $destination)->run();
+        $this->taskProcessConfigFile($source, $destination)->run();
         $destinationData = Yaml::parse(file_get_contents($destination));
         $this->assertEquals($expected, $destinationData);
     }
@@ -42,7 +42,7 @@ class ReplaceConfigTokensTaskTest extends AbstractTaskTest
      */
     public function testExtractRawTokens($text, array $expected)
     {
-        $task = new ReplaceConfigTokens(null, null);
+        $task = new ProcessConfigFile(null, null);
         $actual = $this->invokeMethod($task, 'extractRawTokens', [$text]);
         $this->assertEquals($expected, $actual);
     }
@@ -52,7 +52,7 @@ class ReplaceConfigTokensTaskTest extends AbstractTaskTest
      */
     public function extractTokensDataProvider()
     {
-        return $this->getFixtureContent('tasks/replace-config-tokens/extract.yml');
+        return $this->getFixtureContent('tasks/process-config-file/extract.yml');
     }
 
     /**
@@ -60,6 +60,6 @@ class ReplaceConfigTokensTaskTest extends AbstractTaskTest
      */
     public function testTaskDataProvider()
     {
-        return $this->getFixtureContent('tasks/replace-config-tokens/task.yml');
+        return $this->getFixtureContent('tasks/process-config-file/task.yml');
     }
 }

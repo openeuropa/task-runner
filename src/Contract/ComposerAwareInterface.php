@@ -18,6 +18,8 @@ interface ComposerAwareInterface
 
     /**
      * @param \EC\OpenEuropa\TaskRunner\Services\Composer $composer
+     *
+     * @return $this
      */
     public function setComposer(Composer $composer);
 }

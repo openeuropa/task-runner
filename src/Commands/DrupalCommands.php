@@ -3,26 +3,27 @@
 namespace EC\OpenEuropa\TaskRunner\Commands;
 
 use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
-use EC\OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
-use EC\OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
-use EC\OpenEuropa\TaskRunner\Traits\PathUtilitiesTrait;
+use EC\OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use Robo\Exception\TaskException;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
+use EC\OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
+use EC\OpenEuropa\TaskRunner\Traits as TaskRunnerTraits;
+use NuvoleWeb\Robo\Task as NuvoleWebTasks;
 
 /**
  * Class DrupalCommands.
  *
  * @package EC\OpenEuropa\TaskRunner\Commands
  */
-class DrupalCommands extends BaseCommands implements ComposerAwareInterface
+class DrupalCommands extends BaseCommands implements ComposerAwareInterface, FilesystemAwareInterface
 {
-    use ComposerAwareTrait;
-    use ConfigurationTokensTrait;
-    use PathUtilitiesTrait;
-    use \NuvoleWeb\Robo\Task\Config\Php\loadTasks;
+    use TaskRunnerTraits\ComposerAwareTrait;
+    use TaskRunnerTraits\ConfigurationTokensTrait;
+    use TaskRunnerTraits\FilesystemAwareTrait;
+    use TaskRunnerTasks\CollectionFactory\loadTasks;
+    use NuvoleWebTasks\Config\Php\loadTasks;
 
     /**
      * {@inheritdoc}
@@ -30,16 +31,6 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
     public function getConfigurationFile()
     {
         return __DIR__.'/../../config/commands/drupal.yml';
-    }
-
-    /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     *
-     * @hook init
-     */
-    public function init(InputInterface $input)
-    {
-        $this->getComposer()->setWorkingDir($input->getOption('working-dir'));
     }
 
     /**
@@ -157,18 +148,9 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
      */
     public function sitePostInstall()
     {
-        $commands = $this->getConfig()->get('drupal.post_install');
-        if (!empty($commands)) {
-            $taskStack = $this->taskExecStack();
+        $tasks = $this->getConfig()->get('drupal.post_install');
 
-            foreach ($commands as $command) {
-                $taskStack->exec($command);
-            }
-
-            return $taskStack;
-        }
-
-        return $this->taskExec('');
+        return $this->taskCollectionFactory($tasks);
     }
 
     /**
@@ -337,9 +319,8 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface
 
         foreach ($symlinks as $symlink) {
             if (is_dir($symlink['from']) || $this->isSimulating()) {
-                $destination = $root.'/'.$symlink['to'];
-                $source = $this->walkPath($destination, $symlink['from']);
-                $collection->addTask($this->taskFilesystemStack()->symlink($source, $destination));
+                $source = $this->getFilesystem()->makePathRelative($symlink['from'], $symlink['to']);
+                $collection->addTask($this->taskFilesystemStack()->symlink($source, $root.'/'.$symlink['to']));
             }
         }
 

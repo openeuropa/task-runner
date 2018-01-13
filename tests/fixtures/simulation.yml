@@ -39,10 +39,54 @@
 - command: 'drupal:site-install --root="overridden"'
   configuration:
     runner:
-      bin-dir: "./bin"
+      bin_dir: "./bin"
   composer: ''
   contains:
     - "./bin/drush -y --root=$(pwd)/overridden"
+
+- command: 'changelog:generate'
+  configuration:
+    github:
+      token: "abc"
+  composer: >
+    {
+      "name": "foo/bar"
+    }
+  contains:
+    - "exec('foo/bar -t abc')"
+
+- command: 'changelog:generate --token def'
+  configuration:
+    github:
+      token: "abc"
+  composer: >
+    {
+      "name": "foo/bar"
+    }
+  contains:
+    - "exec('foo/bar -t def')"
+
+- command: 'changelog:generate --tag 1.2.3'
+  configuration:
+    github:
+      token: "abc"
+  composer: >
+    {
+      "name": "foo/bar"
+    }
+  contains:
+    - "exec('foo/bar -t abc --future-release=1.2.3')"
+
+- command: 'changelog:generate --token 123 --tag 1.2.3'
+  configuration:
+    github:
+      token: "abc"
+  composer: >
+    {
+      "name": "foo/bar"
+    }
+  contains:
+    - "exec('foo/bar -t 123 --future-release=1.2.3')"
 
 - command: 'drupal:site-post-install'
   configuration:
@@ -84,128 +128,107 @@
   contains:
     - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
-- command: 'changelog:generate'
+- command: 'custom:run-tasks'
   configuration:
-    github:
-      token: "abc"
+    commands:
+      custom:run-tasks:
+        - { task: "symlink", from: "${drupal.root}/modules/custom", to: "../../custom/modules" }
+        - { task: "symlink", from: "${drupal.root}/modules/custom", to: "../../custom/themes" }
   composer: ''
   contains:
-    - "exec('ec-europa/oe-task-runner -t abc')"
+    - "[Simulator] { task: symlink, from: build/modules/custom, to: ../../custom/modules }"
+    - "[Simulator] { task: symlink, from: build/modules/custom, to: ../../custom/themes }"
 
-- command: 'changelog:generate --token def'
-  configuration:
-    github:
-      token: "abc"
-  composer: ''
-  contains:
-    - "exec('ec-europa/oe-task-runner -t def')"
-
-- command: 'changelog:generate --tag 1.2.3'
-  configuration:
-    github:
-      token: "abc"
-  composer: ''
-  contains:
-    - "exec('ec-europa/oe-task-runner -t abc --future-release=1.2.3')"
-
-- command: 'changelog:generate --token 123 --tag 1.2.3'
-  configuration:
-    github:
-      token: "abc"
-  composer: ''
-  contains:
-    - "exec('ec-europa/oe-task-runner -t 123 --future-release=1.2.3')"
-
-- command: 'drupal:component-scaffold'
-  configuration: []
-  composer: >
-    {
-      "name": "foo/bar",
-      "type": "drupal-module"
-    }
-  contains:
-    - "symlink('../../..', 'build/modules/custom/bar')"
-    - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
-    - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
-    - "AppendConfiguration('build/sites/default/default.settings.php'"
-    - "WriteConfiguration('build/sites/default/drushrc.php'"
-    - "File\\Write('build/sites/default/drush.yml')"
-
-- command: 'drupal:component-scaffold'
-  configuration:
-    drupal:
-      root: "web"
-  composer: >
-    {
-      "name": "foo/bar",
-      "type": "drupal-theme"
-    }
-  contains:
-    - "symlink('../../..', 'web/themes/custom/bar')"
-    - "WriteConfiguration('web/sites/default/drushrc.php'"
-    - "File\\Write('web/sites/default/drush.yml')"
-
-- command: 'drupal:component-scaffold'
-  configuration:
-    drupal:
-      core: "7"
-  composer: >
-    {
-      "name": "foo/bar",
-      "type": "drupal-module"
-    }
-  contains:
-    - "symlink('../../../../..', 'build/sites/all/modules/custom/bar')"
-
-- command: 'drupal:component-scaffold'
-  configuration:
-    drupal:
-      core: "7"
-  composer: >
-    {
-      "name": "foo/bar",
-      "type": "drupal-theme"
-    }
-  contains:
-    - "symlink('../../../../..', 'build/sites/all/themes/custom/bar')"
-
-- command: 'drupal:site-setup'
-  configuration: []
-  composer: ''
-  contains:
-    - "symlink('../../custom/modules', 'build/modules/custom')"
-    - "symlink('../../custom/themes', 'build/themes/custom')"
-    - "symlink('../../custom/profiles', 'build/profiles/custom')"
-    - "symlink('../../custom/libraries', 'build/libraries/custom')"
-    - "AppendConfiguration('build/sites/default/default.settings.php'"
-    - "WriteConfiguration('build/sites/default/drushrc.php'"
-    - "File\\Write('build/sites/default/drush.yml')"
-
-- command: 'drupal:site-setup'
-  configuration:
-    drupal:
-      root: 'overridden'
-  composer: ''
-  contains:
-    - "symlink('../../custom/modules', 'overridden/modules/custom')"
-    - "symlink('../../custom/themes', 'overridden/themes/custom')"
-    - "symlink('../../custom/profiles', 'overridden/profiles/custom')"
-    - "symlink('../../custom/libraries', 'overridden/libraries/custom')"
-    - "AppendConfiguration('overridden/sites/default/default.settings.php'"
-    - "WriteConfiguration('overridden/sites/default/drushrc.php'"
-    - "File\\Write('overridden/sites/default/drush.yml')"
-
-- command: 'drupal:site-setup --root=web'
-  configuration: []
-  composer: ''
-  contains:
-    - "symlink('../../custom/modules', 'web/modules/custom')"
-    - "symlink('../../custom/themes', 'web/themes/custom')"
-    - "symlink('../../custom/profiles', 'web/profiles/custom')"
-    - "symlink('../../custom/libraries', 'web/libraries/custom')"
-    - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
-    - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
-    - "AppendConfiguration('build/sites/default/default.settings.php'"
-    - "WriteConfiguration('build/sites/default/drushrc.php'"
-    - "File\\Write('build/sites/default/drush.yml')"
-
+#- command: 'drupal:component-scaffold'
+#  configuration: []
+#  composer: >
+#    {
+#      "name": "foo/bar",
+#      "type": "drupal-module"
+#    }
+#  contains:
+#    - "symlink('../../../', 'build/modules/custom/bar')"
+#    - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
+#    - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
+#    - "AppendConfiguration('build/sites/default/default.settings.php'"
+#    - "WriteConfiguration('build/sites/default/drushrc.php'"
+#    - "File\\Write('build/sites/default/drush.yml')"
+#
+#- command: 'drupal:component-scaffold'
+#  configuration:
+#    drupal:
+#      root: "web"
+#  composer: >
+#    {
+#      "name": "foo/bar",
+#      "type": "drupal-theme"
+#    }
+#  contains:
+#    - "symlink('../../../', 'web/themes/custom/bar')"
+#    - "WriteConfiguration('web/sites/default/drushrc.php'"
+#    - "File\\Write('web/sites/default/drush.yml')"
+#
+#- command: 'drupal:component-scaffold'
+#  configuration:
+#    drupal:
+#      core: "7"
+#  composer: >
+#    {
+#      "name": "foo/bar",
+#      "type": "drupal-module"
+#    }
+#  contains:
+#    - "symlink('../../../../../', 'build/sites/all/modules/custom/bar')"
+#
+#- command: 'drupal:component-scaffold'
+#  configuration:
+#    drupal:
+#      core: "7"
+#  composer: >
+#    {
+#      "name": "foo/bar",
+#      "type": "drupal-theme"
+#    }
+#  contains:
+#    - "symlink('../../../../../', 'build/sites/all/themes/custom/bar')"
+#
+#- command: 'drupal:site-setup'
+#  configuration: []
+#  composer: ''
+#  contains:
+#    - "symlink('../../custom/modules/', 'build/modules/custom')"
+#    - "symlink('../../custom/themes/', 'build/themes/custom')"
+#    - "symlink('../../custom/profiles/', 'build/profiles/custom')"
+#    - "symlink('../../custom/libraries/', 'build/libraries/custom')"
+#    - "AppendConfiguration('build/sites/default/default.settings.php'"
+#    - "WriteConfiguration('build/sites/default/drushrc.php'"
+#    - "File\\Write('build/sites/default/drush.yml')"
+#
+#- command: 'drupal:site-setup'
+#  configuration:
+#    drupal:
+#      root: 'overridden'
+#  composer: ''
+#  contains:
+#    - "symlink('../../custom/modules/', 'overridden/modules/custom')"
+#    - "symlink('../../custom/themes/', 'overridden/themes/custom')"
+#    - "symlink('../../custom/profiles/', 'overridden/profiles/custom')"
+#    - "symlink('../../custom/libraries/', 'overridden/libraries/custom')"
+#    - "AppendConfiguration('overridden/sites/default/default.settings.php'"
+#    - "WriteConfiguration('overridden/sites/default/drushrc.php'"
+#    - "File\\Write('overridden/sites/default/drush.yml')"
+#
+#- command: 'drupal:site-setup --root=web'
+#  configuration: []
+#  composer: ''
+#  contains:
+#    - "symlink('../../custom/modules/', 'web/modules/custom')"
+#    - "symlink('../../custom/themes/', 'web/themes/custom')"
+#    - "symlink('../../custom/profiles/', 'web/profiles/custom')"
+#    - "symlink('../../custom/libraries/', 'web/libraries/custom')"
+#    - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
+#    - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
+#    - "AppendConfiguration('build/sites/default/default.settings.php'"
+#    - "WriteConfiguration('build/sites/default/drushrc.php'"
+#    - "File\\Write('build/sites/default/drush.yml')"
+#

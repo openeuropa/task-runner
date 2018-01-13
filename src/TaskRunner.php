@@ -2,9 +2,12 @@
 
 namespace EC\OpenEuropa\TaskRunner;
 
+use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use EC\OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use EC\OpenEuropa\TaskRunner\Services\Composer;
+use EC\OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Robo\Application;
 use Robo\Common\ConfigAwareTrait;
@@ -16,6 +19,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class Application.
@@ -52,6 +56,11 @@ class TaskRunner
     private $application;
 
     /**
+     * @var string
+     */
+    private $workingDir;
+
+    /**
      * TaskRunner constructor.
      *
      * @param InputInterface       $input
@@ -62,14 +71,20 @@ class TaskRunner
         $this->input = is_null($input) ? new ArgvInput() : $input;
         $this->output = is_null($output) ? new ConsoleOutput() : $output;
 
-        $this->application = $this->createApplication();
+        $this->workingDir = $this->getWorkingDir($this->input);
+        chdir($this->workingDir);
+
         $this->config = $this->createConfiguration();
+        $this->application = $this->createApplication();
         $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config);
 
         // Create and initialize runner.
         $this->runner = new RoboRunner();
         $this->runner->setContainer($this->container);
-        $this->runner->registerCommandClasses($this->application, $this->discoverCommandClasses());
+        $this->runner->registerCommandClasses($this->application, $this->getCommandDiscovery()->discover(__DIR__, 'EC\\OpenEuropa\\TaskRunner'));
+
+        // Register commands defined in runner.yml file.
+        $this->registerDynamicCommands($this->application);
     }
 
     /**
@@ -78,22 +93,6 @@ class TaskRunner
     public function run()
     {
         return $this->runner->run($this->input, $this->output, $this->application);
-    }
-
-    /**
-     * @return RoboRunner
-     */
-    public function getRunner()
-    {
-        return $this->runner;
-    }
-
-    /**
-     * @return ConsoleOutput|OutputInterface
-     */
-    public function getOutput()
-    {
-        return $this->output;
     }
 
     /**
@@ -110,43 +109,36 @@ class TaskRunner
     }
 
     /**
-     * @return array
+     * @param \Composer\Autoload\ClassLoader $classLoader
      */
-    private function discoverCommandClasses()
+    public function registerExternalCommands(ClassLoader $classLoader)
     {
         $commands = [];
-        $autoload = getcwd().'/vendor/autoload.php';
-
-        /** @var \Composer\Autoload\ClassLoader $classLoader */
-        $classLoader = require $autoload;
-        $discovery = new CommandFileDiscovery();
-        $discovery->setSearchPattern('*Commands.php')->setSearchLocations(['TaskRunner', 'Commands']);
+        $discovery = $this->getCommandDiscovery();
 
         foreach ($classLoader->getPrefixesPsr4() as $baseNamespace => $directoryList) {
-            if ($this->isTaskRunnerPrefix($baseNamespace, $directoryList)) {
+            $directoryList = array_filter($directoryList, function ($path) {
+                return is_dir($path.'/TaskRunner/Commands');
+            });
+
+            if (!empty($directoryList)) {
                 $discoveredCommands = $discovery->discover($directoryList, $baseNamespace);
                 $commands = array_merge($commands, $discoveredCommands);
             }
         }
 
-        return $commands;
+        $this->runner->registerCommandClasses($this->application, $commands);
     }
 
     /**
-     * Check whereas given PSR4 prefix is an eligible TaskRunner prefix.
-     *
-     * @param string $baseNamespace
-     * @param array  $directoryList
-     *
-     * @return bool
+     * @return \Consolidation\AnnotatedCommand\CommandFileDiscovery
      */
-    private function isTaskRunnerPrefix($baseNamespace, array $directoryList)
+    private function getCommandDiscovery()
     {
-        $directoryList = array_filter($directoryList, function ($path) {
-            return is_dir($path.'/TaskRunner/Commands');
-        });
+        $discovery = new CommandFileDiscovery();
+        $discovery->setSearchPattern('*Commands.php')->setSearchLocations(['TaskRunner', 'Commands']);
 
-        return !empty($directoryList) || strstr($baseNamespace, 'OpenEuropa\\TaskRunner') !== false;
+        return $discovery;
     }
 
     /**
@@ -156,7 +148,11 @@ class TaskRunner
      */
     private function createConfiguration()
     {
-        return Robo::createConfiguration([__DIR__.'/../config/runner.yml']);
+        return Robo::createConfiguration([
+            __DIR__.'/../config/runner.yml',
+            'runner.yml.dist',
+            'runner.yml',
+        ]);
     }
 
     /**
@@ -173,12 +169,14 @@ class TaskRunner
     {
         $container = Robo::createDefaultContainer($input, $output, $application, $config);
         $container->get('commandFactory')->setIncludeAllPublicMethods(false);
-        $container->share('task_runner.composer', Composer::class)
-          ->withArgument(getcwd());
+        $container->share('task_runner.composer', Composer::class)->withArgument($this->workingDir);
+        $container->share('filesystem', Filesystem::class);
 
         // Add service inflectors.
         $container->inflector(ComposerAwareInterface::class)
           ->invokeMethod('setComposer', ['task_runner.composer']);
+        $container->inflector(FilesystemAwareInterface::class)
+          ->invokeMethod('setFilesystem', ['filesystem']);
 
         return $container;
     }
@@ -193,8 +191,34 @@ class TaskRunner
         $application = new Application(self::APPLICATION_NAME, null);
         $application
           ->getDefinition()
-          ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', getcwd()));
+          ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', $this->workingDir));
 
         return $application;
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     *
+     * @return mixed
+     */
+    private function getWorkingDir(InputInterface $input)
+    {
+        return $input->getParameterOption('--working-dir', getcwd());
+    }
+
+    /**
+     * @param \Robo\Application $application
+     */
+    private function registerDynamicCommands(Application $application)
+    {
+        foreach ($this->getConfig()->get('commands', []) as $name => $tasks) {
+            /** @var \Consolidation\AnnotatedCommand\AnnotatedCommandFactory $commandFactory */
+            $commandFileName = DynamicCommands::class."Commands";
+            $commandClass = $this->container->get($commandFileName);
+            $commandFactory = $this->container->get('commandFactory');
+            $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
+            $command = $commandFactory->createCommand($commandInfo, $commandClass)->setName($name);
+            $application->add($command);
+        }
     }
 }
