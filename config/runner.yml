@@ -4,7 +4,7 @@
 
 # Global Task Runner settings.
 runner:
-  bin-dir: "./vendor/bin"
+  bin_dir: "./vendor/bin"
 
 # Drupal-related setting values.
 # All default values below refers to Drupal 8.

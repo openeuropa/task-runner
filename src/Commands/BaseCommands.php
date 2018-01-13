@@ -55,7 +55,7 @@ class BaseCommands implements BuilderAwareInterface, IOAwareInterface, ConfigAwa
      */
     protected function getBin($name)
     {
-        $filename = $this->getConfig()->get('runner.bin-dir').'/'.$name;
+        $filename = $this->getConfig()->get('runner.bin_dir').'/'.$name;
         if (!file_exists($filename) && !$this->isSimulating()) {
             throw new TaskException($this, "Executable '{$filename}' not found.");
         }

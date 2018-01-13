@@ -39,7 +39,7 @@
 - command: 'drupal:site-install --root="overridden"'
   configuration:
     runner:
-      bin-dir: "./bin"
+      bin_dir: "./bin"
   composer: ''
   contains:
     - "./bin/drush -y --root=$(pwd)/overridden"
