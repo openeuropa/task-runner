@@ -36,14 +36,14 @@ Available commands:
   help                      Displays help for a command
   list                      Lists commands
  changelog
-  changelog:generate        [changelog:g|cg] Generate a changelog based on GitHub issues and pull requests.
+  changelog:generate        Generate a changelog based on GitHub issues and pull requests.
  drupal
-  drupal:component-setup    [drupal:component-scaffold|drupal:cs|dcs] Scaffold Drupal component development.
-  drupal:site-install       [drupal:si|dsi] Install target site.
-  drupal:site-post-install  [drupal:spi|dspi] Run Drupal post-install commands.
-  drupal:site-setup         [drupal:site-scaffold|drupal:ss|dss] Setup local Drupal site development copy.
+  drupal:drush-setup        Write Drush configuration files to the specified directory.
+  drupal:settings-setup     Write Drupal site configuration files to the specified directory.
+  drupal:site-install       Install target site.
+  drupal:site-post-install  Run Drupal post-install commands.
+  drupal:site-pre-install   Run Drupal pre-install commands.
  setup
-  setup:behat               [setup:b|sb] Setup Behat.
-  setup:phpunit             [setup:p|sp] Setup PHPUnit.
-  setup:replace             [setup:r|sr] Replace configuration tokens in a text file.
+  setup:behat
+  setup:phpunit
 ```

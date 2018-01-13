@@ -4,7 +4,6 @@ namespace EC\OpenEuropa\TaskRunner\Commands;
 
 use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use EC\OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
-use Robo\Exception\TaskException;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
@@ -41,7 +40,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
      *
      * @hook command-event *
      */
-    public function initializeDrupalRuntimeConfiguration(ConsoleCommandEvent $event)
+    public function setRuntimeConfig(ConsoleCommandEvent $event)
     {
         $root = $this->getConfig()->get('drupal.root');
         $rootFullPath = realpath($root);
@@ -175,7 +174,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
     /**
      * Write Drush configuration files to the specified directory.
      *
-     * @command drupal:setup-drush
+     * @command drupal:drush-setup
      *
      * @option root Drupal root.
      *
@@ -199,7 +198,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
     /**
      * Write Drupal site configuration files to the specified directory.
      *
-     * @command drupal:setup-settings
+     * @command drupal:settings-setup
      *
      * @option root Drupal root.
      *

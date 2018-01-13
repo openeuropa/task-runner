@@ -2,7 +2,11 @@
 
 namespace EC\OpenEuropa\TaskRunner\Commands;
 
-use EC\OpenEuropa\TaskRunner\Tasks\CollectionFactory\loadTasks;
+use Consolidation\AnnotatedCommand\AnnotationData;
+use Consolidation\AnnotatedCommand\CommandData;
+use EC\OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
 /**
  * Class DynamicCommands
@@ -11,7 +15,7 @@ use EC\OpenEuropa\TaskRunner\Tasks\CollectionFactory\loadTasks;
  */
 class DynamicCommands extends BaseCommands
 {
-    use loadTasks;
+    use TaskRunnerTasks\CollectionFactory\loadTasks;
 
     /**
      * @return \EC\OpenEuropa\TaskRunner\Tasks\CollectionFactory\CollectionFactory

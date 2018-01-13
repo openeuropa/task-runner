@@ -139,28 +139,53 @@
     - "[Simulator] { task: symlink, from: build/modules/custom, to: ../../custom/modules }"
     - "[Simulator] { task: symlink, from: build/modules/custom, to: ../../custom/themes }"
 
-- command: 'drupal:setup-drush'
+- command: 'drupal:drush-setup'
   configuration: []
   composer: ''
   contains:
     - "WriteConfiguration('build/sites/default/drushrc.php'"
     - "File\\Write('build/sites/default/drush.yml')"
 
-- command: 'drupal:setup-drush --root=web'
+- command: 'drupal:drush-setup --root=web'
   configuration: []
   composer: ''
   contains:
     - "WriteConfiguration('web/sites/default/drushrc.php'"
     - "File\\Write('web/sites/default/drush.yml')"
 
-- command: 'drupal:setup-settings'
+- command: 'drupal:settings-setup'
   configuration: []
   composer: ''
   contains:
     - "AppendConfiguration('build/sites/default/default.settings.php'"
 
-- command: 'drupal:setup-settings --root=web'
+- command: 'drupal:settings-setup --root=web'
   configuration: []
   composer: ''
   contains:
     - "AppendConfiguration('web/sites/default/default.settings.php'"
+
+- command: 'drupal:setup-dev'
+  configuration:
+    drupal:
+      root: "web"
+    commands:
+      drupal:setup-dev:
+        - { task: "chmod", file: "${drupal.root}/sites", permissions: '0775' }
+        - { task: "symlink", from: "${drupal.root}/modules/custom", to: "../../custom/modules" }
+        - { task: "symlink", from: "${drupal.root}/themes/custom", to: "../../custom/themes" }
+        - { task: "symlink", from: "${drupal.root}/profiles/custom", to: "../../custom/profiles" }
+        - { task: "run", command: "drupal:drush-setup" }
+        - { task: "run", command: "drupal:settings-setup" }
+        - { task: "run", command: "setup:behat" }
+        - { task: "run", command: "setup:phpunit" }
+  composer: ''
+  contains:
+    - "{ task: chmod, file: web/sites, permissions: '0775' }"
+    - "{ task: symlink, from: web/modules/custom, to: ../../custom/modules }"
+    - "{ task: symlink, from: web/themes/custom, to: ../../custom/themes }"
+    - "{ task: symlink, from: web/profiles/custom, to: ../../custom/profiles }"
+    - "{ task: run, command: 'drupal:drush-setup' }"
+    - "{ task: run, command: 'drupal:settings-setup' }"
+    - "{ task: run, command: 'setup:behat' }"
+    - "{ task: run, command: 'setup:phpunit' }"

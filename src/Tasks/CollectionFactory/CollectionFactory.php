@@ -49,7 +49,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     {
         $collection = $this->collectionBuilder();
 
-        foreach ($this->tasks as $task) {
+        foreach ($this->getTasks() as $task) {
             $collection->addTask($this->taskFactory($task));
         }
 
@@ -61,13 +61,28 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
      */
     public function simulate($context)
     {
-        foreach ($this->tasks as $task) {
+        foreach ($this->getTasks() as $task) {
             if (is_array($task)) {
                 $task = Yaml::dump($task, 0);
             }
-
             $this->printTaskInfo($task, $context);
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getTasks()
+    {
+        return isset($this->tasks['tasks']) ? $this->tasks['tasks'] : $this->tasks;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHelp()
+    {
+        return isset($this->tasks['help']) ? $this->tasks['help'] : "Dynamic command defined in runner.yml";
     }
 
     /**
@@ -127,6 +142,9 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
 
             case "process":
                 return $this->taskProcessConfigFile($task['source'], $task['destination']);
+
+            case "run":
+                return $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')->arg($task['command']);
 
             default:
                 throw new TaskException($this, "Task '{$task['task']}' not supported.");

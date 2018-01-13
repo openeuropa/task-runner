@@ -12,9 +12,8 @@ runner:
 drupal:
   core: "8"
   root: "build"
-
   # The "root_absolute" is derived at runtime.
-  # @see \EC\OpenEuropa\TaskRunner\Commands\DrupalCommands::initializeDrupalRuntimeConfiguration()
+  # @see \EC\OpenEuropa\TaskRunner\Commands\DrupalCommands::setRuntimeConfig()
   root_absolute: ~
   base_url: "http://127.0.0.1:8888"
 
@@ -55,18 +54,6 @@ drupal:
         - "vendor"
         - "${drupal.root}"
 
-  # Filesystem tasks to be ran when setting up a site.
-  setup:
-    symlink:
-      - from: "custom/modules"
-        to: "modules/custom"
-      - from: "custom/themes"
-        to: "themes/custom"
-      - from: "custom/profiles"
-        to: "profiles/custom"
-      - from: "custom/libraries"
-        to: "libraries/custom"
-
   # List of shell commands to be before and after the site installation.
   # You can use same syntax as the "commands:" below or simply calling a shell command.
   # Configuration token replacement is supported too.
@@ -79,6 +66,7 @@ github:
   # GitHub OAuth token.
   token: ~
 
+# List of dynamically-defined commands.
 commands:
   setup:behat:
     - { task: "process", source: "behat.yml.dist", destination: "behat.yml" }
