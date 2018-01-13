@@ -139,21 +139,32 @@
     - "[Simulator] { task: symlink, from: build/modules/custom, to: ../../custom/modules }"
     - "[Simulator] { task: symlink, from: build/modules/custom, to: ../../custom/themes }"
 
-#- command: 'drupal:component-scaffold'
-#  configuration: []
-#  composer: >
-#    {
-#      "name": "foo/bar",
-#      "type": "drupal-module"
-#    }
-#  contains:
-#    - "symlink('../../../', 'build/modules/custom/bar')"
-#    - "[Simulator] Running ./vendor/bin/run 'setup:behat'"
-#    - "[Simulator] Running ./vendor/bin/run 'setup:phpunit'"
-#    - "AppendConfiguration('build/sites/default/default.settings.php'"
-#    - "WriteConfiguration('build/sites/default/drushrc.php'"
-#    - "File\\Write('build/sites/default/drush.yml')"
-#
+- command: 'drupal:setup-drush'
+  configuration: []
+  composer: ''
+  contains:
+    - "WriteConfiguration('build/sites/default/drushrc.php'"
+    - "File\\Write('build/sites/default/drush.yml')"
+
+- command: 'drupal:setup-drush --root=web'
+  configuration: []
+  composer: ''
+  contains:
+    - "WriteConfiguration('web/sites/default/drushrc.php'"
+    - "File\\Write('web/sites/default/drush.yml')"
+
+- command: 'drupal:setup-settings'
+  configuration: []
+  composer: ''
+  contains:
+    - "AppendConfiguration('build/sites/default/default.settings.php'"
+
+- command: 'drupal:setup-settings --root=web'
+  configuration: []
+  composer: ''
+  contains:
+    - "AppendConfiguration('web/sites/default/default.settings.php'"
+
 #- command: 'drupal:component-scaffold'
 #  configuration:
 #    drupal:

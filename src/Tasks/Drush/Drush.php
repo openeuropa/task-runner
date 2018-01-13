@@ -63,7 +63,7 @@ class Drush extends Exec implements ConfigAwareInterface
     }
 
     /**
-     * @param mixed $root
+     * @param string $root
      *
      * @return Drush
      */
@@ -75,7 +75,7 @@ class Drush extends Exec implements ConfigAwareInterface
     }
 
     /**
-     * @param mixed $locale
+     * @param string $locale
      *
      * @return Drush
      */
@@ -87,7 +87,7 @@ class Drush extends Exec implements ConfigAwareInterface
     }
 
     /**
-     * @param mixed $siteName
+     * @param string $siteName
      *
      * @return Drush
      */
@@ -99,7 +99,7 @@ class Drush extends Exec implements ConfigAwareInterface
     }
 
     /**
-     * @param mixed $siteMail
+     * @param string $siteMail
      *
      * @return Drush
      */
@@ -111,7 +111,7 @@ class Drush extends Exec implements ConfigAwareInterface
     }
 
     /**
-     * @param mixed $siteLocale
+     * @param string $siteLocale
      *
      * @return Drush
      */
@@ -123,7 +123,7 @@ class Drush extends Exec implements ConfigAwareInterface
     }
 
     /**
-     * @param mixed $siteProfile
+     * @param string $siteProfile
      *
      * @return Drush
      */
@@ -135,7 +135,7 @@ class Drush extends Exec implements ConfigAwareInterface
     }
 
     /**
-     * @param mixed $accountMail
+     * @param string $accountMail
      *
      * @return Drush
      */
@@ -147,7 +147,7 @@ class Drush extends Exec implements ConfigAwareInterface
     }
 
     /**
-     * @param mixed $accountName
+     * @param string $accountName
      *
      * @return Drush
      */
@@ -159,7 +159,7 @@ class Drush extends Exec implements ConfigAwareInterface
     }
 
     /**
-     * @param mixed $accountPassword
+     * @param string $accountPassword
      *
      * @return Drush
      */
@@ -171,7 +171,7 @@ class Drush extends Exec implements ConfigAwareInterface
     }
 
     /**
-     * @param mixed $databaseUser
+     * @param string $databaseUser
      *
      * @return Drush
      */
@@ -183,7 +183,7 @@ class Drush extends Exec implements ConfigAwareInterface
     }
 
     /**
-     * @param mixed $databasePassword
+     * @param string $databasePassword
      *
      * @return Drush
      */
@@ -195,7 +195,7 @@ class Drush extends Exec implements ConfigAwareInterface
     }
 
     /**
-     * @param mixed $databaseHost
+     * @param string $databaseHost
      *
      * @return Drush
      */
@@ -207,7 +207,7 @@ class Drush extends Exec implements ConfigAwareInterface
     }
 
     /**
-     * @param mixed $databasePort
+     * @param string $databasePort
      *
      * @return Drush
      */
@@ -219,7 +219,7 @@ class Drush extends Exec implements ConfigAwareInterface
     }
 
     /**
-     * @param mixed $databaseName
+     * @param string $databaseName
      *
      * @return Drush
      */

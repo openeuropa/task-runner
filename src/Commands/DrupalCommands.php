@@ -78,8 +78,6 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
      * @param array $options
      *
      * @return \Robo\Collection\CollectionBuilder
-     *
-     * @throws \Robo\Exception\TaskException
      */
     public function siteInstall(array $options = [
       'root'              => InputOption::VALUE_REQUIRED,
@@ -171,6 +169,51 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
         $tasks = $this->getConfig()->get('drupal.pre_install', []);
 
         return $this->taskCollectionFactory($tasks);
+    }
+
+
+    /**
+     * Write Drush configuration files to the specified directory.
+     *
+     * @command drupal:setup-drush
+     *
+     * @option root Drupal root.
+     *
+     * @param array $options
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     */
+    public function setupDrush(array $options = [
+      'root' => InputOption::VALUE_REQUIRED,
+    ])
+    {
+        $config = $this->getConfig();
+        $yaml = Yaml::dump($config->get('drupal.drush'));
+
+        return $this->collectionBuilder()->addTaskList([
+            $this->taskWriteConfiguration($options['root'].'/sites/default/drushrc.php', $config)->setConfigKey('drupal.drush'),
+            $this->taskWriteToFile($options['root'].'/sites/default/drush.yml')->text($yaml),
+        ]);
+    }
+
+    /**
+     * Write Drupal site configuration files to the specified directory.
+     *
+     * @command drupal:setup-settings
+     *
+     * @option root Drupal root.
+     *
+     * @param array $options
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     */
+    public function setupSettings(array $options = [
+      'root' => InputOption::VALUE_REQUIRED,
+    ])
+    {
+        return $this->collectionBuilder()->addTaskList([
+            $this->taskAppendConfiguration($options['root'].'/sites/default/default.settings.php', $this->getConfig())->setConfigKey('drupal.settings'),
+        ]);
     }
 
     /**
@@ -290,38 +333,6 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
     }
 
     /**
-     * Write Drush configuration files to the specified directory.
-     *
-     * @param string $path
-     *
-     * @return \Robo\Collection\CollectionBuilder
-     */
-    protected function writeDrushConfiguration($path)
-    {
-        $config = $this->getConfig();
-        $yaml = Yaml::dump($config->get('drupal.drush'));
-
-        return $this->collectionBuilder()->addTaskList([
-            $this->taskWriteConfiguration($path.'/drushrc.php', $config)->setConfigKey('drupal.drush'),
-            $this->taskWriteToFile($path.'/drush.yml')->text($yaml),
-        ]);
-    }
-
-    /**
-     * Write Drupal site configuration files to the specified directory.
-     *
-     * @param string $path
-     *
-     * @return \Robo\Collection\CollectionBuilder
-     */
-    protected function writeSiteConfiguration($path)
-    {
-        return $this->collectionBuilder()->addTaskList([
-            $this->taskAppendConfiguration($path.'/default.settings.php', $this->getConfig())->setConfigKey('drupal.settings'),
-        ]);
-    }
-
-    /**
      * Setup local site build, given its relative root and a list of symlinks.
      *
      * @todo: Turn this into an actual task.
@@ -346,8 +357,8 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
 
         $collection->addTaskList([
             $this->taskFilesystemStack()->chmod($this->getSiteRoot().'/sites', 0775, 0000, true),
-            $this->writeDrushConfiguration($this->getSiteRoot().'/sites/default'),
-            $this->writeSiteConfiguration($this->getSiteRoot().'/sites/default'),
+            $this->setupDrush($this->getSiteRoot().'/sites/default'),
+            $this->setupSettings($this->getSiteRoot().'/sites/default'),
         ]);
 
         if (file_exists('behat.yml.dist') || $this->isSimulating()) {
