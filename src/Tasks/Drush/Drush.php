@@ -29,6 +29,7 @@ class Drush extends Exec
     protected $databaseHost = '';
     protected $databasePort = '';
     protected $databaseName = '';
+    protected $sitesSubdir = '';
 
     /**
      * Build Drush site install command.
@@ -47,6 +48,7 @@ class Drush extends Exec
               'account-mail' => $this->accountMail,
               'account-name' => $this->accountName,
               'account-pass' => $this->accountPassword,
+              'sites-subdir' => $this->sitesSubdir,
               'db-url' => sprintf(
                   "mysql://%s:%s@%s:%s/%s",
                   $this->databaseUser,
@@ -224,6 +226,18 @@ class Drush extends Exec
     public function databaseName($databaseName)
     {
         $this->databaseName = $databaseName;
+
+        return $this;
+    }
+
+    /**
+     * @param string $sitesSubdir
+     *
+     * @return Drush
+     */
+    public function sitesSubdir($sitesSubdir)
+    {
+        $this->sitesSubdir = $sitesSubdir;
 
         return $this;
     }

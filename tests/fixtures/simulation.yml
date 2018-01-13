@@ -2,13 +2,13 @@
   configuration: []
   composer: ''
   contains:
-    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
 - command: 'drupal:site-install --site-name="Test site"'
   configuration: []
   composer: ''
   contains:
-    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
 - command: 'drupal:site-install --site-mail="test@example.com" --site-profile=minimal'
   configuration: []
@@ -107,7 +107,7 @@
         - "./vendor/bin/drush cr"
   composer: ''
   contains:
-    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
     - "./vendor/bin/drush en views -y"
     - "./vendor/bin/drush cr"
 
@@ -126,7 +126,7 @@
       post_install: []
   composer: ''
   contains:
-    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
 - command: 'custom:run-tasks'
   configuration:

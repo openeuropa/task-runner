@@ -24,6 +24,7 @@ drupal:
     profile: "standard"
     update: "false"
     locale: "en"
+    sites_subdir: "default"
 
   # Administrator account information.
   account:

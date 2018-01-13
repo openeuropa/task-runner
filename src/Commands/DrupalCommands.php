@@ -71,6 +71,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
      * @option database-name     Database name.
      * @option database-user     Database username.
      * @option database-password Database password.
+     * @option sites-subdir      Sites sub-directory.
      *
      * @aliases drupal:si,dsi
      *
@@ -94,6 +95,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
       'database-host'     => InputOption::VALUE_REQUIRED,
       'database-port'     => InputOption::VALUE_REQUIRED,
       'database-name'     => InputOption::VALUE_REQUIRED,
+      'sites-subdir'      => InputOption::VALUE_REQUIRED,
     ])
     {
         $drush = $this->getConfig()->get('runner.bin_dir').'/drush';
@@ -110,6 +112,7 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
           ->databaseHost($options['database-host'])
           ->databasePort($options['database-port'])
           ->databaseName($options['database-name'])
+          ->sitesSubdir($options['sites-subdir'])
           ->siteProfile($options['site-profile']);
 
         return $this->collectionBuilder()->addTaskList([
