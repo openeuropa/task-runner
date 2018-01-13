@@ -13,10 +13,8 @@ use Robo\Task\Base\Exec;
  *
  * @package EC\OpenEuropa\TaskRunner\Tasks\Drush
  */
-class Drush extends Exec implements ConfigAwareInterface
+class Drush extends Exec
 {
-    use ConfigAwareTrait;
-
     protected $root = '';
     protected $locale = '';
     protected $siteName = '';
