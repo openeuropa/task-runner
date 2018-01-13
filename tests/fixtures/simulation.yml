@@ -165,26 +165,26 @@
   contains:
     - "AppendConfiguration('web/sites/default/default.settings.php'"
 
-- command: 'drupal:setup-dev'
+- command: 'drupal:site-setup'
   configuration:
     drupal:
       root: "web"
     commands:
-      drupal:setup-dev:
-        - { task: "chmod", file: "${drupal.root}/sites", permissions: '0775' }
-        - { task: "symlink", from: "${drupal.root}/modules/custom", to: "../../custom/modules" }
-        - { task: "symlink", from: "${drupal.root}/themes/custom", to: "../../custom/themes" }
-        - { task: "symlink", from: "${drupal.root}/profiles/custom", to: "../../custom/profiles" }
+      drupal:site-setup:
+        - { task: "chmod", file: "${drupal.root}/sites", permissions: 0775 }
+        - { task: "symlink", from: "../../custom/modules", to: "${drupal.root}/modules/custom" }
+        - { task: "symlink", from: "../../custom/themes", to: "${drupal.root}/themes/custom" }
+        - { task: "symlink", from: "../../custom/profiles", to: "${drupal.root}/profiles/custom" }
         - { task: "run", command: "drupal:drush-setup" }
         - { task: "run", command: "drupal:settings-setup" }
         - { task: "run", command: "setup:behat" }
         - { task: "run", command: "setup:phpunit" }
   composer: ''
   contains:
-    - "{ task: chmod, file: web/sites, permissions: '0775' }"
-    - "{ task: symlink, from: web/modules/custom, to: ../../custom/modules }"
-    - "{ task: symlink, from: web/themes/custom, to: ../../custom/themes }"
-    - "{ task: symlink, from: web/profiles/custom, to: ../../custom/profiles }"
+    - "{ task: chmod, file: web/sites, permissions: 509 }"
+    - "{ task: symlink, from: ../../custom/modules, to: web/modules/custom }"
+    - "{ task: symlink, from: ../../custom/themes, to: web/themes/custom }"
+    - "{ task: symlink, from: ../../custom/profiles, to: web/profiles/custom }"
     - "{ task: run, command: 'drupal:drush-setup' }"
     - "{ task: run, command: 'drupal:settings-setup' }"
     - "{ task: run, command: 'setup:behat' }"
