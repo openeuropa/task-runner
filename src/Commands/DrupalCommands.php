@@ -34,16 +34,6 @@ class DrupalCommands extends BaseCommands implements ComposerAwareInterface, Fil
     }
 
     /**
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     *
-     * @hook init
-     */
-    public function init(InputInterface $input)
-    {
-        $this->getComposer()->setWorkingDir($input->getOption('working-dir'));
-    }
-
-    /**
      * Command initialization.
      *
      * @param \Symfony\Component\Console\Event\ConsoleCommandEvent $event

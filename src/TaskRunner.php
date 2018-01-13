@@ -56,6 +56,11 @@ class TaskRunner
     private $application;
 
     /**
+     * @var string
+     */
+    private $workingDir;
+
+    /**
      * TaskRunner constructor.
      *
      * @param InputInterface       $input
@@ -65,6 +70,9 @@ class TaskRunner
     {
         $this->input = is_null($input) ? new ArgvInput() : $input;
         $this->output = is_null($output) ? new ConsoleOutput() : $output;
+
+        $this->workingDir = $this->getWorkingDir($this->input);
+        chdir($this->workingDir);
 
         $this->config = $this->createConfiguration();
         $this->application = $this->createApplication();
@@ -140,7 +148,11 @@ class TaskRunner
      */
     private function createConfiguration()
     {
-        return Robo::createConfiguration([__DIR__.'/../config/runner.yml']);
+        return Robo::createConfiguration([
+            __DIR__.'/../config/runner.yml',
+            'runner.yml.dist',
+            'runner.yml',
+        ]);
     }
 
     /**
@@ -157,7 +169,7 @@ class TaskRunner
     {
         $container = Robo::createDefaultContainer($input, $output, $application, $config);
         $container->get('commandFactory')->setIncludeAllPublicMethods(false);
-        $container->share('task_runner.composer', Composer::class)->withArgument(getcwd());
+        $container->share('task_runner.composer', Composer::class)->withArgument($this->workingDir);
         $container->share('filesystem', Filesystem::class);
 
         // Add service inflectors.
@@ -179,9 +191,19 @@ class TaskRunner
         $application = new Application(self::APPLICATION_NAME, null);
         $application
           ->getDefinition()
-          ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', getcwd()));
+          ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', $this->workingDir));
 
         return $application;
+    }
+
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     *
+     * @return mixed
+     */
+    private function getWorkingDir(InputInterface $input)
+    {
+        return $input->getParameterOption('--working-dir', getcwd());
     }
 
     /**
