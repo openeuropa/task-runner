@@ -25,7 +25,6 @@ use Symfony\Component\Yaml\Yaml;
 class CollectionFactory extends BaseTask implements BuilderAwareInterface, SimulatedInterface
 {
     use LoadAllTasks;
-    use TaskIO;
     use TaskRunner\Tasks\ProcessConfigFile\loadTasks;
 
     /**
