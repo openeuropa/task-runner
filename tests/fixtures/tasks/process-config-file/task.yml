@@ -1,22 +1,22 @@
 - source:
     one: ${drupal.root}
     two:
-      three: ${drupal.core}
+      three: ${drupal.site.profile}
   expected:
     one: "build"
     two:
-      three: "8"
+      three: "standard"
 
 - source:
     missing: "${this.does.not.exists}"
-    not-valid: "drupal.core"
-    ok: "${drupal.core}"
+    not-valid: "drupal.site.profile"
+    ok: "${drupal.site.profile}"
   expected:
     missing: ""
-    not-valid: "drupal.core"
-    ok: "8"
+    not-valid: "drupal.site.profile"
+    ok: "standard"
 
 - source:
-    concat: "${drupal.core}/${drupal.root}"
+    concat: "${drupal.root}/${drupal.site.profile}"
   expected:
-    concat: "8/build"
+    concat: "build/standard"

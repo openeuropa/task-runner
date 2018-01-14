@@ -1,19 +1,21 @@
-# ---------------------------------
+# =============================================================================
 # Default Task Runner configuration
-# ---------------------------------
+# =============================================================================
 
-# Global Task Runner settings.
+# -----------------------------------------------------------------------------
+# Global Task Runner settings
+# -----------------------------------------------------------------------------
 runner:
   bin_dir: "./vendor/bin"
 
-# Drupal-related setting values.
-# All default values below refers to Drupal 8.
-# For Drupal 7 projects override them as necessary.
+# -----------------------------------------------------------------------------
+# Drupal-related settings.
+# -----------------------------------------------------------------------------
+#
+# Value of "drupal.root_absolute" is derived at runtime.
+# @see \EC\OpenEuropa\TaskRunner\Commands\DrupalCommands::setRuntimeConfig()
 drupal:
-  core: "8"
   root: "build"
-  # The "root_absolute" is derived at runtime.
-  # @see \EC\OpenEuropa\TaskRunner\Commands\DrupalCommands::setRuntimeConfig()
   root_absolute: ~
   base_url: "http://127.0.0.1:8888"
 
@@ -56,16 +58,20 @@ drupal:
         - "${drupal.root}"
 
   # List of shell commands to be before and after the site installation.
-  # You can use same syntax as the "commands:" below or simply calling a shell command.
+  # You can use same syntax as the "commands:", check the documentation for more.
   # Configuration token replacement is supported too.
   pre_install: []
   post_install: []
 
+# -----------------------------------------------------------------------------
 # GitHub configuration values.
+# -----------------------------------------------------------------------------
 github:
-
-  # GitHub OAuth token.
+  # GitHub personal access token token.
+  # @link https://github.com/settings/tokens
   token: ~
 
+# -----------------------------------------------------------------------------
 # List of dynamically-defined commands.
+# -----------------------------------------------------------------------------
 commands: []

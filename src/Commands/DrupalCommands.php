@@ -2,7 +2,6 @@
 
 namespace EC\OpenEuropa\TaskRunner\Commands;
 
-use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use EC\OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,9 +15,8 @@ use NuvoleWeb\Robo\Task as NuvoleWebTasks;
  *
  * @package EC\OpenEuropa\TaskRunner\Commands
  */
-class DrupalCommands extends AbstractCommands implements ComposerAwareInterface, FilesystemAwareInterface
+class DrupalCommands extends AbstractCommands implements FilesystemAwareInterface
 {
-    use TaskRunnerTraits\ComposerAwareTrait;
     use TaskRunnerTraits\ConfigurationTokensTrait;
     use TaskRunnerTraits\FilesystemAwareTrait;
     use TaskRunnerTasks\CollectionFactory\loadTasks;
