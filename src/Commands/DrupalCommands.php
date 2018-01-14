@@ -34,7 +34,7 @@ class DrupalCommands extends AbstractCommands implements ComposerAwareInterface,
     }
 
     /**
-     * Command initialization.
+     * Set runtime configuration values.
      *
      * @param \Symfony\Component\Console\Event\ConsoleCommandEvent $event
      *
@@ -52,8 +52,8 @@ class DrupalCommands extends AbstractCommands implements ComposerAwareInterface,
     /**
      * Install target site.
      *
-     * This command will install the target site using configuration values
-     * provided in runner.yml.dist (overridable by runner.yml).
+     * This command will install a target Drupal site using configuration values
+     * provided in local runner.yml.dist/runner.yml files.
      *
      * @command drupal:site-install
      *
@@ -125,16 +125,17 @@ class DrupalCommands extends AbstractCommands implements ComposerAwareInterface,
     /**
      * Run Drupal post-install commands.
      *
-     * Add post install commands in your runner.yaml file under "drupal.post_install"
-     * as shown below:
+     * Commands have to be listed under the "drupal.post_install" property in
+     * your local runner.yml.dist/runner.yml files, as shown below:
      *
      * > drupal:
      * >   ...
      * >   post_install:
-     * >     - ./vendor/bin/drush en views -y
-     * >     - ./vendor/bin/drush cr
+     * >     - "./vendor/bin/drush en views -y"
+     * >     - { task: "process", source: "behat.yml.dist", destination: "behat.yml" }
      *
-     * Post install commands will be automatically executed after installing the site.
+     * Post-install commands are automatically executed after installing the site
+     * when running "drupal:site-install".
      *
      * @command drupal:site-post-install
      *
@@ -150,16 +151,17 @@ class DrupalCommands extends AbstractCommands implements ComposerAwareInterface,
     /**
      * Run Drupal pre-install commands.
      *
-     * Add post install commands in your runner.yaml file under "drupal.pre_install"
-     * as shown below:
+     * Commands have to be listed under the "drupal.pre_install" property in
+     * your local runner.yml.dist/runner.yml files, as shown below:
      *
      * > drupal:
      * >   ...
      * >   pre_install:
-     * >     - ./vendor/bin/drush en views -y
-     * >     - ./vendor/bin/drush cr
+     * >     - { task: "symlink", from: "../libraries", to: "${drupal.root}/libraries" }
+     * >     - { task: "process", source: "behat.yml.dist", destination: "behat.yml" }
      *
-     * Pre-install commands will be automatically executed after installing the site.
+     * Pre-install commands are automatically executed before installing the site
+     * when running "drupal:site-install".
      *
      * @command drupal:site-pre-install
      *
@@ -173,7 +175,21 @@ class DrupalCommands extends AbstractCommands implements ComposerAwareInterface,
     }
 
     /**
-     * Write Drush configuration files to the specified directory.
+     * Write Drush configuration files to given directories.
+     *
+     * Works for both Drush 8 and 9, by default it will:
+     *
+     * - Generate a Drush 9 configuration file at "${drupal.root}/drush/drush.yml"
+     * - Generate a Drush 8 configuration file at "${drupal.root}/sites/all/default/drushrc.php"
+     *
+     * Configuration file contents can be customized by editing "drupal.drush"
+     * values in your local runner.yml.dist/runner.yml, as shown below:
+     *
+     * > drupal:
+     * >   drush:
+     * >     options:
+     * >       ignored-directories: "${drupal.root}"
+     * >       uri: "${drupal.base_url}"
      *
      * @command drupal:drush-setup
      *
@@ -199,7 +215,20 @@ class DrupalCommands extends AbstractCommands implements ComposerAwareInterface,
     }
 
     /**
-     * Write Drupal site configuration files to the specified directory.
+     * Setup default Drupal settings file.
+     *
+     * This command will append settings specified at "drupal.settings" to the
+     * current site's "default.settings.php" which, in turn, will be used
+     * to generate the actual "settings.php" at installation time.
+     *
+     * Default settings can be customized in your local runner.yml.dist/runner.yml
+     * as shown below:
+     *
+     * > drupal:
+     * >   settings:
+     * >     config_directories:
+     * >       sync: '../config/sync'
+     * >       prod: '../config/prod'
      *
      * @command drupal:settings-setup
      *
