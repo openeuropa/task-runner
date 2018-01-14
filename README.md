@@ -2,15 +2,15 @@
 
 [![Build Status](https://travis-ci.org/ec-europa/oe-task-runner.svg?branch=master)](https://travis-ci.org/ec-europa/oe-task-runner)
 
-PHP task runner based on [Robo](http://robo.li/), focused on extensibility. 
+PHP task runner based on [Robo](http://robo.li), focused on extensibility. 
 
 Quick references:
 
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Built-in commands](#built-in-commands)
-- [Expose custom via PHP classes](#expose-custom-via-php-classes)
-- [Expose commands via local `robo.yml`](#expose-commands-via-local-robo-yml)
+- [Expose custom commands as YAML configuration](#expose-custom-commands-via-yaml-configuration)
+- [Expose custom commands as PHP classes](#expose-custom-commands-as-php-classes)
 
 ## Installation
 
@@ -46,9 +46,48 @@ The Task Runner comes with the following built-in commands:
 
 Run `./vendor/bin/run help [command-name]` for more information about each command's capabilities.
 
-## Expose custom via PHP classes
+## Expose custom commands as YAML configuration
 
-Extra commands can be provided by creating Task Runner command classes within your project's PSR-4 namespace.
+The Task Runner allows you to expose new commands by just listing its [tasks](http://robo.li/getting-started/#tasks)
+under the `commands:` property in `robo.yml.dist`/`robo.yml`.
+
+For example, the following YAML portion will expose two commands, `drupal:site-setup` and `setup:behat`:
+
+```yaml
+commands:
+  drupal:site-setup:
+    - { task: "chmod", file: "${drupal.root}/sites", permissions: 0774, recursive: true }
+    - { task: "symlink", from: "../../custom/modules", to: "${drupal.root}/modules/custom" }
+    - { task: "symlink", from: "../../custom/themes", to: "${drupal.root}/themes/custom" }
+    - { task: "run", command: "drupal:drush-setup" }
+    - { task: "run", command: "drupal:settings-setup" }
+    - { task: "run", command: "setup:behat" }
+  setup:behat:
+    - { task: "process", source: "behat.yml.dist", destination: "behat.yml" }
+```
+
+Commands can reference each-other, allowing for complex scenarios to be implemented with relative ease.
+
+At the moment the following tasks are supported (optional argument default values in parenthesis):
+
+| Task      | Task                      | Arguments |
+| --------- | ------------------------- | --------- |
+| `mkdir`   | `taskFilesystemStack()`   | `dir`, `mode` (0777) |
+| `touch`   | `taskFilesystemStack()`   | `file`, `time` (current time), `atime` (current time) |
+| `copy`    | `taskFilesystemStack()`   | `from`, `to`, `force` (false) |
+| `chmod`   | `taskFilesystemStack()`   | `file`, `permissions`, `umask` (0000), `recursive` (false) |
+| `chgrp`   | `taskFilesystemStack()`   | `file`, `group`, `recursive` (false) |
+| `chown`   | `taskFilesystemStack()`   | `file`, `user`, `recursive` (false) |
+| `remove`  | `taskFilesystemStack()`   | `file` |
+| `rename`  | `taskFilesystemStack()`   | `from`, `to`, `force` (false) |
+| `symlink` | `taskFilesystemStack()`   | `from`, `to`, `copyOnWindows` (false) |
+| `mirror`  | `taskFilesystemStack()`   | `from`, `to` |
+| `process` | `taskProcessConfigFile()` | `from`, `to` |
+| `run`     | `taskExec()`              | `command` (will run `./vendor/bin/run [command]`) |
+
+## Expose custom commands as PHP classes
+
+More complex commands can be provided by creating Task Runner command classes within your project's PSR-4 namespace.
 
 For example, given you have the following PSR-4 namespace configured in our `composer.json`:
 
@@ -111,6 +150,4 @@ register them at startup.
 
 Even if not mandatory it is recommended to extend `EC\OpenEuropa\TaskRunner\Commands\AbstractCommands`.
 
-For a more details of how to expose custom commands please refer to [Robo documentation](http://robo.li/).
-
-## Expose commands via local `robo.yml`
+For a more details of how to expose custom commands please refer to [Robo documentation](http://robo.li/getting-started).
