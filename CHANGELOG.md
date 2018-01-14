@@ -1,5 +1,24 @@
 # Change Log
 
+## [0.3.0](https://github.com/ec-europa/oe-task-runner/tree/0.3.0) (2018-01-14)
+[Full Changelog](https://github.com/ec-europa/oe-task-runner/compare/0.2.0...0.3.0)
+
+**Closed issues:**
+
+- NEPT-1668: Fix Drush config paths and make it configurable [\#35](https://github.com/ec-europa/oe-task-runner/issues/35)
+- NEPT-1668: Improve documentation [\#34](https://github.com/ec-europa/oe-task-runner/issues/34)
+- NEPT-1668: Refactor Drupal commands and add Drush task [\#32](https://github.com/ec-europa/oe-task-runner/issues/32)
+- Fix setup:replace aliases [\#26](https://github.com/ec-europa/oe-task-runner/issues/26)
+- NEPT-1668: Allow to define commands in runner.yml.dist [\#25](https://github.com/ec-europa/oe-task-runner/issues/25)
+
+**Merged pull requests:**
+
+- NEPT-1668: Improve documentation \#34 [\#37](https://github.com/ec-europa/oe-task-runner/pull/37) ([ademarco](https://github.com/ademarco))
+- NEPT-1668: Fix Drush config paths and make it configurable \#35 [\#36](https://github.com/ec-europa/oe-task-runner/pull/36) ([ademarco](https://github.com/ademarco))
+- NEPT-1668: Refactor Drupal commands and add Drush task \#32 [\#33](https://github.com/ec-europa/oe-task-runner/pull/33) ([ademarco](https://github.com/ademarco))
+- NEPT-1105: Allow to define commands in runner.yml.dist \#25 [\#31](https://github.com/ec-europa/oe-task-runner/pull/31) ([ademarco](https://github.com/ademarco))
+- Issue \#26: Fix setup:replace aliases. [\#27](https://github.com/ec-europa/oe-task-runner/pull/27) ([dxvargas](https://github.com/dxvargas))
+
 ## [0.2.0](https://github.com/ec-europa/oe-task-runner/tree/0.2.0) (2018-01-09)
 [Full Changelog](https://github.com/ec-europa/oe-task-runner/compare/0.1.2...0.2.0)
 
