@@ -13,11 +13,11 @@ use Robo\Robo;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
 /**
- * Class BaseCommands.
+ * Class AbstractCommands
  *
  * @package EC\OpenEuropa\TaskRunner\Commands
  */
-class BaseCommands implements BuilderAwareInterface, IOAwareInterface, ConfigAwareInterface
+abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterface, ConfigAwareInterface
 {
     use ConfigAwareTrait;
     use LoadAllTasks;
@@ -28,7 +28,7 @@ class BaseCommands implements BuilderAwareInterface, IOAwareInterface, ConfigAwa
      *
      * Command classes should implement this method.
      *
-     * @return null|string
+     * @return string
      */
     public function getConfigurationFile()
     {

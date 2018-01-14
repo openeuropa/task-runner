@@ -16,7 +16,7 @@ use NuvoleWeb\Robo\Task as NuvoleWebTasks;
  *
  * @package EC\OpenEuropa\TaskRunner\Commands
  */
-class DrupalCommands extends BaseCommands implements ComposerAwareInterface, FilesystemAwareInterface
+class DrupalCommands extends AbstractCommands implements ComposerAwareInterface, FilesystemAwareInterface
 {
     use TaskRunnerTraits\ComposerAwareTrait;
     use TaskRunnerTraits\ConfigurationTokensTrait;

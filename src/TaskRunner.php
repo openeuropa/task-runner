@@ -98,7 +98,7 @@ class TaskRunner
     /**
      * @param string $class
      *
-     * @return \EC\OpenEuropa\TaskRunner\Commands\BaseCommands
+     * @return \EC\OpenEuropa\TaskRunner\Commands\AbstractCommands
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface

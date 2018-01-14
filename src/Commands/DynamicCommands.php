@@ -13,7 +13,7 @@ use Symfony\Component\Console\Event\ConsoleCommandEvent;
  *
  * @package EC\OpenEuropa\TaskRunner\Commands
  */
-class DynamicCommands extends BaseCommands
+class DynamicCommands extends AbstractCommands
 {
     use TaskRunnerTasks\CollectionFactory\loadTasks;
 

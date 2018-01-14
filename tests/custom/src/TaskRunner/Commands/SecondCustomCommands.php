@@ -2,14 +2,14 @@
 
 namespace EC\My\Custom\TaskRunner\Commands;
 
-use EC\OpenEuropa\TaskRunner\Commands\BaseCommands;
+use EC\OpenEuropa\TaskRunner\Commands\AbstractCommands;
 
 /**
  * Class SecondCustomCommands
  *
  * @package My\Custom\TaskRunner\Commands
  */
-class SecondCustomCommands extends BaseCommands
+class SecondCustomCommands extends AbstractCommands
 {
     /**
      * @command custom:command-three
