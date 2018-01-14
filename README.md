@@ -63,6 +63,7 @@ commands:
     - { task: "run", command: "drupal:drush-setup" }
     - { task: "run", command: "drupal:settings-setup" }
     - { task: "run", command: "setup:behat" }
+    - "./vendor/bin/drush --root=$(pwd)/${drupal.root} cr"
   setup:behat:
     - { task: "process", source: "behat.yml.dist", destination: "behat.yml" }
 ```
@@ -85,6 +86,8 @@ At the moment the following tasks are supported (optional argument default value
 | `mirror`  | `taskFilesystemStack()`   | `from`, `to` |
 | `process` | `taskProcessConfigFile()` | `from`, `to` |
 | `run`     | `taskExec()`              | `command` (will run `./vendor/bin/run [command]`) |
+
+Tasks provided as plain-text strings will be executed as is in the current working directory.
 
 ## Expose custom commands as PHP classes
 
