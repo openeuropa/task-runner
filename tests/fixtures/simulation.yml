@@ -165,6 +165,18 @@
   contains:
     - "AppendConfiguration('web/sites/default/default.settings.php'"
 
+- command: 'drupal:run-server'
+  configuration: []
+  composer: ''
+  contains:
+    - "[Simulator] Running exec php -S 127.0.0.1:8888 -t build -dalways_populate_raw_post_data=-1"
+
+- command: 'drupal:run-server --base-url=http://example.com'
+  configuration: []
+  composer: ''
+  contains:
+    - "[Simulator] Running exec php -S example.com:80 -t build -dalways_populate_raw_post_data=-1"
+
 - command: 'drupal:site-setup'
   configuration:
     drupal:
