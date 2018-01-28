@@ -12,7 +12,7 @@ class InstallerPlugin implements PluginInterface
     public function activate(Composer $composer, IOInterface $io)
     {
         var_dump("PLUGIN");
-        $installer = new InstallerPlugin($io, $composer);
+        $installer = new Installer($io, $composer);
         $composer->getInstallationManager()->addInstaller($installer);
     }
 }
