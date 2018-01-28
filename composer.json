@@ -1,16 +1,21 @@
 {
     "name": "ec-europa/oe-task-runner",
     "license": "EUPL-1.1",
-    "type": "library",
+    "type": "composer-plugin",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
+        "composer-plugin-api": "^1.0",
         "consolidation/robo": "^1.2",
         "nuvoleweb/robo-config": "~0.2"
     },
     "require-dev": {
+        "composer/composer": "^1.3",
         "ec-europa/oe-code-review": "*",
         "phpunit/phpunit": "^5"
+    },
+    "replace": {
+        "composer/installers": "*"
     },
     "autoload": {
         "psr-4": {
@@ -22,6 +27,9 @@
             "EC\\OpenEuropa\\TaskRunner\\Tests\\": "./tests/",
             "EC\\My\\Custom\\": "./tests/custom/src/"
         }
+    },
+    "extra": {
+        "class": "EC\\OpenEuropa\\TaskRunner\\Composer\\InstallerPlugin"
     },
     "bin": ["bin/run"]
 }
