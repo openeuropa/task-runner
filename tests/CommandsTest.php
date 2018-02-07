@@ -137,6 +137,28 @@ class CommandsTest extends AbstractTest
     }
 
     /**
+     * @param array $config
+     * @param array $expected
+     *
+     * @dataProvider settingsSetupDataProvider
+     */
+    public function testSettingsSetup(array $config, array $expected)
+    {
+        $configFile = $this->getSandboxFilepath('runner.yml');
+
+        file_put_contents($configFile, Yaml::dump($config));
+
+        $input = new StringInput("drupal:settings-setup --working-dir=".$this->getSandboxRoot());
+        $runner = new TaskRunner($input, new BufferedOutput());
+        $runner->run();
+
+        foreach ($expected as $row) {
+            $content = file_get_contents($this->getSandboxFilepath($row['file']));
+            $this->assertContains($row['contains'], $content);
+        }
+    }
+
+    /**
      * @return array
      */
     public function simulationDataProvider()
@@ -149,7 +171,15 @@ class CommandsTest extends AbstractTest
      */
     public function drushSetupDataProvider()
     {
-        return $this->getFixtureContent('commands/drush-setup.yml');
+        return $this->getFixtureContent('commands/drupal-drush-setup.yml');
+    }
+
+    /**
+     * @return array
+     */
+    public function settingsSetupDataProvider()
+    {
+        return $this->getFixtureContent('commands/drupal-settings-setup.yml');
     }
 
     /**

@@ -1,0 +1,31 @@
+- configuration:
+    drupal:
+      settings:
+        conf:
+          file_scan_ignore_directories:
+            - "node_modules"
+            - "bower_components"
+            - "vendor"
+            - "${drupal.root}"
+  expected:
+    - file: "build/sites/default/default.settings.php"
+      contains: "$conf[\"file_scan_ignore_directories\"] = array(0 => 'node_modules',1 => 'bower_components',2 => 'vendor',3 => 'build');"
+
+- configuration:
+    drupal:
+      settings:
+        settings:
+          file_scan_ignore_directories:
+            - "${drupal.root}"
+  expected:
+    - file: "build/sites/default/default.settings.php"
+      contains: "$settings[\"file_scan_ignore_directories\"] = array(0 => 'build');"
+
+- configuration:
+    drupal:
+      settings: []
+  expected:
+    - file: "build/sites/default/default.settings.php"
+      contains: "// Start settings processor block."
+    - file: "build/sites/default/default.settings.php"
+      contains: "// End settings processor block."
