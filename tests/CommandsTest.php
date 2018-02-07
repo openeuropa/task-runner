@@ -115,11 +115,41 @@ class CommandsTest extends AbstractTest
     }
 
     /**
+     * @param array $config
+     * @param array $expected
+     *
+     * @dataProvider drushSetupDataProvider
+     */
+    public function testDrushSetup(array $config, array $expected)
+    {
+        $configFile = $this->getSandboxFilepath('runner.yml');
+
+        file_put_contents($configFile, Yaml::dump($config));
+
+        $input = new StringInput("drupal:drush-setup --working-dir=".$this->getSandboxRoot());
+        $runner = new TaskRunner($input, new BufferedOutput());
+        $runner->run();
+
+        foreach ($expected as $row) {
+            $content = file_get_contents($this->getSandboxFilepath($row['file']));
+            $this->assertContains($row['contains'], $content);
+        }
+    }
+
+    /**
      * @return array
      */
     public function simulationDataProvider()
     {
         return $this->getFixtureContent('simulation.yml');
+    }
+
+    /**
+     * @return array
+     */
+    public function drushSetupDataProvider()
+    {
+        return $this->getFixtureContent('commands/drush-setup.yml');
     }
 
     /**

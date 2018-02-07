@@ -1,0 +1,26 @@
+- configuration:
+    drupal:
+      drush:
+        options:
+          ignored-directories: "${drupal.root}"
+          uri: "${drupal.base_url}"
+  expected:
+    - file: "build/drush/drush.yml"
+      contains: "uri: 'http://127.0.0.1:8888'"
+    - file: "build/drush/drush.yml"
+      contains: "ignored-directories: build"
+    - file: "build/sites/default/drushrc.php"
+      contains: "$options[\"uri\"] = 'http://127.0.0.1:8888';"
+    - file: "build/sites/default/drushrc.php"
+      contains: "$options[\"ignored-directories\"] = 'build';"
+
+- configuration:
+    drupal:
+      drush:
+        options:
+          uri: "http://web"
+  expected:
+    - file: "build/drush/drush.yml"
+      contains: "uri: 'http://web'"
+    - file: "build/sites/default/drushrc.php"
+      contains: "$options[\"uri\"] = 'http://web';"
