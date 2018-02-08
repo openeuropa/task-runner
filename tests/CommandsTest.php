@@ -115,11 +115,72 @@ class CommandsTest extends AbstractTest
     }
 
     /**
+     * @param array $config
+     * @param array $expected
+     *
+     * @dataProvider drushSetupDataProvider
+     */
+    public function testDrushSetup(array $config, array $expected)
+    {
+        $configFile = $this->getSandboxFilepath('runner.yml');
+
+        file_put_contents($configFile, Yaml::dump($config));
+
+        $input = new StringInput("drupal:drush-setup --working-dir=".$this->getSandboxRoot());
+        $runner = new TaskRunner($input, new BufferedOutput());
+        $runner->run();
+
+        foreach ($expected as $row) {
+            $content = file_get_contents($this->getSandboxFilepath($row['file']));
+            $this->assertContainsNotContains($content, $row);
+        }
+    }
+
+    /**
+     * @param array $config
+     * @param array $expected
+     *
+     * @dataProvider settingsSetupDataProvider
+     */
+    public function testSettingsSetup(array $config, array $expected)
+    {
+        $configFile = $this->getSandboxFilepath('runner.yml');
+
+        file_put_contents($configFile, Yaml::dump($config));
+
+        $input = new StringInput("drupal:settings-setup --working-dir=".$this->getSandboxRoot());
+        $runner = new TaskRunner($input, new BufferedOutput());
+        $runner->run();
+
+
+        foreach ($expected as $row) {
+            $content = file_get_contents($this->getSandboxFilepath($row['file']));
+            $this->assertContainsNotContains($content, $row);
+        }
+    }
+
+    /**
      * @return array
      */
     public function simulationDataProvider()
     {
         return $this->getFixtureContent('simulation.yml');
+    }
+
+    /**
+     * @return array
+     */
+    public function drushSetupDataProvider()
+    {
+        return $this->getFixtureContent('commands/drupal-drush-setup.yml');
+    }
+
+    /**
+     * @return array
+     */
+    public function settingsSetupDataProvider()
+    {
+        return $this->getFixtureContent('commands/drupal-settings-setup.yml');
     }
 
     /**
@@ -136,5 +197,17 @@ class CommandsTest extends AbstractTest
     public function changelogDataProvider()
     {
         return $this->getFixtureContent('changelog.yml');
+    }
+
+    /**
+     * @param string $content
+     * @param array  $expected
+     */
+    protected function assertContainsNotContains($content, array $expected)
+    {
+        $this->assertContains($expected['contains'], $content);
+        if (!empty($row['not_contains'])) {
+            $this->assertNotContains($row['not_contains'], $content);
+        }
     }
 }
