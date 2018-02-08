@@ -132,7 +132,7 @@ class CommandsTest extends AbstractTest
 
         foreach ($expected as $row) {
             $content = file_get_contents($this->getSandboxFilepath($row['file']));
-            $this->assertContains($row['contains'], $content);
+            $this->assertContainsNotContains($content, $row);
         }
     }
 
@@ -152,9 +152,10 @@ class CommandsTest extends AbstractTest
         $runner = new TaskRunner($input, new BufferedOutput());
         $runner->run();
 
+
         foreach ($expected as $row) {
             $content = file_get_contents($this->getSandboxFilepath($row['file']));
-            $this->assertContains($row['contains'], $content);
+            $this->assertContainsNotContains($content, $row);
         }
     }
 
@@ -196,5 +197,17 @@ class CommandsTest extends AbstractTest
     public function changelogDataProvider()
     {
         return $this->getFixtureContent('changelog.yml');
+    }
+
+    /**
+     * @param string $content
+     * @param array  $expected
+     */
+    protected function assertContainsNotContains($content, array $expected)
+    {
+        $this->assertContains($expected['contains'], $content);
+        if (!empty($row['not_contains'])) {
+            $this->assertNotContains($row['not_contains'], $content);
+        }
     }
 }

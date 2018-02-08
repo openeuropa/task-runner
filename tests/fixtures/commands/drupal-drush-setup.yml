@@ -7,12 +7,16 @@
   expected:
     - file: "build/drush/drush.yml"
       contains: "uri: 'http://127.0.0.1:8888'"
+      not_contains: ~
     - file: "build/drush/drush.yml"
       contains: "ignored-directories: build"
+      not_contains: ~
     - file: "build/sites/default/drushrc.php"
       contains: "$options[\"uri\"] = 'http://127.0.0.1:8888';"
+      not_contains: ~
     - file: "build/sites/default/drushrc.php"
       contains: "$options[\"ignored-directories\"] = 'build';"
+      not_contains: ~
 
 - configuration:
     drupal:
@@ -22,5 +26,7 @@
   expected:
     - file: "build/drush/drush.yml"
       contains: "uri: 'http://web'"
+      not_contains: ~
     - file: "build/sites/default/drushrc.php"
       contains: "$options[\"uri\"] = 'http://web';"
+      not_contains: "ignored-directories"
