@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.3.1](https://github.com/ec-europa/oe-task-runner/tree/0.3.1) (2018-02-09)
+[Full Changelog](https://github.com/ec-europa/oe-task-runner/compare/0.3.0...0.3.1)
+
+**Closed issues:**
+
+- Implement GitStack Commands [\#40](https://github.com/ec-europa/oe-task-runner/issues/40)
+
+**Merged pull requests:**
+
+- OPENEUROPA-206: Fix Task Runner default Drush settings [\#41](https://github.com/ec-europa/oe-task-runner/pull/41) ([ademarco](https://github.com/ademarco))
+
 ## [0.3.0](https://github.com/ec-europa/oe-task-runner/tree/0.3.0) (2018-01-14)
 [Full Changelog](https://github.com/ec-europa/oe-task-runner/compare/0.2.0...0.3.0)
 
