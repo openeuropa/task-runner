@@ -2,6 +2,8 @@
 
 namespace OpenEuropa\TaskRunner\Commands;
 
+use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
+use EC\OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Common\IO;
 use Robo\Contract\ConfigAwareInterface;
@@ -17,8 +19,9 @@ use Symfony\Component\Console\Event\ConsoleCommandEvent;
  *
  * @package OpenEuropa\TaskRunner\Commands
  */
-abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterface, ConfigAwareInterface
+abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterface, ComposerAwareInterface, ConfigAwareInterface
 {
+    use ComposerAwareTrait;
     use ConfigAwareTrait;
     use LoadAllTasks;
     use IO;
@@ -61,6 +64,29 @@ abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterfa
         }
 
         return $filename;
+    }
+
+    /**
+     * Set runtime "runner.bin_dir" configuration value.
+     *
+     * @param \Symfony\Component\Console\Event\ConsoleCommandEvent $event
+     *
+     * @hook command-event *
+     */
+    public function setRuntimeBinDir(ConsoleCommandEvent $event)
+    {
+        if ($this->getConfig()->get('runner.bin_dir') === null) {
+            if ($composerBinDir = $this->getComposer()->getConfig('bin-dir')) {
+                if (strpos($composerBinDir, './') === FALSE) {
+                    $composerBinDir = './' . $composerBinDir;
+                }
+                $composerBinDir = rtrim($composerBinDir, DIRECTORY_SEPARATOR);
+            }
+            else {
+                $composerBinDir = './vendor/bin';
+            }
+            $this->getConfig()->set('runner.bin_dir', $composerBinDir);
+        }
     }
 
     /**

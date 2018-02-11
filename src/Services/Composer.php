@@ -57,6 +57,16 @@ class Composer
     }
 
     /**
+     * @param string $configKey
+     *
+     * @return mixed
+     */
+    public function getConfig($configKey)
+    {
+        return isset($this->getPackage()->config->{$configKey}) ? $this->getPackage()->config->{$configKey} : null;
+    }
+
+    /**
      * @return bool
      */
     public function hasName()
