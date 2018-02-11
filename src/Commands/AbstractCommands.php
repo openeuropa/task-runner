@@ -60,14 +60,17 @@ abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterfa
     public function setRuntimeBinDir(ConsoleCommandEvent $event)
     {
         if ($this->getConfig()->get('runner.bin_dir') === null) {
-            if ($composerBinDir = $this->getComposer()->getConfig('bin-dir')) {
-                if (strpos($composerBinDir, './') === false) {
-                    $composerBinDir = "./$composerBinDir";
+            // The COMPOSER_BIN_DIR environment takes precedence over the value
+            // defined in composer.json config, if any. Default to ./vendor/bin.
+            if (!$composerBinDir = getenv('COMPOSER_BIN_DIR')) {
+                if (!$composerBinDir = $this->getComposer()->getConfig('bin-dir')) {
+                    $composerBinDir = './vendor/bin';
                 }
-                $composerBinDir = rtrim($composerBinDir, DIRECTORY_SEPARATOR);
-            } else {
-                $composerBinDir = './vendor/bin';
             }
+            if (strpos($composerBinDir, './') === false) {
+                $composerBinDir = "./$composerBinDir";
+            }
+            $composerBinDir = rtrim($composerBinDir, DIRECTORY_SEPARATOR);
             $this->getConfig()->set('runner.bin_dir', $composerBinDir);
         }
     }

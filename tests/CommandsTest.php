@@ -21,17 +21,22 @@ class CommandsTest extends AbstractTest
      * @param string $command
      * @param array  $config
      * @param string $composer
+     * @param array  $environment_vars
      * @param array  $expected
      *
      * @dataProvider simulationDataProvider
      */
-    public function testSimulation($command, array $config, $composer, array $expected)
+    public function testSimulation($command, array $config, $composer, array $environment_vars, array $expected)
     {
         $configFile = $this->getSandboxFilepath('runner.yml');
         $composerFile = $this->getSandboxFilepath('composer.json');
 
         file_put_contents($configFile, Yaml::dump($config));
         file_put_contents($composerFile, $composer);
+
+        array_walk($environment_vars, function ($value, $name) {
+            putenv("$name=$value");
+        });
 
         $input = new StringInput("{$command} --simulate --working-dir=".$this->getSandboxRoot());
         $output = new BufferedOutput();
