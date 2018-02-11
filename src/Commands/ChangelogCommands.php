@@ -11,10 +11,8 @@ use Symfony\Component\Console\Input\InputOption;
  *
  * @package OpenEuropa\TaskRunner\Commands
  */
-class ChangelogCommands extends AbstractCommands implements ComposerAwareInterface
+class ChangelogCommands extends AbstractCommands
 {
-    use ComposerAwareTrait;
-
     /**
      * {@inheritdoc}
      */
