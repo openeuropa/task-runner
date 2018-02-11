@@ -21,12 +21,12 @@ class CommandsTest extends AbstractTest
      * @param string $command
      * @param array  $config
      * @param string $composer
-     * @param array  $environment_vars
+     * @param array  $envVars
      * @param array  $expected
      *
      * @dataProvider simulationDataProvider
      */
-    public function testSimulation($command, array $config, $composer, array $environment_vars, array $expected)
+    public function testSimulation($command, array $config, $composer, array $envVars, array $expected)
     {
         $configFile = $this->getSandboxFilepath('runner.yml');
         $composerFile = $this->getSandboxFilepath('composer.json');
@@ -34,7 +34,7 @@ class CommandsTest extends AbstractTest
         file_put_contents($configFile, Yaml::dump($config));
         file_put_contents($composerFile, $composer);
 
-        array_walk($environment_vars, function ($value, $name) {
+        array_walk($envVars, function ($value, $name) {
             putenv("$name=$value");
         });
 
