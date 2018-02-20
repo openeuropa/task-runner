@@ -1,15 +1,15 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Commands;
+namespace OpenEuropa\TaskRunner\Commands;
 
-use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
-use EC\OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
+use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
+use OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class ChangelogCommands
  *
- * @package EC\OpenEuropa\TaskRunner\Commands
+ * @package OpenEuropa\TaskRunner\Commands
  */
 class ChangelogCommands extends AbstractCommands implements ComposerAwareInterface
 {

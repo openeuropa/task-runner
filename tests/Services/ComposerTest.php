@@ -1,14 +1,14 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Tests\Services;
+namespace OpenEuropa\TaskRunner\Tests\Services;
 
-use EC\OpenEuropa\TaskRunner\Services\Composer;
-use EC\OpenEuropa\TaskRunner\Tests\AbstractTest;
+use OpenEuropa\TaskRunner\Services\Composer;
+use OpenEuropa\TaskRunner\Tests\AbstractTest;
 
 /**
  * Class ComposerTest
  *
- * @package EC\OpenEuropa\TaskRunner\Tests\Services
+ * @package OpenEuropa\TaskRunner\Tests\Services
  */
 class ComposerTest extends AbstractTest
 {

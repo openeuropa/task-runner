@@ -2,7 +2,7 @@
 <?php
 
 use Symfony\Component\Console\Input\ArgvInput;
-use EC\OpenEuropa\TaskRunner\TaskRunner;
+use OpenEuropa\TaskRunner\TaskRunner;
 
 if (file_exists(__DIR__.'/../vendor/autoload.php')) {
     $classLoader = require __DIR__.'/../vendor/autoload.php';

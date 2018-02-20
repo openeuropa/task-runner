@@ -1,11 +1,11 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Services;
+namespace OpenEuropa\TaskRunner\Services;
 
 /**
  * Parse composer package information.
  *
- * @package EC\OpenEuropa\TaskRunner\Services
+ * @package OpenEuropa\TaskRunner\Services
  */
 class Composer
 {

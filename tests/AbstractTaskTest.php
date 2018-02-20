@@ -1,8 +1,8 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Tests;
+namespace OpenEuropa\TaskRunner\Tests;
 
-use EC\OpenEuropa\TaskRunner\TaskRunner;
+use OpenEuropa\TaskRunner\TaskRunner;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Symfony\Component\Console\Input\StringInput;
@@ -13,7 +13,7 @@ use Robo\Collection\CollectionBuilder;
 /**
  * Class AbstractTaskTest.
  *
- * @package EC\OpenEuropa\TaskRunner\Tests
+ * @package OpenEuropa\TaskRunner\Tests
  */
 abstract class AbstractTaskTest extends AbstractTest implements ContainerAwareInterface
 {

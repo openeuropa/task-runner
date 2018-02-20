@@ -1,11 +1,11 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Contract;
+namespace OpenEuropa\TaskRunner\Contract;
 
 /**
  * Interface FilesystemAwareTrait
  *
- * @package EC\OpenEuropa\TaskRunner\Contract
+ * @package OpenEuropa\TaskRunner\Contract
  */
 interface FilesystemAwareInterface
 {

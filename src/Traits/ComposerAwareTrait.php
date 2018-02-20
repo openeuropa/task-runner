@@ -1,23 +1,23 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Traits;
+namespace OpenEuropa\TaskRunner\Traits;
 
-use EC\OpenEuropa\TaskRunner\Services\Composer;
+use OpenEuropa\TaskRunner\Services\Composer;
 
 /**
  * Trait ComposerAwareTrait
  *
- * @package EC\OpenEuropa\TaskRunner\Traits
+ * @package OpenEuropa\TaskRunner\Traits
  */
 trait ComposerAwareTrait
 {
     /**
-     * @var \EC\OpenEuropa\TaskRunner\Services\Composer
+     * @var \OpenEuropa\TaskRunner\Services\Composer
      */
     protected $composer;
 
     /**
-     * @return \EC\OpenEuropa\TaskRunner\Services\Composer
+     * @return \OpenEuropa\TaskRunner\Services\Composer
      */
     public function getComposer()
     {
@@ -25,7 +25,7 @@ trait ComposerAwareTrait
     }
 
     /**
-     * @param \EC\OpenEuropa\TaskRunner\Services\Composer $composer
+     * @param \OpenEuropa\TaskRunner\Services\Composer $composer
      *
      * @return $this
      */

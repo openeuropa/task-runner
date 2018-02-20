@@ -1,8 +1,8 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Tasks\CollectionFactory;
+namespace OpenEuropa\TaskRunner\Tasks\CollectionFactory;
 
-use EC\OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
+use OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
 use Robo\Common\BuilderAwareTrait;
 use Robo\Common\TaskIO;
 use Robo\Contract\BuilderAwareInterface;
@@ -10,7 +10,7 @@ use Robo\Contract\SimulatedInterface;
 use Robo\Exception\TaskException;
 use Robo\LoadAllTasks;
 use Robo\Task as Task;
-use EC\OpenEuropa\TaskRunner as TaskRunner;
+use OpenEuropa\TaskRunner as TaskRunner;
 use Robo\Task\BaseTask;
 use Robo\TaskAccessor;
 use Symfony\Component\Yaml\Yaml;
@@ -20,7 +20,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * Return a task collection given its array representation.
  *
- * @package EC\OpenEuropa\TaskRunner\Tasks\YamlTaskFacorty
+ * @package OpenEuropa\TaskRunner\Tasks\YamlTaskFacorty
  */
 class CollectionFactory extends BaseTask implements BuilderAwareInterface, SimulatedInterface
 {

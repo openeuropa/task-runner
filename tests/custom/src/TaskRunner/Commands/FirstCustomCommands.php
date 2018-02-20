@@ -1,8 +1,8 @@
 <?php
 
-namespace EC\My\Custom\TaskRunner\Commands;
+namespace My\Custom\TaskRunner\Commands;
 
-use EC\OpenEuropa\TaskRunner\Commands\AbstractCommands;
+use OpenEuropa\TaskRunner\Commands\AbstractCommands;
 
 /**
  * Class FirstCustomCommands

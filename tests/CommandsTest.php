@@ -1,11 +1,11 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Tests\Commands;
+namespace OpenEuropa\TaskRunner\Tests\Commands;
 
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
-use EC\OpenEuropa\TaskRunner\Commands\ChangelogCommands;
-use EC\OpenEuropa\TaskRunner\TaskRunner;
-use EC\OpenEuropa\TaskRunner\Tests\AbstractTest;
+use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
+use OpenEuropa\TaskRunner\TaskRunner;
+use OpenEuropa\TaskRunner\Tests\AbstractTest;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Yaml\Yaml;
@@ -13,7 +13,7 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Class DrupalCommandsTest.
  *
- * @package EC\OpenEuropa\TaskRunner\Tests\Commands
+ * @package OpenEuropa\TaskRunner\Tests\Commands
  */
 class CommandsTest extends AbstractTest
 {

@@ -1,16 +1,16 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Tasks\Drush;
+namespace OpenEuropa\TaskRunner\Tasks\Drush;
 
 /**
  * Trait loadTasks
  *
- * @package EC\OpenEuropa\TaskRunner\Tasks\Drush
+ * @package OpenEuropa\TaskRunner\Tasks\Drush
  */
 trait loadTasks
 {
     /**
-     * @return \EC\OpenEuropa\TaskRunner\Tasks\Drush\Drush
+     * @return \OpenEuropa\TaskRunner\Tasks\Drush\Drush
      */
     public function taskDrush($command)
     {

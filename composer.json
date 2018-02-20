@@ -14,13 +14,13 @@
     },
     "autoload": {
         "psr-4": {
-            "EC\\OpenEuropa\\TaskRunner\\": "./src/"
+            "OpenEuropa\\TaskRunner\\": "./src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "EC\\OpenEuropa\\TaskRunner\\Tests\\": "./tests/",
-            "EC\\My\\Custom\\": "./tests/custom/src/"
+            "OpenEuropa\\TaskRunner\\Tests\\": "./tests/",
+            "My\\Custom\\": "./tests/custom/src/"
         }
     },
     "bin": ["bin/run"]

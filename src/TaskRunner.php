@@ -1,13 +1,13 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner;
+namespace OpenEuropa\TaskRunner;
 
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
-use EC\OpenEuropa\TaskRunner\Commands\DynamicCommands;
-use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
-use EC\OpenEuropa\TaskRunner\Services\Composer;
-use EC\OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
+use OpenEuropa\TaskRunner\Commands\DynamicCommands;
+use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
+use OpenEuropa\TaskRunner\Services\Composer;
+use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Robo\Application;
 use Robo\Common\ConfigAwareTrait;
@@ -24,7 +24,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Class Application.
  *
- * @package EC\OpenEuropa\TaskRunner
+ * @package OpenEuropa\TaskRunner
  */
 class TaskRunner
 {
@@ -81,7 +81,7 @@ class TaskRunner
         // Create and initialize runner.
         $this->runner = new RoboRunner();
         $this->runner->setContainer($this->container);
-        $this->runner->registerCommandClasses($this->application, $this->getCommandDiscovery()->discover(__DIR__, 'EC\\OpenEuropa\\TaskRunner'));
+        $this->runner->registerCommandClasses($this->application, $this->getCommandDiscovery()->discover(__DIR__, 'OpenEuropa\\TaskRunner'));
 
         // Register commands defined in runner.yml file.
         $this->registerDynamicCommands($this->application);
@@ -98,7 +98,7 @@ class TaskRunner
     /**
      * @param string $class
      *
-     * @return \EC\OpenEuropa\TaskRunner\Commands\AbstractCommands
+     * @return \OpenEuropa\TaskRunner\Commands\AbstractCommands
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface

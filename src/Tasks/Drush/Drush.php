@@ -1,6 +1,6 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Tasks\Drush;
+namespace OpenEuropa\TaskRunner\Tasks\Drush;
 
 use Robo\Common\ConfigAwareTrait;
 use Robo\Contract\ConfigAwareInterface;
@@ -11,7 +11,7 @@ use Robo\Task\Base\Exec;
  *
  * @SuppressWarnings(PHPMD)
  *
- * @package EC\OpenEuropa\TaskRunner\Tasks\Drush
+ * @package OpenEuropa\TaskRunner\Tasks\Drush
  */
 class Drush extends Exec
 {

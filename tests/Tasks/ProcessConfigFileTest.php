@@ -1,20 +1,20 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Tests\Tasks;
+namespace OpenEuropa\TaskRunner\Tests\Tasks;
 
-use EC\OpenEuropa\TaskRunner\Tasks\ProcessConfigFile\ProcessConfigFile;
-use EC\OpenEuropa\TaskRunner\Tests\AbstractTaskTest;
+use OpenEuropa\TaskRunner\Tasks\ProcessConfigFile\ProcessConfigFile;
+use OpenEuropa\TaskRunner\Tests\AbstractTaskTest;
 use Robo\Task\Simulator;
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class ProcessConfigFileTest.
  *
- * @package EC\OpenEuropa\TaskRunner\Tests\Tasks
+ * @package OpenEuropa\TaskRunner\Tests\Tasks
  */
 class ProcessConfigFileTest extends AbstractTaskTest
 {
-    use \EC\OpenEuropa\TaskRunner\Tasks\ProcessConfigFile\loadTasks;
+    use \OpenEuropa\TaskRunner\Tasks\ProcessConfigFile\loadTasks;
 
     /**
      * Test task.

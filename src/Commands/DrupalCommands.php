@@ -1,19 +1,19 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Commands;
+namespace OpenEuropa\TaskRunner\Commands;
 
-use EC\OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
+use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
-use EC\OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
-use EC\OpenEuropa\TaskRunner\Traits as TaskRunnerTraits;
+use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
+use OpenEuropa\TaskRunner\Traits as TaskRunnerTraits;
 use NuvoleWeb\Robo\Task as NuvoleWebTasks;
 
 /**
  * Class DrupalCommands.
  *
- * @package EC\OpenEuropa\TaskRunner\Commands
+ * @package OpenEuropa\TaskRunner\Commands
  */
 class DrupalCommands extends AbstractCommands implements FilesystemAwareInterface
 {

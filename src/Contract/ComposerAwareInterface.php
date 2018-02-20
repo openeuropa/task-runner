@@ -1,23 +1,23 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Contract;
+namespace OpenEuropa\TaskRunner\Contract;
 
-use EC\OpenEuropa\TaskRunner\Services\Composer;
+use OpenEuropa\TaskRunner\Services\Composer;
 
 /**
  * Interface ComposerAwareInterface
  *
- * @package EC\OpenEuropa\TaskRunner\Contract
+ * @package OpenEuropa\TaskRunner\Contract
  */
 interface ComposerAwareInterface
 {
     /**
-     * @return \EC\OpenEuropa\TaskRunner\Services\Composer
+     * @return \OpenEuropa\TaskRunner\Services\Composer
      */
     public function getComposer();
 
     /**
-     * @param \EC\OpenEuropa\TaskRunner\Services\Composer $composer
+     * @param \OpenEuropa\TaskRunner\Services\Composer $composer
      *
      * @return $this
      */

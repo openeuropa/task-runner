@@ -1,8 +1,8 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Tasks\ProcessConfigFile;
+namespace OpenEuropa\TaskRunner\Tasks\ProcessConfigFile;
 
-use EC\OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
+use OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
 use Robo\Common\BuilderAwareTrait;
 use Robo\Contract\BuilderAwareInterface;
 use Robo\Exception\TaskException;
@@ -13,7 +13,7 @@ use Robo\Task\Filesystem\FilesystemStack;
 /**
  * Class ProcessConfigFile
  *
- * @package EC\OpenEuropa\TaskRunner\Tasks\ProcessConfigFile
+ * @package OpenEuropa\TaskRunner\Tasks\ProcessConfigFile
  */
 class ProcessConfigFile extends BaseTask implements BuilderAwareInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace EC\OpenEuropa\TaskRunner\Tests;
+namespace OpenEuropa\TaskRunner\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -9,7 +9,7 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Class AbstractTest
  *
- * @package EC\OpenEuropa\TaskRunner\Tests
+ * @package OpenEuropa\TaskRunner\Tests
  */
 abstract class AbstractTest extends TestCase
 {
