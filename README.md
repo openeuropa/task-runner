@@ -114,7 +114,7 @@ example below:
 
 namespace My\Project\TaskRunner\Commands;
 
-use EC\OpenEuropa\TaskRunner\Commands\AbstractCommands;
+use OpenEuropa\TaskRunner\Commands\AbstractCommands;
 
 /**
  * Class MyCustomCommands
@@ -153,6 +153,6 @@ Available commands:
 **NOTE:** It is mandatory to place your command classes under `./src/TaskRunner/Commands`, otherwise the Task Runner will not
 register them at startup.
 
-Even if not mandatory it is recommended for your command classes to extend `EC\OpenEuropa\TaskRunner\Commands\AbstractCommands`.
+Even if not mandatory it is recommended for your command classes to extend `OpenEuropa\TaskRunner\Commands\AbstractCommands`.
 
 For more details on how to expose custom commands please refer to the main [Robo documentation](http://robo.li/getting-started).
