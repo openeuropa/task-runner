@@ -1,4 +1,4 @@
-# OpenEuropa Task Runner
+# Task Runner
 
 [![Build Status](https://travis-ci.org/openeuropa/task-runner.svg?branch=master)](https://travis-ci.org/openeuropa/task-runner)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/openeuropa/task-runner/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/openeuropa/task-runner/?branch=master)
