@@ -1,7 +1,7 @@
 # OpenEuropa Task Runner
 
-[![Build Status](https://travis-ci.org/ec-europa/oe-task-runner.svg?branch=master)](https://travis-ci.org/ec-europa/oe-task-runner)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ec-europa/oe-task-runner/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ec-europa/oe-task-runner/?branch=master)
+[![Build Status](https://travis-ci.org/openeuropa/task-runner.svg?branch=master)](https://travis-ci.org/openeuropa/task-runner)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/openeuropa/task-runner/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/openeuropa/task-runner/?branch=master)
 
 PHP task runner based on [Robo](http://robo.li), focused on extensibility. 
 
@@ -18,7 +18,7 @@ Quick references:
 Install it with [Composer](https://getcomposer.org):
 
 ```
-$ composer require ec-europa/oe-task-runner
+$ composer require openeuropa/task-runner
 ```
 
 After installation run `./vendor/bin/run` for a list of available commands. 

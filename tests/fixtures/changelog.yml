@@ -1,9 +1,9 @@
 - options:
     token: "abc"
     tag: ~
-  expected: 'docker run  --rm -v $(pwd):$(pwd) -w $(pwd) -i muccg/github-changelog-generator ec-europa/oe-task-runner -t abc'
+  expected: 'docker run  --rm -v $(pwd):$(pwd) -w $(pwd) -i muccg/github-changelog-generator openeuropa/task-runner -t abc'
 
 - options:
     token: "abc"
     tag: "1.2.3"
-  expected: 'docker run  --rm -v $(pwd):$(pwd) -w $(pwd) -i muccg/github-changelog-generator ec-europa/oe-task-runner -t abc --future-release=1.2.3'
+  expected: 'docker run  --rm -v $(pwd):$(pwd) -w $(pwd) -i muccg/github-changelog-generator openeuropa/task-runner -t abc --future-release=1.2.3'

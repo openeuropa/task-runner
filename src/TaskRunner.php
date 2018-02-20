@@ -33,7 +33,7 @@ class TaskRunner
 
     const APPLICATION_NAME = 'OpenEuropa Task Runner';
 
-    const REPOSITORY = 'ec-europa/oe-task-runner';
+    const REPOSITORY = 'openeuropa/task-runner';
 
     /**
      * @var RoboRunner

@@ -1,89 +1,89 @@
 # Change Log
 
-## [0.3.1](https://github.com/ec-europa/oe-task-runner/tree/0.3.1) (2018-02-09)
-[Full Changelog](https://github.com/ec-europa/oe-task-runner/compare/0.3.0...0.3.1)
+## [0.3.1](https://github.com/openeuropa/task-runner/tree/0.3.1) (2018-02-09)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/0.3.0...0.3.1)
 
 **Closed issues:**
 
-- Implement GitStack Commands [\#40](https://github.com/ec-europa/oe-task-runner/issues/40)
+- Implement GitStack Commands [\#40](https://github.com/openeuropa/task-runner/issues/40)
 
 **Merged pull requests:**
 
-- OPENEUROPA-206: Fix Task Runner default Drush settings [\#41](https://github.com/ec-europa/oe-task-runner/pull/41) ([ademarco](https://github.com/ademarco))
+- OPENEUROPA-206: Fix Task Runner default Drush settings [\#41](https://github.com/openeuropa/task-runner/pull/41) ([ademarco](https://github.com/ademarco))
 
-## [0.3.0](https://github.com/ec-europa/oe-task-runner/tree/0.3.0) (2018-01-14)
-[Full Changelog](https://github.com/ec-europa/oe-task-runner/compare/0.2.0...0.3.0)
+## [0.3.0](https://github.com/openeuropa/task-runner/tree/0.3.0) (2018-01-14)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/0.2.0...0.3.0)
 
 **Closed issues:**
 
-- NEPT-1668: Fix Drush config paths and make it configurable [\#35](https://github.com/ec-europa/oe-task-runner/issues/35)
-- NEPT-1668: Improve documentation [\#34](https://github.com/ec-europa/oe-task-runner/issues/34)
-- NEPT-1668: Refactor Drupal commands and add Drush task [\#32](https://github.com/ec-europa/oe-task-runner/issues/32)
-- Fix setup:replace aliases [\#26](https://github.com/ec-europa/oe-task-runner/issues/26)
-- NEPT-1668: Allow to define commands in runner.yml.dist [\#25](https://github.com/ec-europa/oe-task-runner/issues/25)
+- NEPT-1668: Fix Drush config paths and make it configurable [\#35](https://github.com/openeuropa/task-runner/issues/35)
+- NEPT-1668: Improve documentation [\#34](https://github.com/openeuropa/task-runner/issues/34)
+- NEPT-1668: Refactor Drupal commands and add Drush task [\#32](https://github.com/openeuropa/task-runner/issues/32)
+- Fix setup:replace aliases [\#26](https://github.com/openeuropa/task-runner/issues/26)
+- NEPT-1668: Allow to define commands in runner.yml.dist [\#25](https://github.com/openeuropa/task-runner/issues/25)
 
 **Merged pull requests:**
 
-- NEPT-1668: Improve documentation \#34 [\#37](https://github.com/ec-europa/oe-task-runner/pull/37) ([ademarco](https://github.com/ademarco))
-- NEPT-1668: Fix Drush config paths and make it configurable \#35 [\#36](https://github.com/ec-europa/oe-task-runner/pull/36) ([ademarco](https://github.com/ademarco))
-- NEPT-1668: Refactor Drupal commands and add Drush task \#32 [\#33](https://github.com/ec-europa/oe-task-runner/pull/33) ([ademarco](https://github.com/ademarco))
-- NEPT-1105: Allow to define commands in runner.yml.dist \#25 [\#31](https://github.com/ec-europa/oe-task-runner/pull/31) ([ademarco](https://github.com/ademarco))
-- Issue \#26: Fix setup:replace aliases. [\#27](https://github.com/ec-europa/oe-task-runner/pull/27) ([dxvargas](https://github.com/dxvargas))
+- NEPT-1668: Improve documentation \#34 [\#37](https://github.com/openeuropa/task-runner/pull/37) ([ademarco](https://github.com/ademarco))
+- NEPT-1668: Fix Drush config paths and make it configurable \#35 [\#36](https://github.com/openeuropa/task-runner/pull/36) ([ademarco](https://github.com/ademarco))
+- NEPT-1668: Refactor Drupal commands and add Drush task \#32 [\#33](https://github.com/openeuropa/task-runner/pull/33) ([ademarco](https://github.com/ademarco))
+- NEPT-1105: Allow to define commands in runner.yml.dist \#25 [\#31](https://github.com/openeuropa/task-runner/pull/31) ([ademarco](https://github.com/ademarco))
+- Issue \#26: Fix setup:replace aliases. [\#27](https://github.com/openeuropa/task-runner/pull/27) ([dxvargas](https://github.com/dxvargas))
 
-## [0.2.0](https://github.com/ec-europa/oe-task-runner/tree/0.2.0) (2018-01-09)
-[Full Changelog](https://github.com/ec-europa/oe-task-runner/compare/0.1.2...0.2.0)
+## [0.2.0](https://github.com/openeuropa/task-runner/tree/0.2.0) (2018-01-09)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/0.1.2...0.2.0)
 
 **Closed issues:**
 
-- NEPT-1105: Implement Drupal site setup command [\#23](https://github.com/ec-europa/oe-task-runner/issues/23)
-- NEPT-1627: Fix command discovery for custom namespaces [\#21](https://github.com/ec-europa/oe-task-runner/issues/21)
-- NEPT-1105: Remove exclude flag from Drush site install [\#19](https://github.com/ec-europa/oe-task-runner/issues/19)
+- NEPT-1105: Implement Drupal site setup command [\#23](https://github.com/openeuropa/task-runner/issues/23)
+- NEPT-1627: Fix command discovery for custom namespaces [\#21](https://github.com/openeuropa/task-runner/issues/21)
+- NEPT-1105: Remove exclude flag from Drush site install [\#19](https://github.com/openeuropa/task-runner/issues/19)
 
 **Merged pull requests:**
 
-- NEPT-1105: Implement Drupal site setup command \#23 [\#24](https://github.com/ec-europa/oe-task-runner/pull/24) ([ademarco](https://github.com/ademarco))
-- NEPT-1627: Fix command discovery for custom namespaces \#21 [\#22](https://github.com/ec-europa/oe-task-runner/pull/22) ([ademarco](https://github.com/ademarco))
-- NEPT-1105: Remove exclude flag from Drush site install \#19 [\#20](https://github.com/ec-europa/oe-task-runner/pull/20) ([ademarco](https://github.com/ademarco))
+- NEPT-1105: Implement Drupal site setup command \#23 [\#24](https://github.com/openeuropa/task-runner/pull/24) ([ademarco](https://github.com/ademarco))
+- NEPT-1627: Fix command discovery for custom namespaces \#21 [\#22](https://github.com/openeuropa/task-runner/pull/22) ([ademarco](https://github.com/ademarco))
+- NEPT-1105: Remove exclude flag from Drush site install \#19 [\#20](https://github.com/openeuropa/task-runner/pull/20) ([ademarco](https://github.com/ademarco))
 
-## [0.1.2](https://github.com/ec-europa/oe-task-runner/tree/0.1.2) (2018-01-07)
-[Full Changelog](https://github.com/ec-europa/oe-task-runner/compare/0.1.1...0.1.2)
+## [0.1.2](https://github.com/openeuropa/task-runner/tree/0.1.2) (2018-01-07)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/0.1.1...0.1.2)
 
 **Closed issues:**
 
-- NEPT-1105: Fix command discovery [\#16](https://github.com/ec-europa/oe-task-runner/issues/16)
-- NEPT-1668: Support configuration token replacement in post install commands [\#15](https://github.com/ec-europa/oe-task-runner/issues/15)
+- NEPT-1105: Fix command discovery [\#16](https://github.com/openeuropa/task-runner/issues/16)
+- NEPT-1668: Support configuration token replacement in post install commands [\#15](https://github.com/openeuropa/task-runner/issues/15)
 
 **Merged pull requests:**
 
-- NEPT-1668: Support configuration token replacement in post install commands \#15 [\#18](https://github.com/ec-europa/oe-task-runner/pull/18) ([ademarco](https://github.com/ademarco))
-- NEPT-1105: Fix command discovery \#16 [\#17](https://github.com/ec-europa/oe-task-runner/pull/17) ([ademarco](https://github.com/ademarco))
+- NEPT-1668: Support configuration token replacement in post install commands \#15 [\#18](https://github.com/openeuropa/task-runner/pull/18) ([ademarco](https://github.com/ademarco))
+- NEPT-1105: Fix command discovery \#16 [\#17](https://github.com/openeuropa/task-runner/pull/17) ([ademarco](https://github.com/ademarco))
 
-## [0.1.1](https://github.com/ec-europa/oe-task-runner/tree/0.1.1) (2018-01-05)
-[Full Changelog](https://github.com/ec-europa/oe-task-runner/compare/0.1.0...0.1.1)
+## [0.1.1](https://github.com/openeuropa/task-runner/tree/0.1.1) (2018-01-05)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/0.1.0...0.1.1)
 
 **Closed issues:**
 
-- Fix Drush "ignored-directories" [\#14](https://github.com/ec-europa/oe-task-runner/issues/14)
+- Fix Drush "ignored-directories" [\#14](https://github.com/openeuropa/task-runner/issues/14)
 
-## [0.1.0](https://github.com/ec-europa/oe-task-runner/tree/0.1.0) (2018-01-05)
+## [0.1.0](https://github.com/openeuropa/task-runner/tree/0.1.0) (2018-01-05)
 **Closed issues:**
 
-- NEPT-1688: Allow host projects to expose their own commands [\#12](https://github.com/ec-europa/oe-task-runner/issues/12)
-- NEPT-1688: Provide full Drupal site path as a dynamic configuration value [\#10](https://github.com/ec-europa/oe-task-runner/issues/10)
-- NEPT-1688: Add Drupal post install script [\#8](https://github.com/ec-europa/oe-task-runner/issues/8)
-- NEPT-1688: Implement Drupal component setup command [\#6](https://github.com/ec-europa/oe-task-runner/issues/6)
-- NEPT-1688: Add changelog generation command [\#4](https://github.com/ec-europa/oe-task-runner/issues/4)
-- NEPT-1688: Port PHPUnit and Behat setup tasks [\#2](https://github.com/ec-europa/oe-task-runner/issues/2)
-- NEPT-1688: Initial setup [\#1](https://github.com/ec-europa/oe-task-runner/issues/1)
+- NEPT-1688: Allow host projects to expose their own commands [\#12](https://github.com/openeuropa/task-runner/issues/12)
+- NEPT-1688: Provide full Drupal site path as a dynamic configuration value [\#10](https://github.com/openeuropa/task-runner/issues/10)
+- NEPT-1688: Add Drupal post install script [\#8](https://github.com/openeuropa/task-runner/issues/8)
+- NEPT-1688: Implement Drupal component setup command [\#6](https://github.com/openeuropa/task-runner/issues/6)
+- NEPT-1688: Add changelog generation command [\#4](https://github.com/openeuropa/task-runner/issues/4)
+- NEPT-1688: Port PHPUnit and Behat setup tasks [\#2](https://github.com/openeuropa/task-runner/issues/2)
+- NEPT-1688: Initial setup [\#1](https://github.com/openeuropa/task-runner/issues/1)
 
 **Merged pull requests:**
 
-- NEPT-1688: Allow host projects to expose their own commands \#12 [\#13](https://github.com/ec-europa/oe-task-runner/pull/13) ([ademarco](https://github.com/ademarco))
-- NEPT-1688: Provide full Drupal site path as a dynamic configuration value \#10 [\#11](https://github.com/ec-europa/oe-task-runner/pull/11) ([ademarco](https://github.com/ademarco))
-- NEPT-1688: Add Drupal post install script \#8 [\#9](https://github.com/ec-europa/oe-task-runner/pull/9) ([ademarco](https://github.com/ademarco))
-- Implement Drupal component setup command \#6 [\#7](https://github.com/ec-europa/oe-task-runner/pull/7) ([ademarco](https://github.com/ademarco))
-- Add changelog generation command \#4 [\#5](https://github.com/ec-europa/oe-task-runner/pull/5) ([ademarco](https://github.com/ademarco))
-- Port PHPUnit and Behat setup tasks \#2 [\#3](https://github.com/ec-europa/oe-task-runner/pull/3) ([ademarco](https://github.com/ademarco))
+- NEPT-1688: Allow host projects to expose their own commands \#12 [\#13](https://github.com/openeuropa/task-runner/pull/13) ([ademarco](https://github.com/ademarco))
+- NEPT-1688: Provide full Drupal site path as a dynamic configuration value \#10 [\#11](https://github.com/openeuropa/task-runner/pull/11) ([ademarco](https://github.com/ademarco))
+- NEPT-1688: Add Drupal post install script \#8 [\#9](https://github.com/openeuropa/task-runner/pull/9) ([ademarco](https://github.com/ademarco))
+- Implement Drupal component setup command \#6 [\#7](https://github.com/openeuropa/task-runner/pull/7) ([ademarco](https://github.com/ademarco))
+- Add changelog generation command \#4 [\#5](https://github.com/openeuropa/task-runner/pull/5) ([ademarco](https://github.com/ademarco))
+- Port PHPUnit and Behat setup tasks \#2 [\#3](https://github.com/openeuropa/task-runner/pull/3) ([ademarco](https://github.com/ademarco))
 
 
 
