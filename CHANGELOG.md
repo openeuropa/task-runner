@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.4.0](https://github.com/openeuropa/task-runner/tree/0.4.0) (2018-02-21)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/0.3.1...0.4.0)
+
+**Merged pull requests:**
+
+- OPENEUROPA-322: Transfer projects to OpenEuropa organisation [\#46](https://github.com/openeuropa/task-runner/pull/46) ([ademarco](https://github.com/ademarco))
+- OPENEUROPA-197: Use OpenEuropa namespace to avoid redundant prefixes [\#45](https://github.com/openeuropa/task-runner/pull/45) ([ademarco](https://github.com/ademarco))
+
 ## [0.3.1](https://github.com/openeuropa/task-runner/tree/0.3.1) (2018-02-09)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.3.0...0.3.1)
 
