@@ -30,6 +30,7 @@ class Drush extends Exec
     protected $databaseUser = '';
     protected $databasePassword = '';
     protected $databaseName = '';
+    protected $databaseUrl = '';
     protected $sitesSubdir = '';
 
     /**
@@ -39,6 +40,16 @@ class Drush extends Exec
      */
     public function siteInstall()
     {
+        $dbUrl = sprintf(
+            '%s://%s:%s@%s:%s/%s',
+            $this->databaseType,
+            $this->databaseUser,
+            $this->databasePassword,
+            $this->databaseHost,
+            $this->databasePort,
+            $this->databaseName
+        );
+
         return $this
           ->option('-y')
           ->rawArg("--root=$(pwd)/".$this->root)
@@ -50,15 +61,7 @@ class Drush extends Exec
               'account-name' => $this->accountName,
               'account-pass' => $this->accountPassword,
               'sites-subdir' => $this->sitesSubdir,
-              'db-url' => sprintf(
-                  '%s://%s:%s@%s:%s/%s',
-                  $this->databaseType,
-                  $this->databaseUser,
-                  $this->databasePassword,
-                  $this->databaseHost,
-                  $this->databasePort,
-                  $this->databaseName
-              ),
+              'db-url' => $this->databaseUrl ?? $dbUrl,
           ], '=')
           ->arg('site-install')
           ->arg($this->siteProfile);
@@ -240,6 +243,18 @@ class Drush extends Exec
     public function databaseName($databaseName)
     {
         $this->databaseName = $databaseName;
+
+        return $this;
+    }
+
+    /**
+     * @param string $databaseUrl
+     *
+     * @return Drush
+     */
+    public function databaseUrl($databaseUrl)
+    {
+        $this->databaseUrl = $databaseUrl;
 
         return $this;
     }
