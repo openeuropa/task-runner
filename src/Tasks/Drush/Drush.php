@@ -24,10 +24,11 @@ class Drush extends Exec
     protected $accountMail = '';
     protected $accountName = '';
     protected $accountPassword = '';
-    protected $databaseUser = '';
-    protected $databasePassword = '';
+    protected $databaseType = '';
     protected $databaseHost = '';
     protected $databasePort = '';
+    protected $databaseUser = '';
+    protected $databasePassword = '';
     protected $databaseName = '';
     protected $sitesSubdir = '';
 
@@ -50,7 +51,8 @@ class Drush extends Exec
               'account-pass' => $this->accountPassword,
               'sites-subdir' => $this->sitesSubdir,
               'db-url' => sprintf(
-                  "mysql://%s:%s@%s:%s/%s",
+                  '%s://%s:%s@%s:%s/%s',
+                  $this->databaseType,
                   $this->databaseUser,
                   $this->databasePassword,
                   $this->databaseHost,
@@ -166,6 +168,18 @@ class Drush extends Exec
     public function accountPassword($accountPassword)
     {
         $this->accountPassword = $accountPassword;
+
+        return $this;
+    }
+
+    /**
+     * @param string $databaseType
+     *
+     * @return Drush
+     */
+    public function databaseType($databaseType)
+    {
+        $this->databaseType = $databaseType;
 
         return $this;
     }
