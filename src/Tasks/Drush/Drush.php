@@ -50,6 +50,8 @@ class Drush extends Exec
             $this->databaseName
         );
 
+        $dbUrl = (isset($this->databaseUrl) && !empty($this->databaseUrl)) ? $this->databaseUrl : $dbUrl;
+
         return $this
           ->option('-y')
           ->rawArg("--root=$(pwd)/".$this->root)
@@ -61,7 +63,7 @@ class Drush extends Exec
               'account-name' => $this->accountName,
               'account-pass' => $this->accountPassword,
               'sites-subdir' => $this->sitesSubdir,
-              'db-url' => $this->databaseUrl ?? $dbUrl,
+              'db-url' => $dbUrl,
           ], '=')
           ->arg('site-install')
           ->arg($this->siteProfile);
