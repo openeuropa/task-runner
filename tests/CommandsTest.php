@@ -1,11 +1,9 @@
 <?php
 
-namespace OpenEuropa\TaskRunner\Tests\Commands;
+namespace OpenEuropa\TaskRunner\Tests;
 
-use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use OpenEuropa\TaskRunner\TaskRunner;
-use OpenEuropa\TaskRunner\Tests\AbstractTest;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Yaml\Yaml;
