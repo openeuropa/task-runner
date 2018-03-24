@@ -25,7 +25,12 @@ class ComposerTest extends AbstractTest
 
         $service = new Composer(dirname($filepath));
         foreach ($assertions as $method => $expected) {
-            $this->assertEquals($expected, $service->{$method}());
+            $params = [];
+            if (preg_match('/^(.*)\((.*)\)$/', $method, $found)) {
+                $method = $found[1];
+                $params = explode(',', $found[2]);
+            }
+            $this->assertEquals($expected, call_user_func_array([$service, $method], $params));
         }
     }
 

@@ -21,6 +21,9 @@ abstract class AbstractTest extends TestCase
     {
         $filesystem = new Filesystem();
         $filesystem->remove(glob($this->getSandboxRoot()."/*"));
+        // Ensure at least an empty composer.json file.
+        $composerFile = $this->getSandboxFilepath('composer.json');
+        file_put_contents($composerFile, '');
     }
 
 

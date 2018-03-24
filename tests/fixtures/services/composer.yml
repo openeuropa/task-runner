@@ -36,3 +36,20 @@
     getType: ~
     hasName: false
     hasType: false
+
+-
+  composer: >
+    {
+        "config": {
+            "bin-dir": "arbitrary/path/"
+        }
+    }
+  expected:
+    getName: ~
+    getVendor: ~
+    getProject: ~
+    getType: ~
+    getConfig(bin-dir): arbitrary/path/
+    getConfig(non-existing-config): null
+    hasName: false
+    hasType: false
