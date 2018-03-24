@@ -2,8 +2,8 @@
 
 namespace OpenEuropa\TaskRunner\Commands;
 
-use EC\OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
-use EC\OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
+use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
+use OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Common\IO;
 use Robo\Contract\ConfigAwareInterface;
