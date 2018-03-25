@@ -31,7 +31,8 @@ abstract class AbstractTaskTest extends AbstractTest implements ContainerAwareIn
     public function setup()
     {
         $this->output = new BufferedOutput();
-        $runner = new TaskRunner(new StringInput(''), $this->output);
+        $classLoader = require __DIR__.'/../vendor/autoload.php';
+        $runner = new TaskRunner(new StringInput(''), $this->output, $classLoader);
         $this->setContainer($runner->getContainer());
     }
 

@@ -40,7 +40,7 @@ class CommandsTest extends AbstractTest
 
         $input = new StringInput("{$command} --simulate --working-dir=".$this->getSandboxRoot());
         $output = new BufferedOutput();
-        $runner = new TaskRunner($input, $output);
+        $runner = new TaskRunner($input, $output, $this->getClassLoader());
         $runner->run();
 
         $text = $output->fetch();
@@ -70,7 +70,7 @@ class CommandsTest extends AbstractTest
 
         $input = new StringInput("{$command} --working-dir=".$this->getSandboxRoot());
         $output = new BufferedOutput();
-        $runner = new TaskRunner($input, $output);
+        $runner = new TaskRunner($input, $output, $this->getClassLoader());
         $runner->run();
 
         $actual = file_get_contents($destination);
@@ -101,9 +101,8 @@ class CommandsTest extends AbstractTest
     {
         $input = new StringInput("list");
         $output = new BufferedOutput();
-        $runner = new TaskRunner($input, $output);
-        $classLoader = require __DIR__.'/../vendor/autoload.php';
-        $runner->registerExternalCommands($classLoader);
+        $runner = new TaskRunner($input, $output, $this->getClassLoader());
+        $runner->registerExternalCommands();
         $runner->run();
 
         $expected = [
@@ -132,7 +131,7 @@ class CommandsTest extends AbstractTest
         file_put_contents($configFile, Yaml::dump($config));
 
         $input = new StringInput("drupal:drush-setup --working-dir=".$this->getSandboxRoot());
-        $runner = new TaskRunner($input, new BufferedOutput());
+        $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
         $runner->run();
 
         foreach ($expected as $row) {
@@ -154,7 +153,7 @@ class CommandsTest extends AbstractTest
         file_put_contents($configFile, Yaml::dump($config));
 
         $input = new StringInput("drupal:settings-setup --working-dir=".$this->getSandboxRoot());
-        $runner = new TaskRunner($input, new BufferedOutput());
+        $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
         $runner->run();
 
 
@@ -214,5 +213,13 @@ class CommandsTest extends AbstractTest
         if (!empty($row['not_contains'])) {
             $this->assertNotContains($row['not_contains'], $content);
         }
+    }
+
+    /**
+     * @return \Composer\Autoload\ClassLoader
+     */
+    protected function getClassLoader()
+    {
+        return require __DIR__.'/../vendor/autoload.php';
     }
 }
