@@ -4,11 +4,11 @@ namespace OpenEuropa\TaskRunner;
 
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use League\Container\ContainerAwareTrait;
 use OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
-use OpenEuropa\TaskRunner\Services\Composer;
 use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
-use League\Container\ContainerAwareTrait;
+use OpenEuropa\TaskRunner\Services\Composer;
 use Robo\Application;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
@@ -211,13 +211,29 @@ class TaskRunner
      */
     private function registerDynamicCommands(Application $application)
     {
-        foreach ($this->getConfig()->get('commands', []) as $name => $tasks) {
+        foreach ($this->getConfig()->get('commands', []) as $name => $commandDefinition) {
             /** @var \Consolidation\AnnotatedCommand\AnnotatedCommandFactory $commandFactory */
             $commandFileName = DynamicCommands::class."Commands";
             $commandClass = $this->container->get($commandFileName);
             $commandFactory = $this->container->get('commandFactory');
             $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
             $command = $commandFactory->createCommand($commandInfo, $commandClass)->setName($name);
+
+            // Dynamic commands may define their own options.
+            if (!empty($commandDefinition['options'])) {
+                $defaults = array_fill_keys(['shortcut', 'mode', 'description', 'default'], null);
+                foreach ($commandDefinition['options'] as $optionName => $optionDefinition) {
+                    $optionDefinition += $defaults;
+                    $command->addOption(
+                        "--$optionName",
+                        $optionDefinition['shortcut'],
+                        $optionDefinition['mode'],
+                        $optionDefinition['description'],
+                        $optionDefinition['default']
+                    );
+                }
+            }
+
             $application->add($command);
         }
     }
