@@ -64,7 +64,7 @@ class TaskRunner
     /**
      * TaskRunner constructor.
      *
-     * @param InputInterface $input
+     * @param InputInterface       $input
      * @param OutputInterface|null $output
      */
     public function __construct(InputInterface $input = null, OutputInterface $output = null)
@@ -119,7 +119,7 @@ class TaskRunner
 
         foreach ($classLoader->getPrefixesPsr4() as $baseNamespace => $directoryList) {
             $directoryList = array_filter($directoryList, function ($path) {
-                return is_dir($path . '/TaskRunner/Commands');
+                return is_dir($path.'/TaskRunner/Commands');
             });
 
             if (!empty($directoryList)) {
@@ -150,7 +150,7 @@ class TaskRunner
     private function createConfiguration()
     {
         return Robo::createConfiguration([
-            __DIR__ . '/../config/runner.yml',
+            __DIR__.'/../config/runner.yml',
             'runner.yml.dist',
             'runner.yml',
         ]);
@@ -215,7 +215,7 @@ class TaskRunner
         $customCommands = $this->getConfig()->get('commands', []);
         foreach ($customCommands as $name => $commandDefinition) {
             /** @var \Consolidation\AnnotatedCommand\AnnotatedCommandFactory $commandFactory */
-            $commandFileName = DynamicCommands::class . "Commands";
+            $commandFileName = DynamicCommands::class."Commands";
             $commandClass = $this->container->get($commandFileName);
             $commandFactory = $this->container->get('commandFactory');
             $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
