@@ -2,6 +2,8 @@
 
 namespace OpenEuropa\TaskRunner\Commands;
 
+use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
+use OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Common\IO;
 use Robo\Contract\ConfigAwareInterface;
@@ -17,8 +19,9 @@ use Symfony\Component\Console\Event\ConsoleCommandEvent;
  *
  * @package OpenEuropa\TaskRunner\Commands
  */
-abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterface, ConfigAwareInterface
+abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterface, ComposerAwareInterface, ConfigAwareInterface
 {
+    use ComposerAwareTrait;
     use ConfigAwareTrait;
     use LoadAllTasks;
     use IO;
@@ -45,6 +48,31 @@ abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterfa
     public function initializeRuntimeConfiguration(ConsoleCommandEvent $event)
     {
         Robo::loadConfiguration([$this->getConfigurationFile()], $this->getConfig());
+    }
+
+    /**
+     * Set runtime "runner.bin_dir" configuration value.
+     *
+     * @param \Symfony\Component\Console\Event\ConsoleCommandEvent $event
+     *
+     * @hook command-event *
+     */
+    public function setRuntimeBinDir(ConsoleCommandEvent $event)
+    {
+        if ($this->getConfig()->get('runner.bin_dir') === null) {
+            // The COMPOSER_BIN_DIR environment takes precedence over the value
+            // defined in composer.json config, if any. Default to ./vendor/bin.
+            if (!$composerBinDir = getenv('COMPOSER_BIN_DIR')) {
+                if (!$composerBinDir = $this->getComposer()->getConfig('bin-dir')) {
+                    $composerBinDir = './vendor/bin';
+                }
+            }
+            if (strpos($composerBinDir, './') === false) {
+                $composerBinDir = "./$composerBinDir";
+            }
+            $composerBinDir = rtrim($composerBinDir, DIRECTORY_SEPARATOR);
+            $this->getConfig()->set('runner.bin_dir', $composerBinDir);
+        }
     }
 
     /**

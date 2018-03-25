@@ -1,18 +1,21 @@
 - command: "drupal:site-install"
   configuration: []
   composer: ''
+  environment: {  }
   contains:
     - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
 - command: 'drupal:site-install --site-name="Test site"'
   configuration: []
   composer: ''
+  environment: {  }
   contains:
     - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
 - command: 'drupal:site-install --site-mail="test@example.com" --site-profile=minimal'
   configuration: []
   composer: ''
+  environment: {  }
   contains:
     - "site-install minimal"
     - "--site-mail=test@example.com"
@@ -24,6 +27,7 @@
       site:
         profile: 'minimal'
   composer: ''
+  environment: {  }
   contains:
     - "./vendor/bin/drush -y --root=$(pwd)/test"
     - "site-install minimal"
@@ -33,6 +37,7 @@
     drupal:
       root: './test'
   composer: ''
+  environment: {  }
   contains:
     - "./vendor/bin/drush -y --root=$(pwd)/overridden"
 
@@ -40,9 +45,40 @@
   configuration:
     runner:
       bin_dir: "./bin"
-  composer: ''
+  composer: >
+    {
+      "config": {
+        "bin-dir": "some/arbitrary/path"
+      }
+    }
+  environment: {  }
   contains:
     - "./bin/drush -y --root=$(pwd)/overridden"
+
+- command: 'drupal:site-install --root="overridden"'
+  configuration: {  }
+  composer: >
+    {
+      "config": {
+        "bin-dir": "some/arbitrary/path"
+      }
+    }
+  environment: {  }
+  contains:
+    - "./some/arbitrary/path/drush -y --root=$(pwd)/overridden"
+
+- command: 'drupal:site-install --root="overridden"'
+  configuration: {  }
+  composer: >
+    {
+      "config": {
+        "bin-dir": "some/arbitrary/path"
+      }
+    }
+  environment:
+    COMPOSER_BIN_DIR: this/path/will/take/precedence
+  contains:
+    - "./this/path/will/take/precedence/drush -y --root=$(pwd)/overridden"
 
 - command: 'changelog:generate'
   configuration:
@@ -52,6 +88,7 @@
     {
       "name": "foo/bar"
     }
+  environment: {  }
   contains:
     - "exec('foo/bar -t abc')"
 
@@ -63,6 +100,7 @@
     {
       "name": "foo/bar"
     }
+  environment: {  }
   contains:
     - "exec('foo/bar -t def')"
 
@@ -74,6 +112,7 @@
     {
       "name": "foo/bar"
     }
+  environment: {  }
   contains:
     - "exec('foo/bar -t abc --future-release=1.2.3')"
 
@@ -85,6 +124,7 @@
     {
       "name": "foo/bar"
     }
+  environment: {  }
   contains:
     - "exec('foo/bar -t 123 --future-release=1.2.3')"
 
@@ -95,6 +135,7 @@
         - "./vendor/bin/drush en views -y"
         - "./vendor/bin/drush cr"
   composer: ''
+  environment: {  }
   contains:
     - "./vendor/bin/drush en views -y"
     - "./vendor/bin/drush cr"
@@ -106,6 +147,7 @@
         - "./vendor/bin/drush en views -y"
         - "./vendor/bin/drush cr"
   composer: ''
+  environment: {  }
   contains:
     - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
     - "./vendor/bin/drush en views -y"
@@ -117,6 +159,7 @@
       post_install:
         - "./vendor/bin/drush --root=${drupal.root} en views -y"
   composer: ''
+  environment: {  }
   contains:
     - "./vendor/bin/drush --root=build en views -y"
 
@@ -125,6 +168,7 @@
     drupal:
       post_install: []
   composer: ''
+  environment: {  }
   contains:
     - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
@@ -135,6 +179,7 @@
         - { task: "symlink", from: "${drupal.root}/modules/custom", to: "../../custom/modules" }
         - { task: "symlink", from: "${drupal.root}/modules/custom", to: "../../custom/themes" }
   composer: ''
+  environment: {  }
   contains:
     - "[Simulator] { task: symlink, from: build/modules/custom, to: ../../custom/modules }"
     - "[Simulator] { task: symlink, from: build/modules/custom, to: ../../custom/themes }"
@@ -142,6 +187,7 @@
 - command: 'drupal:drush-setup'
   configuration: []
   composer: ''
+  environment: {  }
   contains:
     - "WriteConfiguration('build/sites/default/drushrc.php'"
     - "File\\Write('build/drush/drush.yml')"
@@ -149,6 +195,7 @@
 - command: 'drupal:drush-setup --root=web --config-dir=./drush'
   configuration: []
   composer: ''
+  environment: {  }
   contains:
     - "WriteConfiguration('web/sites/default/drushrc.php'"
     - "File\\Write('./drush/drush.yml')"
@@ -156,12 +203,14 @@
 - command: 'drupal:settings-setup'
   configuration: []
   composer: ''
+  environment: {  }
   contains:
     - "AppendConfiguration('build/sites/default/default.settings.php'"
 
 - command: 'drupal:settings-setup --root=web'
   configuration: []
   composer: ''
+  environment: {  }
   contains:
     - "AppendConfiguration('web/sites/default/default.settings.php'"
 
@@ -184,6 +233,7 @@
       setup:phpunit:
         - { task: "process", source: "phpunit.xml.dist", destination: "phpunit.xml" }
   composer: ''
+  environment: {  }
   contains:
     - "{ task: chmod, file: web/sites, permissions: 509 }"
     - "{ task: symlink, from: ../../custom/modules, to: web/modules/custom }"

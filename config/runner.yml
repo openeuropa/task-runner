@@ -5,8 +5,11 @@
 # -----------------------------------------------------------------------------
 # Global Task Runner settings
 # -----------------------------------------------------------------------------
+#
+# If ./runner.yml.dist or ./runner.yml doesn't override "runner.bin_dir" with a
+# non empty value, the Composer "config.bin-dir" value is used at runtime.
 runner:
-  bin_dir: "./vendor/bin"
+  bin_dir: ~
 
 # -----------------------------------------------------------------------------
 # Drupal-related settings.
