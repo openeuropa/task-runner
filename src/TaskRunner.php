@@ -3,12 +3,13 @@
 namespace OpenEuropa\TaskRunner;
 
 use Composer\Autoload\ClassLoader;
+use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use League\Container\ContainerAwareTrait;
 use OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
-use OpenEuropa\TaskRunner\Services\Composer;
 use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
-use League\Container\ContainerAwareTrait;
+use OpenEuropa\TaskRunner\Services\Composer;
 use Robo\Application;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
@@ -174,9 +175,9 @@ class TaskRunner
 
         // Add service inflectors.
         $container->inflector(ComposerAwareInterface::class)
-          ->invokeMethod('setComposer', ['task_runner.composer']);
+            ->invokeMethod('setComposer', ['task_runner.composer']);
         $container->inflector(FilesystemAwareInterface::class)
-          ->invokeMethod('setFilesystem', ['filesystem']);
+            ->invokeMethod('setFilesystem', ['filesystem']);
 
         return $container;
     }
@@ -190,8 +191,8 @@ class TaskRunner
     {
         $application = new Application(self::APPLICATION_NAME, null);
         $application
-          ->getDefinition()
-          ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', $this->workingDir));
+            ->getDefinition()
+            ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', $this->workingDir));
 
         return $application;
     }
@@ -211,14 +212,75 @@ class TaskRunner
      */
     private function registerDynamicCommands(Application $application)
     {
-        foreach ($this->getConfig()->get('commands', []) as $name => $tasks) {
+        $customCommands = $this->getConfig()->get('commands', []);
+        foreach ($customCommands as $name => $commandDefinition) {
             /** @var \Consolidation\AnnotatedCommand\AnnotatedCommandFactory $commandFactory */
             $commandFileName = DynamicCommands::class."Commands";
             $commandClass = $this->container->get($commandFileName);
             $commandFactory = $this->container->get('commandFactory');
             $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
             $command = $commandFactory->createCommand($commandInfo, $commandClass)->setName($name);
+
+            // Dynamic commands may define their own options.
+            $this->addOptions($command, $commandDefinition);
+
+            // Append also options of subsequent tasks.
+            foreach ($this->getTasks($name) as $taskEntry) {
+                // This is a 'run' task.
+                if (is_array($taskEntry) && isset($taskEntry['task']) && ($taskEntry['task'] === 'run') && !empty($taskEntry['command'])) {
+                    if (!empty($customCommands[$taskEntry['command']])) {
+                        // Add the options of another custom command.
+                        $this->addOptions($command, $customCommands[$taskEntry['command']]);
+                    } else {
+                        // Add the options of an already registered command.
+                        $subCommand = $this->application->get($taskEntry['command']);
+                        $command->addOptions($subCommand->getDefinition()->getOptions());
+                    }
+                }
+            }
+
             $application->add($command);
         }
+    }
+
+    /**
+     * @param \Consolidation\AnnotatedCommand\AnnotatedCommand $command
+     * @param array $commandDefinition
+     */
+    private function addOptions(AnnotatedCommand $command, array $commandDefinition)
+    {
+        // This command doesn't define any option.
+        if (empty($commandDefinition['options'])) {
+            return;
+        }
+
+        $defaults = array_fill_keys(['shortcut', 'mode', 'description', 'default'], null);
+        foreach ($commandDefinition['options'] as $optionName => $optionDefinition) {
+            $optionDefinition += $defaults;
+            $command->addOption(
+                "--$optionName",
+                $optionDefinition['shortcut'],
+                $optionDefinition['mode'],
+                $optionDefinition['description'],
+                $optionDefinition['default']
+            );
+        }
+    }
+
+    /**
+     * @param string $command
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function getTasks($command)
+    {
+        $commands = $this->getConfig()->get('commands', []);
+        if (!isset($commands[$command])) {
+            throw new \InvalidArgumentException("Custom command '$command' not defined.");
+        }
+
+        return !empty($commands[$command]['tasks']) ? $commands[$command]['tasks'] : $commands[$command];
     }
 }

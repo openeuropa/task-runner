@@ -49,3 +49,36 @@
         <env name="BASE_URL" value="http://127.0.0.1:8888"/>
       </php>
     </phpunit>
+
+- command: "setup:behat --drupal-base-url=http://localhost/drupal"
+  source: behat.yml.dist
+  destination: behat.yml
+  configuration:
+    drupal:
+      base_url: http://127.0.0.1
+    commands:
+      setup:behat:
+        tasks:
+          - { task: "process", source: "behat.yml.dist", destination: "behat.yml" }
+        options:
+          drupal-base-url:
+            config: drupal.base_url
+            shortcut:
+              - dbu
+            mode: 4
+            description: 'The Drupal base URL.'
+            default: null
+  content: >
+    default:
+      extensions:
+        Behat\MinkExtension:
+          base_url: ${drupal.base_url}
+      formatters:
+        progress: ~
+  expected: >
+    default:
+      extensions:
+        Behat\MinkExtension:
+          base_url: http://localhost/drupal
+      formatters:
+        progress: ~

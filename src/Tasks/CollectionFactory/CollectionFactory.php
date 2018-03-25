@@ -2,17 +2,13 @@
 
 namespace OpenEuropa\TaskRunner\Tasks\CollectionFactory;
 
-use OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
-use Robo\Common\BuilderAwareTrait;
-use Robo\Common\TaskIO;
+use OpenEuropa\TaskRunner as TaskRunner;
 use Robo\Contract\BuilderAwareInterface;
 use Robo\Contract\SimulatedInterface;
 use Robo\Exception\TaskException;
 use Robo\LoadAllTasks;
-use Robo\Task as Task;
-use OpenEuropa\TaskRunner as TaskRunner;
+use Robo\Robo;
 use Robo\Task\BaseTask;
-use Robo\TaskAccessor;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -33,13 +29,20 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     protected $tasks;
 
     /**
+     * @var array
+     */
+    protected $options;
+
+    /**
      * CollectionFactory constructor.
      *
      * @param array $tasks
+     * @param array $options
      */
-    public function __construct(array $tasks = [])
+    public function __construct(array $tasks = [], array $options = [])
     {
         $this->tasks = $tasks;
+        $this->options = $options;
     }
 
     /**
@@ -144,7 +147,27 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 return $this->taskProcessConfigFile($task['source'], $task['destination']);
 
             case "run":
-                return $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')->arg($task['command']);
+                $taskExec = $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')->arg($task['command']);
+
+                $container = Robo::getContainer();
+                /** @var \Robo\Application $app */
+                $app = $container->get('application');
+                /** @var \Consolidation\AnnotatedCommand\AnnotatedCommand $command */
+                $command = $app->get($task['command']);
+                $commandOptions = $command->getDefinition()->getOptions();
+
+                // Propagate any input option passed to the parent command.
+                foreach ($this->options as $name => $values) {
+                    // But only if the called command has this option.
+                    if (isset($commandOptions[$name])) {
+                        $values = (array) $values;
+                        foreach ($values as $value) {
+                            $taskExec->option($name, $value);
+                        }
+                    }
+                }
+
+                return $taskExec;
 
             default:
                 throw new TaskException($this, "Task '{$task['task']}' not supported.");
