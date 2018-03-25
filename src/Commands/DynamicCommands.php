@@ -25,7 +25,14 @@ class DynamicCommands extends AbstractCommands
         $command = $this->input()->getArgument('command');
         $tasks = $this->getConfig()->get("commands.{$command}");
 
-        return $this->taskCollectionFactory($tasks);
+        $inputOptions = [];
+        foreach ($this->input()->getOptions() as $name => $value) {
+            if ($this->input()->hasParameterOption("--$name")) {
+                $inputOptions[$name] = $value;
+            }
+        }
+
+        return $this->taskCollectionFactory($tasks, $inputOptions);
     }
 
     /**
