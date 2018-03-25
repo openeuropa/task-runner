@@ -51,6 +51,11 @@ class TaskRunner
     private $input;
 
     /**
+     * @var \Composer\Autoload\ClassLoader
+     */
+    private $classLoader;
+
+    /**
      * @var Application
      */
     private $application;
@@ -65,11 +70,13 @@ class TaskRunner
      *
      * @param InputInterface       $input
      * @param OutputInterface|null $output
+     * @param ClassLoader          $classLoader
      */
-    public function __construct(InputInterface $input = null, OutputInterface $output = null)
+    public function __construct(InputInterface $input = null, OutputInterface $output = null, ClassLoader $classLoader = null)
     {
         $this->input = is_null($input) ? new ArgvInput() : $input;
         $this->output = is_null($output) ? new ConsoleOutput() : $output;
+        $this->classLoader = is_null($classLoader) ? new ClassLoader() : $classLoader;
 
         $this->workingDir = $this->getWorkingDir($this->input);
         chdir($this->workingDir);
@@ -83,6 +90,7 @@ class TaskRunner
         $this->runner->setContainer($this->container);
         $this->runner->registerCommandClasses($this->application, $this->getCommandDiscovery()->discover(__DIR__, 'OpenEuropa\\TaskRunner'));
 
+        $this->registerExternalCommands();
         // Register commands defined in runner.yml file.
         $this->registerDynamicCommands($this->application);
     }
@@ -108,15 +116,12 @@ class TaskRunner
         return $this->getContainer()->get("{$class}Commands");
     }
 
-    /**
-     * @param \Composer\Autoload\ClassLoader $classLoader
-     */
-    public function registerExternalCommands(ClassLoader $classLoader)
+    private function registerExternalCommands()
     {
         $commands = [];
         $discovery = $this->getCommandDiscovery();
 
-        foreach ($classLoader->getPrefixesPsr4() as $baseNamespace => $directoryList) {
+        foreach ($this->classLoader->getPrefixesPsr4() as $baseNamespace => $directoryList) {
             $directoryList = array_filter($directoryList, function ($path) {
                 return is_dir($path.'/TaskRunner/Commands');
             });
