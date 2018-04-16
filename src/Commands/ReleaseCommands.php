@@ -17,23 +17,46 @@ class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface
     use RepositoryAwareTrait;
     use TaskRunnerTasks\CollectionFactory\loadTasks;
 
-  /**
-   * Create project release archive.
-   *
-   * The command will create an archive file containing the release package.
-   *
-   * @param array $options
-   *   Command options.
-   *
-   * @return \Robo\Collection\CollectionBuilder
-   *   Collection builder.
-   *
-   * @command release:create-archive
-   *
-   * @option keep Whereas to keep the temporary release directory or not.
-   *
-   * @aliases release:ca,rca
-   */
+    /**
+     * Create a release for the current project.
+     *
+     * This command creates a .tag.gz archive for the current project named as
+     * follow:
+     *
+     * [PROJECT-NAME]-[CURRENT-TAG].tar.gz
+     *
+     * If the current commit is not tagged then the current local branch name will
+     * be used:
+     *
+     * [PROJECT-NAME]-[BRANCH-NAME].tar.gz
+     *
+     * When running the release command will create a temporary release directory
+     * named after the project itself. Such a directory will be deleted after
+     * the project archive is created.
+     *
+     * If you wish to keep the directory use the "--keep" option.
+     *
+     * Before the release directory is archived you can run a list of packaging
+     * commands in your runner.yml.dist, as shown below:
+     *
+     * > release:
+     * >   tasks:
+     * >     - { task: "copy", from: "css",    to: "my-project/css" }
+     * >     - { task: "copy", from: "fonts",  to: "my-project/fonts" }
+     * >     - { task: "copy", from: "images", to: "my-project/images" }
+     *
+     * @param array $options
+     *   Command options.
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     *   Collection builder.
+     *
+     * @command release:create-archive
+     *
+     * @option keep Whereas to keep the temporary release directory or not.
+     *
+     * @aliases release:ca,rca
+     */
     public function createRelease(array $options = ['keep' => false])
     {
         if ($this->getRepository()->isHeadDetached()) {
@@ -46,12 +69,12 @@ class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface
 
         $tasks = [
             // Make sure we do not have a release directory yet.
-            $this->taskFilesystemStack()->remove([$archive, $name]),
+          $this->taskFilesystemStack()->remove([$archive, $name]),
 
             // Get non-modified code using git archive.
-            $this->taskGitStack()->exec(["archive", "HEAD", "-o $name.zip"]),
-            $this->taskExtract("$name.zip")->to("$name"),
-            $this->taskFilesystemStack()->remove("$name.zip"),
+          $this->taskGitStack()->exec(["archive", "HEAD", "-o $name.zip"]),
+          $this->taskExtract("$name.zip")->to("$name"),
+          $this->taskFilesystemStack()->remove("$name.zip"),
         ];
 
         // Append release tasks defined in runner.yml.dist.
@@ -69,12 +92,12 @@ class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface
         return $this->collectionBuilder()->addTaskList($tasks);
     }
 
-  /**
-   * Return version string for current HEAD: either a tag or local branch name.
-   *
-   * @return string
-   *   Tag name or empty string if none set.
-   */
+    /**
+     * Return version string for current HEAD: either a tag or local branch name.
+     *
+     * @return string
+     *   Tag name or empty string if none set.
+     */
     private function getVersionString()
     {
         $repository = $this->getRepository();

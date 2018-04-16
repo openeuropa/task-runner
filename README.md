@@ -45,6 +45,7 @@ The Task Runner comes with the following built-in commands:
 | `drupal:site-post-install`   | Run Drupal post-install commands as listed under the `drupal.post_install` property | 
 | `drupal:settings-setup`      | Setup default Drupal settings file by appending values specified at `drupal.settings` |
 | `drupal:drush-setup`         | Setup Drush 8 and 9 configuration files |
+| `release:create-archive`     | Create and archive a release for the current project |
 
 Run `./vendor/bin/run help [command-name]` for more information about each command's capabilities.
 
