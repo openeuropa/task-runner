@@ -4,18 +4,41 @@ namespace OpenEuropa\TaskRunner\Commands;
 
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
+use OpenEuropa\TaskRunner\Contract\TimeAwareInterface;
 use OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
 use OpenEuropa\TaskRunner\Traits\RepositoryAwareTrait;
+use OpenEuropa\TaskRunner\Traits\TimeAwareTrait;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
 /**
  * Project release commands.
  */
-class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface, RepositoryAwareInterface
+class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface, RepositoryAwareInterface, TimeAwareInterface
 {
     use ComposerAwareTrait;
     use RepositoryAwareTrait;
+    use TimeAwareTrait;
     use TaskRunnerTasks\CollectionFactory\loadTasks;
+
+    /**
+     * Set runtime configuration values.
+     *
+     * @param \Symfony\Component\Console\Event\ConsoleCommandEvent $event
+     *
+     * @hook command-event release:create-archive
+     */
+    public function setRuntimeConfig(ConsoleCommandEvent $event)
+    {
+        $timeFormat = $this->getConfig()->get('release.time_format');
+        $dateFormat = $this->getConfig()->get('release.date_format');
+        $timestamp = $this->getTime()->getTimestamp();
+
+        $this->getConfig()->set('release.version', $this->getVersionString());
+        $this->getConfig()->set('release.date', date($dateFormat, $timestamp));
+        $this->getConfig()->set('release.time', date($timeFormat, $timestamp));
+        $this->getConfig()->set('release.timestamp', $timestamp);
+    }
 
     /**
      * Create a release for the current project.

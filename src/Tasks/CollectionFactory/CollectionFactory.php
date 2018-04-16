@@ -143,6 +143,12 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
             case "process":
                 return $this->taskProcessConfigFile($task['source'], $task['destination']);
 
+            case "append":
+                return $this->collectionBuilder()->addTaskList([
+                    $this->taskWriteToFile($task['file'])->append()->text($task['text']),
+                    $this->taskProcessConfigFile($task['file'], $task['file']),
+                ]);
+
             case "run":
                 return $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')->arg($task['command']);
 

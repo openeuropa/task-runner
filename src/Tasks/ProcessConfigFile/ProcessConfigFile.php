@@ -71,9 +71,12 @@ class ProcessConfigFile extends BaseTask implements BuilderAwareInterface
         $content = file_get_contents($this->source);
         $tokens = $this->extractProcessedTokens($content);
 
-        return $this->collectionBuilder()->addTaskList([
-            $this->filesystem->copy($this->source, $this->destination, true),
-            $this->replace->from(array_keys($tokens))->to(array_values($tokens)),
-        ])->run();
+        $tasks = [];
+        if ($this->source !== $this->destination) {
+            $tasks[] = $this->filesystem->copy($this->source, $this->destination, true);
+        }
+        $tasks[] = $this->replace->from(array_keys($tokens))->to(array_values($tokens));
+
+        return $this->collectionBuilder()->addTaskList($tasks)->run();
     }
 }

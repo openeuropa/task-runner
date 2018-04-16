@@ -8,9 +8,11 @@ use Gitonomy\Git\Repository;
 use OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
+use OpenEuropa\TaskRunner\Contract\TimeAwareInterface;
 use OpenEuropa\TaskRunner\Services\Composer;
 use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use League\Container\ContainerAwareTrait;
+use OpenEuropa\TaskRunner\Services\Time;
 use Robo\Application;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
@@ -178,12 +180,15 @@ class TaskRunner
         $container = Robo::createDefaultContainer($input, $output, $application, $config);
         $container->get('commandFactory')->setIncludeAllPublicMethods(false);
         $container->share('task_runner.composer', Composer::class)->withArgument($this->workingDir);
+        $container->share('task_runner.time', Time::class);
         $container->share('repository', Repository::class)->withArgument($this->workingDir);
         $container->share('filesystem', Filesystem::class);
 
         // Add service inflectors.
         $container->inflector(ComposerAwareInterface::class)
           ->invokeMethod('setComposer', ['task_runner.composer']);
+        $container->inflector(TimeAwareInterface::class)
+          ->invokeMethod('setTime', ['task_runner.time']);
         $container->inflector(FilesystemAwareInterface::class)
           ->invokeMethod('setFilesystem', ['filesystem']);
         $container->inflector(RepositoryAwareInterface::class)

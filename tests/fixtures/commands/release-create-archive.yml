@@ -111,4 +111,3 @@
     - "[Simulator] { task: copy, from: fonts, to: test_project/fonts }"
     - "[Simulator] { task: copy, from: images, to: test_project/images }"
   not_contains: []
-
