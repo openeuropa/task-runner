@@ -4,3 +4,4 @@ grumphp.yml
 phpunit.xml
 composer.lock
 behat.yml
+*.tar.gz

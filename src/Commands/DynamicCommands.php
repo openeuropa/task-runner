@@ -2,11 +2,7 @@
 
 namespace OpenEuropa\TaskRunner\Commands;
 
-use Consolidation\AnnotatedCommand\AnnotationData;
-use Consolidation\AnnotatedCommand\CommandData;
 use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
 /**
  * Class DynamicCommands
