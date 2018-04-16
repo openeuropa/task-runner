@@ -4,8 +4,10 @@ namespace OpenEuropa\TaskRunner;
 
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Gitonomy\Git\Repository;
 use OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
+use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
 use OpenEuropa\TaskRunner\Services\Composer;
 use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use League\Container\ContainerAwareTrait;
@@ -170,6 +172,7 @@ class TaskRunner
         $container = Robo::createDefaultContainer($input, $output, $application, $config);
         $container->get('commandFactory')->setIncludeAllPublicMethods(false);
         $container->share('task_runner.composer', Composer::class)->withArgument($this->workingDir);
+        $container->share('repository', Repository::class)->withArgument($this->workingDir);
         $container->share('filesystem', Filesystem::class);
 
         // Add service inflectors.
@@ -177,6 +180,8 @@ class TaskRunner
           ->invokeMethod('setComposer', ['task_runner.composer']);
         $container->inflector(FilesystemAwareInterface::class)
           ->invokeMethod('setFilesystem', ['filesystem']);
+        $container->inflector(RepositoryAwareInterface::class)
+          ->invokeMethod('setRepository', ['repository']);
 
         return $container;
     }

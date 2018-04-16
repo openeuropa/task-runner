@@ -6,6 +6,7 @@
     "prefer-stable": true,
     "require": {
         "consolidation/robo": "^1.2",
+        "gitonomy/gitlib": "~1",
         "nuvoleweb/robo-config": "~0.2"
     },
     "require-dev": {
