@@ -6,3 +6,4 @@ parameters:
     - loadTasks.php
   tasks.phpmd.exclude:
     - vendor/
+    - tests/
