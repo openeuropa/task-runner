@@ -13,7 +13,6 @@ use OpenEuropa\TaskRunner\Traits\RepositoryAwareTrait;
  */
 class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface, RepositoryAwareInterface
 {
-
     use ComposerAwareTrait;
     use RepositoryAwareTrait;
     use TaskRunnerTasks\CollectionFactory\loadTasks;
@@ -46,17 +45,18 @@ class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface
         $archive = "$name-$version.tar.gz";
 
         $tasks = [
-        // Make sure we do not have a release directory yet.
-        $this->taskFilesystemStack()->remove([$archive, $name]),
+            // Make sure we do not have a release directory yet.
+            $this->taskFilesystemStack()->remove([$archive, $name]),
 
-        // Get non-modified code using git archive.
-        $this->taskGitStack()->exec(["archive", "HEAD", "-o $name.zip"]),
-        $this->taskExtract("$name.zip")->to("$name"),
-        $this->taskFilesystemStack()->remove("$name.zip"),
+            // Get non-modified code using git archive.
+            $this->taskGitStack()->exec(["archive", "HEAD", "-o $name.zip"]),
+            $this->taskExtract("$name.zip")->to("$name"),
+            $this->taskFilesystemStack()->remove("$name.zip"),
         ];
 
         // Append release tasks defined in runner.yml.dist.
-        $tasks += $this->taskCollectionFactory($this->getConfig()->get("release.tasks"))->getTasks();
+        $releaseTasks = $this->getConfig()->get("release.tasks");
+        $tasks[] = $this->taskCollectionFactory($releaseTasks);
 
         // Create archive.
         $tasks[] = $this->taskExecStack()->exec("tar -czf $archive $name");

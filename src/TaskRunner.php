@@ -83,10 +83,6 @@ class TaskRunner
         // Create and initialize runner.
         $this->runner = new RoboRunner();
         $this->runner->setContainer($this->container);
-        $this->runner->registerCommandClasses($this->application, $this->getCommandDiscovery()->discover(__DIR__, 'OpenEuropa\\TaskRunner'));
-
-        // Register commands defined in runner.yml file.
-        $this->registerDynamicCommands($this->application);
     }
 
     /**
@@ -94,6 +90,13 @@ class TaskRunner
      */
     public function run()
     {
+        // Register command classes.
+        $this->runner->registerCommandClasses($this->application, $this->getCommandDiscovery()->discover(__DIR__, 'OpenEuropa\\TaskRunner'));
+
+        // Register commands defined in runner.yml file.
+        $this->registerDynamicCommands($this->application);
+
+        // Run command.
         return $this->runner->run($this->input, $this->output, $this->application);
     }
 
@@ -107,6 +110,9 @@ class TaskRunner
      */
     public function getCommands($class)
     {
+        // Register command classes.
+        $this->runner->registerCommandClasses($this->application, $this->getCommandDiscovery()->discover(__DIR__, 'OpenEuropa\\TaskRunner'));
+
         return $this->getContainer()->get("{$class}Commands");
     }
 
