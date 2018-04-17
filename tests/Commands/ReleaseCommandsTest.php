@@ -2,6 +2,8 @@
 
 namespace OpenEuropa\TaskRunner\Tests\Commands;
 
+use OpenEuropa\TaskRunner\Commands\ReleaseCommands;
+use OpenEuropa\TaskRunner\Services\Time;
 use OpenEuropa\TaskRunner\Tests\AbstractTest;
 use Gitonomy\Git\Reference;
 use Gitonomy\Git\Repository;
@@ -51,11 +53,47 @@ class ReleaseCommandsTest extends AbstractTest
     }
 
     /**
+     * @param array $config
+     * @param array $repository
+     * @param int   $timestamp
+     * @param array $expected
+     *
+     * @dataProvider releaseDynamicTokens
+     */
+    public function testDynamicTokens(array $config, array $repository, $timestamp, array $expected)
+    {
+        $configFile = $this->getSandboxFilepath('runner.yml');
+
+        file_put_contents($configFile, Yaml::dump($config));
+
+        $input = new StringInput("release:create-archive --simulate --working-dir=".$this->getSandboxRoot());
+        $output = new BufferedOutput();
+        $runner = new TaskRunner($input, $output);
+
+        $runner->getContainer()->share('task_runner.time', $this->getTimeMock($timestamp));
+        $runner->getContainer()->share('task_runner.composer', $this->getComposerMock('test_project'));
+        $runner->getContainer()->share('repository', $this->getRepositoryMock($repository));
+        $runner->run();
+
+        foreach ($expected as $name => $value) {
+            $this->assertEquals($value, $runner->getConfig()->get($name));
+        }
+    }
+
+    /**
      * @return array
      */
     public function releaseCreateArchiveDataProvider()
     {
         return $this->getFixtureContent('commands/release-create-archive.yml');
+    }
+
+    /**
+     * @return array
+     */
+    public function releaseDynamicTokens()
+    {
+        return $this->getFixtureContent('commands/release-dynamic-tokens.yml');
     }
 
     /**
@@ -111,6 +149,19 @@ class ReleaseCommandsTest extends AbstractTest
     {
         $mock = $this->createMock(Composer::class);
         $mock->method('getProject')->willReturn($name);
+
+        return $mock;
+    }
+
+    /**
+     * @param int $timestamp
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function getTimeMock($timestamp)
+    {
+        $mock = $this->createMock(Time::class);
+        $mock->method('getTimestamp')->willReturn($timestamp);
 
         return $mock;
     }
