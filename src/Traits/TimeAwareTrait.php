@@ -2,6 +2,8 @@
 
 namespace OpenEuropa\TaskRunner\Traits;
 
+use OpenEuropa\TaskRunner\Services\Time;
+
 /**
  * Trait TimeAwareTrait
  *
@@ -27,7 +29,7 @@ trait TimeAwareTrait
      *
      * @return TimeAwareTrait
      */
-    public function setTime($time)
+    public function setTime(Time $time)
     {
         $this->time = $time;
 
