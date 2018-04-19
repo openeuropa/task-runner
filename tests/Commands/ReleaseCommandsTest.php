@@ -2,6 +2,7 @@
 
 namespace OpenEuropa\TaskRunner\Tests\Commands;
 
+use Gitonomy\Git\Commit;
 use OpenEuropa\TaskRunner\Commands\ReleaseCommands;
 use OpenEuropa\TaskRunner\Services\Time;
 use OpenEuropa\TaskRunner\Tests\AbstractTest;
@@ -123,17 +124,25 @@ class ReleaseCommandsTest extends AbstractTest
           ->setMethods([
               'isHeadDetached',
               'getHead',
-              'getCommitHash',
               'getReferences',
               'resolveTags',
               'resolveBranches',
           ])
           ->getMock();
 
+        $head = $this->getMockBuilder(Commit::class)
+          ->disableOriginalConstructor()
+          ->setMethods([
+              'getCommitHash',
+              'getRevision',
+          ])
+          ->getMock();
+        $head->expects($this->any())->method('getCommitHash')->willReturn($repository['hash']);
+        $head->expects($this->any())->method('getRevision')->willReturn($repository['hash']);
+
         $mock->expects($this->any())->method('isHeadDetached')->willReturn($repository['detached']);
-        $mock->expects($this->any())->method('getHead')->willReturnSelf();
+        $mock->expects($this->any())->method('getHead')->willReturn($head);
         $mock->expects($this->any())->method('getReferences')->willReturnSelf();
-        $mock->expects($this->any())->method('getCommitHash')->willReturn($repository['hash']);
         $mock->expects($this->any())->method('resolveTags')->willReturn($tags);
         $mock->expects($this->any())->method('resolveBranches')->willReturn($branches);
 

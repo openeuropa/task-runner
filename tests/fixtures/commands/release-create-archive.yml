@@ -4,19 +4,6 @@
   options: ~
   repository:
     hash: "19di3458"
-    detached: true
-    tag: "1.2.0"
-    branches: []
-  contains:
-    - "Release cannot be generated in detached state."
-  not_contains: []
-
-- configuration:
-    release:
-      tasks: []
-  options: ~
-  repository:
-    hash: "19di3458"
     detached: false
     tag: "1.2.0"
     branches:

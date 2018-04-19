@@ -82,10 +82,6 @@ class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface
      */
     public function createRelease(array $options = ['keep' => false])
     {
-        if ($this->getRepository()->isHeadDetached()) {
-            throw new \RuntimeException('Release cannot be generated in detached state.');
-        }
-
         $name = $this->composer->getProject();
         $version = $this->getVersionString();
         $archive = "$name-$version.tar.gz";
@@ -125,8 +121,12 @@ class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface
     {
         $repository = $this->getRepository();
 
-        // Get commit has from current HEAD.
-        $hash = $repository->getHead()->getCommitHash();
+        // Get current commit.
+        if ($repository->isHeadDetached()) {
+            $hash = $repository->getHead()->getRevision();
+        } else {
+            $hash = $repository->getHead()->getCommitHash();
+        }
 
         // Resolve tags for current HEAD.
         // In case of multiple tags per commit take the latest one.
