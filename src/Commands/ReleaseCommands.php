@@ -2,6 +2,7 @@
 
 namespace OpenEuropa\TaskRunner\Commands;
 
+use Gitonomy\Git\Reference\Branch;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
 use OpenEuropa\TaskRunner\Contract\TimeAwareInterface;
@@ -120,13 +121,10 @@ class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface
     private function getVersionString()
     {
         $repository = $this->getRepository();
+        $revision = $repository->getHead()->getRevision();
 
-        // Get current commit.
-        if ($repository->isHeadDetached()) {
-            $hash = $repository->getHead()->getRevision();
-        } else {
-            $hash = $repository->getHead()->getCommitHash();
-        }
+        // Get current commit hash.
+        $hash = $repository->getHead()->getCommit()->getHash();
 
         // Resolve tags for current HEAD.
         // In case of multiple tags per commit take the latest one.
@@ -134,11 +132,24 @@ class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface
         $tag = end($tags);
 
         // Resolve local branch name for current HEAD.
-        $branches = array_filter($repository->getReferences()->resolveBranches($hash), function ($branch) {
-            return $branch->isLocal();
+        $branches = array_filter($repository->getReferences()->getBranches(), function (Branch $branch) use ($revision) {
+            return $branch->isLocal() && $branch->getRevision() === $revision;
         });
         $branch = reset($branches);
 
-        return ($tag !== false) ? $tag->getName() : $branch->getName();
+        // Make sure we always have a version string, i.e. when in detached state.
+        $version = $hash;
+
+        // If HEAD is attached use branch name.
+        if ($branch !== false) {
+            $version = $branch->getName();
+        }
+
+        // Current commit is tagged, prefer tag.
+        if ($tag !== false) {
+            $version = $tag->getName();
+        }
+
+        return $version;
     }
 }

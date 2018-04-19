@@ -116,35 +116,36 @@ class ReleaseCommandsTest extends AbstractTest
             $mock = $this->createMock(Reference\Branch::class);
             $mock->method('getName')->willReturn($branch['name']);
             $mock->method('isLocal')->willReturn($branch['local']);
+            $mock->method('getRevision')->willReturn($branch['revision']);
             $branches[] = $mock;
         }
 
         $mock = $this->getMockBuilder(Repository::class)
           ->disableOriginalConstructor()
           ->setMethods([
-              'isHeadDetached',
               'getHead',
               'getReferences',
               'resolveTags',
-              'resolveBranches',
+              'getBranches',
           ])
           ->getMock();
 
         $head = $this->getMockBuilder(Commit::class)
           ->disableOriginalConstructor()
           ->setMethods([
-              'getCommitHash',
+              'getCommit',
               'getRevision',
+              'getHash',
           ])
           ->getMock();
-        $head->expects($this->any())->method('getCommitHash')->willReturn($repository['hash']);
-        $head->expects($this->any())->method('getRevision')->willReturn($repository['hash']);
+        $head->expects($this->any())->method('getCommit')->willReturnSelf();
+        $head->expects($this->any())->method('getHash')->willReturn($repository['hash']);
+        $head->expects($this->any())->method('getRevision')->willReturn($repository['revision']);
 
-        $mock->expects($this->any())->method('isHeadDetached')->willReturn($repository['detached']);
         $mock->expects($this->any())->method('getHead')->willReturn($head);
         $mock->expects($this->any())->method('getReferences')->willReturnSelf();
         $mock->expects($this->any())->method('resolveTags')->willReturn($tags);
-        $mock->expects($this->any())->method('resolveBranches')->willReturn($branches);
+        $mock->expects($this->any())->method('getBranches')->willReturn($branches);
 
         return $mock;
     }

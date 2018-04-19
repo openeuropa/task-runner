@@ -4,11 +4,11 @@
   options: ~
   repository:
     hash: "19di3458"
-    detached: false
+    revision: "refs/heads/master"
     tag: "1.2.0"
     branches:
-      - { name: "develop", local: false }
-      - { name: "master", local: true }
+      - { name: "develop", local: false, revision: "refs/heads/develop" }
+      - { name: "master", local: true, revision: "refs/heads/master" }
   contains:
     - |
       [Simulator] Simulating Filesystem\FilesystemStack()
@@ -40,11 +40,11 @@
   options: ~
   repository:
     hash: "19di3458"
-    detached: false
+    revision: "refs/heads/master"
     tag: ~
     branches:
-      - { name: "develop", local: false }
-      - { name: "master", local: true }
+      - { name: "develop", local: false, revision: "refs/heads/develop" }
+      - { name: "master", local: true, revision: "refs/heads/master" }
   contains:
      - "exec('tar -czf test_project-master.tar.gz test_project')"
      - "remove('test_project')"
@@ -56,11 +56,11 @@
   options: ~
   repository:
     hash: "19di3458"
-    detached: false
+    revision: "refs/heads/master"
     tag: 1.1.0
     branches:
-      - { name: "develop", local: false }
-      - { name: "master", local: true }
+      - { name: "develop", local: false, revision: "refs/heads/develop" }
+      - { name: "master", local: true, revision: "refs/heads/master" }
   contains:
      - "exec('tar -czf test_project-1.1.0.tar.gz test_project')"
      - "remove('test_project')"
@@ -72,11 +72,11 @@
   options: "--keep"
   repository:
     hash: "19di3458"
-    detached: false
+    revision: "refs/heads/master"
     tag: "1.2.0"
     branches:
-      - { name: "develop", local: false }
-      - { name: "master", local: true }
+      - { name: "develop", local: false, revision: "refs/heads/develop" }
+      - { name: "master", local: true, revision: "refs/heads/master" }
   contains: []
   not_contains:
      - "remove('test_project')"
@@ -90,7 +90,7 @@
   options: ""
   repository:
     hash: "19di3458"
-    detached: false
+    revision: "refs/heads/master"
     tag: "1.2.0"
     branches: []
   contains:
