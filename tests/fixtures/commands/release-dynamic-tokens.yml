@@ -1,7 +1,7 @@
 - configuration: []
   repository:
-    hash: ""
-    detached: false
+    hash: "19di3458"
+    revision: "refs/heads/master"
     tag: "1.0.0"
     branches: []
   timestamp: 1514808000
@@ -17,8 +17,8 @@
       time_format: "H:i"
       date_format: "d/m/Y"
   repository:
-    hash: ""
-    detached: false
+    hash: "19di3458"
+    revision: "refs/heads/master"
     tag: "1.0.0"
     branches: []
   timestamp: 1514808000
@@ -34,15 +34,15 @@
       time_format: "H:i"
       date_format: "d/m/Y"
   repository:
-    hash: ""
-    detached: false
+    hash: "19di3458"
+    revision: "refs/heads/master"
     tag: ~
     branches:
       - { name: "develop", local: false }
       - { name: "master", local: true }
   timestamp: 1514808000
   expected:
-    release.version: "master"
+    release.version: "19di3458"
     release.date: "01/01/2018"
     release.time: "12:00"
     release.timestamp: 1514808000
