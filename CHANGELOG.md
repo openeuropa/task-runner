@@ -1,5 +1,21 @@
 # Change Log
 
+## [0.5.0](https://github.com/openeuropa/task-runner/tree/0.5.0) (2018-04-19)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/0.4.0...0.5.0)
+
+**Closed issues:**
+
+- Allow users to customize the database type. [\#47](https://github.com/openeuropa/task-runner/issues/47)
+- OPENEUROPA-373: Implements command hooks [\#38](https://github.com/openeuropa/task-runner/issues/38)
+- OPENEUROPA-374: Add configuration validation per command [\#30](https://github.com/openeuropa/task-runner/issues/30)
+- OPENEUROPA-375: add command to run PHP server on given site [\#29](https://github.com/openeuropa/task-runner/issues/29)
+- NEPT-1105: Build command scaffolding [\#28](https://github.com/openeuropa/task-runner/issues/28)
+
+**Merged pull requests:**
+
+- OPENEUROPA-545: Add commands to create project releases [\#52](https://github.com/openeuropa/task-runner/pull/52) ([ademarco](https://github.com/ademarco))
+- Fix README reference to old robo file [\#43](https://github.com/openeuropa/task-runner/pull/43) ([claudiu-cristea](https://github.com/claudiu-cristea))
+
 ## [0.4.0](https://github.com/openeuropa/task-runner/tree/0.4.0) (2018-02-21)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.3.1...0.4.0)
 
