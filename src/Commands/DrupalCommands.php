@@ -64,11 +64,13 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @option account-name      Admin account name.
      * @option account-password  Admin account password.
      * @option account-mail      Admin email.
+     * @option database-type     Database type.
      * @option database-host     Database host.
      * @option database-port     Database port.
-     * @option database-name     Database name.
      * @option database-user     Database username.
      * @option database-password Database password.
+     * @option database-name     Database name.
+     * @option database-url      Database url.
      * @option sites-subdir      Sites sub-directory.
      *
      * @aliases drupal:si,dsi
@@ -88,11 +90,13 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
       'account-name'      => InputOption::VALUE_REQUIRED,
       'account-password'  => InputOption::VALUE_REQUIRED,
       'account-mail'      => InputOption::VALUE_REQUIRED,
-      'database-user'     => InputOption::VALUE_REQUIRED,
-      'database-password' => InputOption::VALUE_REQUIRED,
+      'database-type'     => InputOption::VALUE_REQUIRED,
       'database-host'     => InputOption::VALUE_REQUIRED,
       'database-port'     => InputOption::VALUE_REQUIRED,
       'database-name'     => InputOption::VALUE_REQUIRED,
+      'database-user'     => InputOption::VALUE_REQUIRED,
+      'database-password' => InputOption::VALUE_REQUIRED,
+      'database-url'      => InputOption::VALUE_OPTIONAL,
       'sites-subdir'      => InputOption::VALUE_REQUIRED,
     ])
     {
@@ -105,11 +109,13 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
           ->accountMail($options['account-mail'])
           ->accountName($options['account-name'])
           ->accountPassword($options['account-password'])
-          ->databaseUser($options['database-user'])
-          ->databasePassword($options['database-password'])
+          ->databaseType($options['database-type'])
           ->databaseHost($options['database-host'])
           ->databasePort($options['database-port'])
+          ->databaseUser($options['database-user'])
+          ->databasePassword($options['database-password'])
           ->databaseName($options['database-name'])
+          ->databaseUrl($options['database-url'])
           ->sitesSubdir($options['sites-subdir'])
           ->siteProfile($options['site-profile']);
 

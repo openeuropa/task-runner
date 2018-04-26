@@ -24,11 +24,13 @@ class Drush extends Exec
     protected $accountMail = '';
     protected $accountName = '';
     protected $accountPassword = '';
-    protected $databaseUser = '';
-    protected $databasePassword = '';
+    protected $databaseType = '';
     protected $databaseHost = '';
     protected $databasePort = '';
+    protected $databaseUser = '';
+    protected $databasePassword = '';
     protected $databaseName = '';
+    protected $databaseUrl = '';
     protected $sitesSubdir = '';
 
     /**
@@ -38,6 +40,18 @@ class Drush extends Exec
      */
     public function siteInstall()
     {
+        $dbUrl = sprintf(
+            '%s://%s:%s@%s:%s/%s',
+            $this->databaseType,
+            $this->databaseUser,
+            $this->databasePassword,
+            $this->databaseHost,
+            $this->databasePort,
+            $this->databaseName
+        );
+
+        $dbUrl = (isset($this->databaseUrl) && !empty($this->databaseUrl)) ? $this->databaseUrl : $dbUrl;
+
         return $this
           ->option('-y')
           ->rawArg("--root=$(pwd)/".$this->root)
@@ -49,14 +63,7 @@ class Drush extends Exec
               'account-name' => $this->accountName,
               'account-pass' => $this->accountPassword,
               'sites-subdir' => $this->sitesSubdir,
-              'db-url' => sprintf(
-                  "mysql://%s:%s@%s:%s/%s",
-                  $this->databaseUser,
-                  $this->databasePassword,
-                  $this->databaseHost,
-                  $this->databasePort,
-                  $this->databaseName
-              ),
+              'db-url' => $dbUrl,
           ], '=')
           ->arg('site-install')
           ->arg($this->siteProfile);
@@ -171,6 +178,18 @@ class Drush extends Exec
     }
 
     /**
+     * @param string $databaseType
+     *
+     * @return Drush
+     */
+    public function databaseType($databaseType)
+    {
+        $this->databaseType = $databaseType;
+
+        return $this;
+    }
+
+    /**
      * @param string $databaseUser
      *
      * @return Drush
@@ -226,6 +245,18 @@ class Drush extends Exec
     public function databaseName($databaseName)
     {
         $this->databaseName = $databaseName;
+
+        return $this;
+    }
+
+    /**
+     * @param string $databaseUrl
+     *
+     * @return Drush
+     */
+    public function databaseUrl($databaseUrl)
+    {
+        $this->databaseUrl = $databaseUrl;
 
         return $this;
     }
