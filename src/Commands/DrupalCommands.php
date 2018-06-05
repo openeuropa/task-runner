@@ -2,6 +2,7 @@
 
 namespace OpenEuropa\TaskRunner\Commands;
 
+use Consolidation\AnnotatedCommand\CommandData;
 use NuvoleWeb\Robo\Task as NuvoleWebTasks;
 use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
@@ -51,7 +52,8 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
     /**
      * @hook validate drupal:site-install
      *
-     * @param \Symfony\Component\Consolidation\AnnotatedCommand\CommandData $commandData
+     * @param CommandData $commandData
+     * @throws \Exception
      */
     public function validateSiteInstall(CommandData $commandData)
     {
