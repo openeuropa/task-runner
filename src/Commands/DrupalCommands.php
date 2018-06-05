@@ -2,19 +2,20 @@
 
 namespace OpenEuropa\TaskRunner\Commands;
 
+use NuvoleWeb\Robo\Task as NuvoleWebTasks;
 use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
+use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
+use OpenEuropa\TaskRunner\Traits as TaskRunnerTraits;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
-use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
-use OpenEuropa\TaskRunner\Traits as TaskRunnerTraits;
-use NuvoleWeb\Robo\Task as NuvoleWebTasks;
 
 /**
  * Class DrupalCommands.
  *
  * @package OpenEuropa\TaskRunner\Commands
  */
+
 class DrupalCommands extends AbstractCommands implements FilesystemAwareInterface
 {
     use TaskRunnerTraits\ConfigurationTokensTrait;
@@ -40,7 +41,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      */
     public function setRuntimeConfig(ConsoleCommandEvent $event)
     {
-        $root = $this->getConfig()->get('drupal.root');
+        $root         = $this->getConfig()->get('drupal.root');
         $rootFullPath = realpath($root);
         if ($rootFullPath) {
             $this->getConfig()->set('drupal.root_absolute', $rootFullPath);
@@ -64,13 +65,11 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @option account-name      Admin account name.
      * @option account-password  Admin account password.
      * @option account-mail      Admin email.
-     * @option database-type     Database type.
      * @option database-host     Database host.
      * @option database-port     Database port.
+     * @option database-name     Database name.
      * @option database-user     Database username.
      * @option database-password Database password.
-     * @option database-name     Database name.
-     * @option database-url      Database url.
      * @option sites-subdir      Sites sub-directory.
      *
      * @aliases drupal:si,dsi
@@ -80,49 +79,47 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function siteInstall(array $options = [
-      'root'              => InputOption::VALUE_REQUIRED,
-      'base-url'          => InputOption::VALUE_REQUIRED,
-      'site-name'         => InputOption::VALUE_REQUIRED,
-      'site-mail'         => InputOption::VALUE_REQUIRED,
-      'site-profile'      => InputOption::VALUE_REQUIRED,
-      'site-update'       => InputOption::VALUE_REQUIRED,
-      'site-locale'       => InputOption::VALUE_REQUIRED,
-      'account-name'      => InputOption::VALUE_REQUIRED,
-      'account-password'  => InputOption::VALUE_REQUIRED,
-      'account-mail'      => InputOption::VALUE_REQUIRED,
-      'database-type'     => InputOption::VALUE_REQUIRED,
-      'database-host'     => InputOption::VALUE_REQUIRED,
-      'database-port'     => InputOption::VALUE_REQUIRED,
-      'database-name'     => InputOption::VALUE_REQUIRED,
-      'database-user'     => InputOption::VALUE_REQUIRED,
-      'database-password' => InputOption::VALUE_REQUIRED,
-      'database-url'      => InputOption::VALUE_OPTIONAL,
-      'sites-subdir'      => InputOption::VALUE_REQUIRED,
-    ])
+            'root'              => InputOption::VALUE_REQUIRED,
+            'base-url'          => InputOption::VALUE_REQUIRED,
+            'site-name'         => InputOption::VALUE_REQUIRED,
+            'site-mail'         => InputOption::VALUE_REQUIRED,
+            'site-profile'      => InputOption::VALUE_REQUIRED,
+            'site-update'       => InputOption::VALUE_REQUIRED,
+            'site-locale'       => InputOption::VALUE_REQUIRED,
+            'account-name'      => InputOption::VALUE_REQUIRED,
+            'account-password'  => InputOption::VALUE_REQUIRED,
+            'account-mail'      => InputOption::VALUE_REQUIRED,
+            'database-type'     => InputOption::VALUE_REQUIRED,
+            'database-user'     => InputOption::VALUE_REQUIRED,
+            'database-password' => InputOption::VALUE_REQUIRED,
+            'database-host'     => InputOption::VALUE_REQUIRED,
+            'database-port'     => InputOption::VALUE_REQUIRED,
+            'database-name'     => InputOption::VALUE_REQUIRED,
+            'sites-subdir'      => InputOption::VALUE_REQUIRED,
+        ])
     {
         $drush = $this->getConfig()->get('runner.bin_dir').'/drush';
-        $task = $this->taskDrush($drush)
-          ->root($options['root'])
-          ->siteName($options['site-name'])
-          ->siteMail($options['site-mail'])
-          ->locale($options['site-locale'])
-          ->accountMail($options['account-mail'])
-          ->accountName($options['account-name'])
-          ->accountPassword($options['account-password'])
-          ->databaseType($options['database-type'])
-          ->databaseHost($options['database-host'])
-          ->databasePort($options['database-port'])
-          ->databaseUser($options['database-user'])
-          ->databasePassword($options['database-password'])
-          ->databaseName($options['database-name'])
-          ->databaseUrl($options['database-url'])
-          ->sitesSubdir($options['sites-subdir'])
-          ->siteProfile($options['site-profile']);
+        $task  = $this->taskDrush($drush)
+                     ->root($options['root'])
+                     ->siteName($options['site-name'])
+                     ->siteMail($options['site-mail'])
+                     ->locale($options['site-locale'])
+                     ->accountMail($options['account-mail'])
+                     ->accountName($options['account-name'])
+                     ->accountPassword($options['account-password'])
+                     ->databaseType($options['database-type'])
+                     ->databaseUser($options['database-user'])
+                     ->databasePassword($options['database-password'])
+                     ->databaseHost($options['database-host'])
+                     ->databasePort($options['database-port'])
+                     ->databaseName($options['database-name'])
+                     ->sitesSubdir($options['sites-subdir'])
+                     ->siteProfile($options['site-profile']);
 
         return $this->collectionBuilder()->addTaskList([
-            $this->sitePreInstall(),
-            $task->siteInstall(),
-            $this->sitePostInstall(),
+                $this->sitePreInstall(),
+                $task->siteInstall(),
+                $this->sitePostInstall(),
         ]);
     }
 
@@ -205,16 +202,16 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function drushSetup(array $options = [
-      'root' => InputOption::VALUE_REQUIRED,
-      'config-dir' => InputOption::VALUE_REQUIRED,
-    ])
+            'root'       => InputOption::VALUE_REQUIRED,
+            'config-dir' => InputOption::VALUE_REQUIRED,
+        ])
     {
         $config = $this->getConfig();
-        $yaml = Yaml::dump($config->get('drupal.drush'));
+        $yaml   = Yaml::dump($config->get('drupal.drush'));
 
         return $this->collectionBuilder()->addTaskList([
-            $this->taskWriteConfiguration($options['root'].'/sites/default/drushrc.php', $config)->setConfigKey('drupal.drush'),
-            $this->taskWriteToFile($options['config-dir'].'/drush.yml')->text($yaml),
+                $this->taskWriteConfiguration($options['root'].'/sites/default/drushrc.php', $config)->setConfigKey('drupal.drush'),
+                $this->taskWriteToFile($options['config-dir'].'/drush.yml')->text($yaml),
         ]);
     }
 
@@ -243,11 +240,11 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function settingsSetup(array $options = [
-      'root' => InputOption::VALUE_REQUIRED,
-    ])
+            'root' => InputOption::VALUE_REQUIRED,
+        ])
     {
         return $this->collectionBuilder()->addTaskList([
-            $this->taskAppendConfiguration($options['root'].'/sites/default/default.settings.php', $this->getConfig())->setConfigKey('drupal.settings'),
+                $this->taskAppendConfiguration($options['root'].'/sites/default/default.settings.php', $this->getConfig())->setConfigKey('drupal.settings'),
         ]);
     }
 }

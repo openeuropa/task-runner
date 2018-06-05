@@ -2,8 +2,6 @@
 
 namespace OpenEuropa\TaskRunner\Tasks\Drush;
 
-use Robo\Common\ConfigAwareTrait;
-use Robo\Contract\ConfigAwareInterface;
 use Robo\Task\Base\Exec;
 
 /**
@@ -13,25 +11,26 @@ use Robo\Task\Base\Exec;
  *
  * @package OpenEuropa\TaskRunner\Tasks\Drush
  */
+
 class Drush extends Exec
 {
-    protected $root = '';
-    protected $locale = '';
-    protected $siteName = '';
-    protected $siteMail = '';
-    protected $siteLocale = '';
-    protected $siteProfile = '';
-    protected $accountMail = '';
-    protected $accountName = '';
-    protected $accountPassword = '';
-    protected $databaseType = '';
-    protected $databaseHost = '';
-    protected $databasePort = '';
-    protected $databaseUser = '';
+    protected $root             = '';
+    protected $locale           = '';
+    protected $siteName         = '';
+    protected $siteMail         = '';
+    protected $siteLocale       = '';
+    protected $siteProfile      = '';
+    protected $accountMail      = '';
+    protected $accountName      = '';
+    protected $accountPassword  = '';
+    protected $databaseType     = '';
+    protected $databaseHost     = '';
+    protected $databasePort     = '';
+    protected $databaseUser     = '';
     protected $databasePassword = '';
-    protected $databaseName = '';
-    protected $databaseUrl = '';
-    protected $sitesSubdir = '';
+    protected $databaseName     = '';
+    protected $databaseUrl      = '';
+    protected $sitesSubdir      = '';
 
     /**
      * Build Drush site install command.
@@ -40,33 +39,55 @@ class Drush extends Exec
      */
     public function siteInstall()
     {
-        $dbUrl = sprintf(
-            '%s://%s:%s@%s:%s/%s',
-            $this->databaseType,
-            $this->databaseUser,
-            $this->databasePassword,
-            $this->databaseHost,
-            $this->databasePort,
-            $this->databaseName
-        );
+        switch ($this->databaseType) {
+            case 'sqlite3':
+            case 'sqlite':
+                $dbUrl = sprintf(
+                    "sqlite://sites/$sitesSubdir/files/.ht.sqlite"
+                );
+                break;
 
-        $dbUrl = (isset($this->databaseUrl) && !empty($this->databaseUrl)) ? $this->databaseUrl : $dbUrl;
+            case 'pgsql':
+                $dbUrl = sprintf(
+                    'pgsql://%s:%s@%s:%s/%s',
+                    $this->databaseUser,
+                    $this->databasePassword,
+                    $this->databaseHost,
+                    $this->databasePort,
+                    $this->databaseName
+                );
+                break;
+
+            case 'mysql':
+            default:
+                $dbUrl = sprintf(
+                    'mysql://%s:%s@%s:%s/%s',
+                    $this->databaseUser,
+                    $this->databasePassword,
+                    $this->databaseHost,
+                    $this->databasePort,
+                    $this->databaseName
+                );
+                break;
+        };
+
+        //   $dbUrl = (isset($this->databaseUrl) && !empty($this->databaseUrl)) ? $this->databaseUrl : $dbUrl;
 
         return $this
-          ->option('-y')
-          ->rawArg("--root=$(pwd)/".$this->root)
-          ->options([
-              'site-name' => $this->siteName,
-              'site-mail' => $this->siteMail,
-              'locale' => $this->locale,
-              'account-mail' => $this->accountMail,
-              'account-name' => $this->accountName,
-              'account-pass' => $this->accountPassword,
-              'sites-subdir' => $this->sitesSubdir,
-              'db-url' => $dbUrl,
-          ], '=')
-          ->arg('site-install')
-          ->arg($this->siteProfile);
+            ->option('-y')
+            ->rawArg("--root=$(pwd)/".$this->root)
+            ->options([
+                'site-name'    => $this->siteName,
+                'site-mail'    => $this->siteMail,
+                'locale'       => $this->locale,
+                'account-mail' => $this->accountMail,
+                'account-name' => $this->accountName,
+                'account-pass' => $this->accountPassword,
+                'sites-subdir' => $this->sitesSubdir,
+                'db-url'       => $dbUrl,
+            ], '=')
+            ->arg('site-install')
+            ->arg($this->siteProfile);
     }
 
     /**
