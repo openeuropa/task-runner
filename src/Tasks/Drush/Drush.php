@@ -29,7 +29,6 @@ class Drush extends Exec
     protected $databaseUser     = '';
     protected $databasePassword = '';
     protected $databaseName     = '';
-    protected $databaseUrl      = '';
     protected $sitesSubdir      = '';
 
     /**
@@ -266,18 +265,6 @@ class Drush extends Exec
     public function databaseName($databaseName)
     {
         $this->databaseName = $databaseName;
-
-        return $this;
-    }
-
-    /**
-     * @param string $databaseUrl
-     *
-     * @return Drush
-     */
-    public function databaseUrl($databaseUrl)
-    {
-        $this->databaseUrl = $databaseUrl;
 
         return $this;
     }

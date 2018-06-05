@@ -90,11 +90,11 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
             'account-password'  => InputOption::VALUE_REQUIRED,
             'account-mail'      => InputOption::VALUE_REQUIRED,
             'database-type'     => InputOption::VALUE_REQUIRED,
-            'database-user'     => InputOption::VALUE_REQUIRED,
-            'database-password' => InputOption::VALUE_REQUIRED,
-            'database-host'     => InputOption::VALUE_REQUIRED,
-            'database-port'     => InputOption::VALUE_REQUIRED,
-            'database-name'     => InputOption::VALUE_REQUIRED,
+            'database-user'     => InputOption::VALUE_OPTIONAL,
+            'database-password' => InputOption::VALUE_OPTIONAL,
+            'database-host'     => InputOption::VALUE_OPTIONAL,
+            'database-port'     => InputOption::VALUE_OPTIONAL,
+            'database-name'     => InputOption::VALUE_OPTIONAL,
             'sites-subdir'      => InputOption::VALUE_REQUIRED,
         ])
     {
