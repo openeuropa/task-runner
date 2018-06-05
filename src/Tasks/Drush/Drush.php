@@ -42,7 +42,7 @@ class Drush extends Exec
             case 'sqlite3':
             case 'sqlite':
                 $dbUrl = sprintf(
-                    "sqlite://sites/$sitesSubdir/files/.ht.sqlite"
+                    "sqlite://sites/$this->sitesSubdir/files/.ht.sqlite"
                 );
                 break;
 
