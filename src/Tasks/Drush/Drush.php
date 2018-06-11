@@ -11,25 +11,24 @@ use Robo\Task\Base\Exec;
  *
  * @package OpenEuropa\TaskRunner\Tasks\Drush
  */
-
 class Drush extends Exec
 {
-    protected $root             = '';
-    protected $locale           = '';
-    protected $siteName         = '';
-    protected $siteMail         = '';
-    protected $siteLocale       = '';
-    protected $siteProfile      = '';
-    protected $accountMail      = '';
-    protected $accountName      = '';
-    protected $accountPassword  = '';
-    protected $databaseType     = '';
-    protected $databaseHost     = '';
-    protected $databasePort     = '';
-    protected $databaseUser     = '';
+    protected $root = '';
+    protected $locale = '';
+    protected $siteName = '';
+    protected $siteMail = '';
+    protected $siteLocale = '';
+    protected $siteProfile = '';
+    protected $accountMail = '';
+    protected $accountName = '';
+    protected $accountPassword = '';
+    protected $databaseType = '';
+    protected $databaseHost = '';
+    protected $databasePort = '';
+    protected $databaseUser = '';
     protected $databasePassword = '';
-    protected $databaseName     = '';
-    protected $sitesSubdir      = '';
+    protected $databaseName = '';
+    protected $sitesSubdir = '';
 
     /**
      * Build Drush site install command.
@@ -70,20 +69,18 @@ class Drush extends Exec
                 break;
         };
 
-        //   $dbUrl = (isset($this->databaseUrl) && !empty($this->databaseUrl)) ? $this->databaseUrl : $dbUrl;
-
         return $this
             ->option('-y')
             ->rawArg("--root=$(pwd)/".$this->root)
             ->options([
-                'site-name'    => $this->siteName,
-                'site-mail'    => $this->siteMail,
-                'locale'       => $this->locale,
+                'site-name' => $this->siteName,
+                'site-mail' => $this->siteMail,
+                'locale' => $this->locale,
                 'account-mail' => $this->accountMail,
                 'account-name' => $this->accountName,
                 'account-pass' => $this->accountPassword,
                 'sites-subdir' => $this->sitesSubdir,
-                'db-url'       => $dbUrl,
+                'db-url' => $dbUrl,
             ], '=')
             ->arg('site-install')
             ->arg($this->siteProfile);

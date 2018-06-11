@@ -1,0 +1,51 @@
+workspace:
+  base: /test
+  path: task-runner
+
+services:
+  web:
+    image: ${IMAGE_PHP=fpfis/php56-build:latest}
+    environment:
+     - DOCUMENT_ROOT=/test/task-runner
+
+  frpc-tunnel:
+    image: fpfis/drone-frpc-plugin:latest
+    when:
+      event: [ push, tag ]
+    secrets: [ frpc_token, frpc_server ]
+    environment:
+      - PLUGIN_ENDPOINT=web:8080
+      - PLUGIN_GEN_AUTH=yes
+      - PLUGIN_DOMAIN=task-runner-${DRONE_BUILD_NUMBER}-${DRONE_JOB_NUMBER}.ci.fpfis.tech.ec.europa.eu
+      - PLUGIN_URL_OUTPUT_FILE=/test/task-runner/.frpc
+
+pipeline:
+  composer-install:
+    group: prepare
+    image: ${IMAGE_PHP=fpfis/php56-build:latest}
+    volumes:
+      - /cache:/cache
+    commands:
+      - composer install
+
+  grumphp:
+    group: test
+    image: ${IMAGE_PHP=fpfis/php56-build:latest}
+    commands:
+      - ./vendor/bin/grumphp run
+
+  phpunit:
+    group: test
+    image: ${IMAGE_PHP=fpfis/php56-build:latest}
+    commands:
+      # Reset permission since installation runs as root. @todo Fix this.
+      - mkdir -p tests
+      - chown -R 1000:1000 tests
+      - chmod -R 777 /tmp
+      - useradd -u 1000 -m -s /bin/bash web
+      - su web -c"./vendor/bin/phpunit"
+
+matrix:
+  IMAGE_PHP:
+    - fpfis/php56-build:latest
+    - fpfis/php71-build:latest

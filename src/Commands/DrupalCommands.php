@@ -15,7 +15,6 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @package OpenEuropa\TaskRunner\Commands
  */
-
 class DrupalCommands extends AbstractCommands implements FilesystemAwareInterface
 {
     use TaskRunnerTraits\ConfigurationTokensTrait;
