@@ -41,7 +41,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      */
     public function setRuntimeConfig(ConsoleCommandEvent $event)
     {
-        $root         = $this->getConfig()->get('drupal.root');
+        $root = $this->getConfig()->get('drupal.root');
         $rootFullPath = realpath($root);
         if ($rootFullPath) {
             $this->getConfig()->set('drupal.root_absolute', $rootFullPath);
@@ -79,23 +79,23 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function siteInstall(array $options = [
-            'root'              => InputOption::VALUE_REQUIRED,
-            'base-url'          => InputOption::VALUE_REQUIRED,
-            'site-name'         => InputOption::VALUE_REQUIRED,
-            'site-mail'         => InputOption::VALUE_REQUIRED,
-            'site-profile'      => InputOption::VALUE_REQUIRED,
-            'site-update'       => InputOption::VALUE_REQUIRED,
-            'site-locale'       => InputOption::VALUE_REQUIRED,
-            'account-name'      => InputOption::VALUE_REQUIRED,
-            'account-password'  => InputOption::VALUE_REQUIRED,
-            'account-mail'      => InputOption::VALUE_REQUIRED,
-            'database-type'     => InputOption::VALUE_REQUIRED,
-            'database-user'     => InputOption::VALUE_OPTIONAL,
+            'root' => InputOption::VALUE_REQUIRED,
+            'base-url' => InputOption::VALUE_REQUIRED,
+            'site-name' => InputOption::VALUE_REQUIRED,
+            'site-mail' => InputOption::VALUE_REQUIRED,
+            'site-profile' => InputOption::VALUE_REQUIRED,
+            'site-update' => InputOption::VALUE_REQUIRED,
+            'site-locale' => InputOption::VALUE_REQUIRED,
+            'account-name' => InputOption::VALUE_REQUIRED,
+            'account-password' => InputOption::VALUE_REQUIRED,
+            'account-mail' => InputOption::VALUE_REQUIRED,
+            'database-type' => InputOption::VALUE_REQUIRED,
+            'database-user' => InputOption::VALUE_OPTIONAL,
             'database-password' => InputOption::VALUE_OPTIONAL,
-            'database-host'     => InputOption::VALUE_OPTIONAL,
-            'database-port'     => InputOption::VALUE_OPTIONAL,
-            'database-name'     => InputOption::VALUE_OPTIONAL,
-            'sites-subdir'      => InputOption::VALUE_REQUIRED,
+            'database-host' => InputOption::VALUE_OPTIONAL,
+            'database-port' => InputOption::VALUE_OPTIONAL,
+            'database-name' => InputOption::VALUE_OPTIONAL,
+            'sites-subdir' => InputOption::VALUE_REQUIRED,
         ])
     {
         $drush = $this->getConfig()->get('runner.bin_dir').'/drush';
@@ -202,7 +202,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function drushSetup(array $options = [
-            'root'       => InputOption::VALUE_REQUIRED,
+            'root' => InputOption::VALUE_REQUIRED,
             'config-dir' => InputOption::VALUE_REQUIRED,
         ])
     {
