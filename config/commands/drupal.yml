@@ -13,12 +13,13 @@ command:
         account-name: ${drupal.account.name}
         account-password: ${drupal.account.password}
         account-mail: ${drupal.account.mail}
-        database-type: ${drupal.database.type}
+        database-scheme: ${drupal.database.scheme}
         database-host: ${drupal.database.host}
         database-port: ${drupal.database.port}
         database-name: ${drupal.database.name}
         database-user: ${drupal.database.user}
         database-password: ${drupal.database.password}
+        database-url: ${drupal.database.url}
         sites-subdir: ${drupal.site.sites_subdir}
     drush-setup:
       options:

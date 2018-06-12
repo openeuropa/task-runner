@@ -22,12 +22,13 @@ class Drush extends Exec
     protected $accountMail = '';
     protected $accountName = '';
     protected $accountPassword = '';
-    protected $databaseType = '';
+    protected $databaseScheme = '';
     protected $databaseHost = '';
     protected $databasePort = '';
     protected $databaseUser = '';
     protected $databasePassword = '';
     protected $databaseName = '';
+    protected $databaseUrl = '';
     protected $sitesSubdir = '';
 
     /**
@@ -37,29 +38,19 @@ class Drush extends Exec
      */
     public function siteInstall()
     {
-        switch ($this->databaseType) {
+        switch ($this->databaseScheme) {
             case 'sqlite3':
             case 'sqlite':
                 $dbUrl = sprintf(
-                    "sqlite://sites/$this->sitesSubdir/files/.ht.sqlite"
+                    'sqlite://sites/%s/files/.ht.sqlite',
+                    $this->sitesSubdir
                 );
                 break;
 
-            case 'pgsql':
-                $dbUrl = sprintf(
-                    'pgsql://%s:%s@%s:%s/%s',
-                    $this->databaseUser,
-                    $this->databasePassword,
-                    $this->databaseHost,
-                    $this->databasePort,
-                    $this->databaseName
-                );
-                break;
-
-            case 'mysql':
             default:
                 $dbUrl = sprintf(
-                    'mysql://%s:%s@%s:%s/%s',
+                    '%s://%s:%s@%s:%s/%s',
+                    $this->databaseScheme,
                     $this->databaseUser,
                     $this->databasePassword,
                     $this->databaseHost,
@@ -80,7 +71,7 @@ class Drush extends Exec
                 'account-name' => $this->accountName,
                 'account-pass' => $this->accountPassword,
                 'sites-subdir' => $this->sitesSubdir,
-                'db-url' => $dbUrl,
+                'db-url' => empty($this->databaseUrl) ? $dbUrl : $this->databaseUrl,
             ], '=')
             ->arg('site-install')
             ->arg($this->siteProfile);
@@ -195,13 +186,13 @@ class Drush extends Exec
     }
 
     /**
-     * @param string $databaseType
+     * @param string $databaseScheme
      *
      * @return Drush
      */
-    public function databaseType($databaseType)
+    public function databaseScheme($databaseScheme)
     {
-        $this->databaseType = $databaseType;
+        $this->databaseScheme = $databaseScheme;
 
         return $this;
     }
@@ -262,6 +253,18 @@ class Drush extends Exec
     public function databaseName($databaseName)
     {
         $this->databaseName = $databaseName;
+
+        return $this;
+    }
+
+    /**
+     * @param string $databaseUrl
+     *
+     * @return Drush
+     */
+    public function databaseUrl($databaseUrl)
+    {
+        $this->databaseUrl = $databaseUrl;
 
         return $this;
     }

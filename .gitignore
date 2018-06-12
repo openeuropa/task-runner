@@ -1,8 +1,8 @@
-/vendor/
-/tests/sandbox
+vendor/
+tests/sandbox
 grumphp.yml
 phpunit.xml
 composer.lock
 behat.yml
 *.tar.gz
-/.idea/
+.idea/
