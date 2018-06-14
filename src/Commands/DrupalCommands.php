@@ -56,19 +56,14 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      */
     public function validateSiteInstall(CommandData $commandData)
     {
-        $input         = $commandData->input();
+        $input = $commandData->input();
         $siteDirectory = getcwd().'/'.$input->getOption('root').'/sites/'.$input->getOption('sites-subdir');
 
-        // Check that if site directory exists it is writable.
-        if (file_exists($siteDirectory)) {
-            if (!is_writable($siteDirectory)) {
-                throw new \Exception("The site directory $siteDirectory must be writable for installation to continue.");
-            }
-        }
-        // Check that if site directory exists it is writable.
-        if (file_exists($siteDirectory.'/settings.php')) {
-            if (!is_writable($siteDirectory.'/settings.php')) {
-                throw new \Exception("The settings file $siteDirectory/settings.php must be writable for installation to continue.");
+        // Check that if files/folders required exist and they are writable.
+        $requiredFiles = [$siteDirectory, $siteDirectory.'/settings.php'];
+        foreach ($requiredFiles as $requiredFile) {
+            if (file_exists($requiredFile) && !is_writable($requiredFile)) {
+                throw new \Exception("The file/folder '$requiredFile' must be writable for installation to continue.");
             }
         }
     }
@@ -104,40 +99,40 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function siteInstall(array $options = [
-        'root'              => InputOption::VALUE_REQUIRED,
-        'base-url'          => InputOption::VALUE_REQUIRED,
-        'site-name'         => InputOption::VALUE_REQUIRED,
-        'site-mail'         => InputOption::VALUE_REQUIRED,
-        'site-profile'      => InputOption::VALUE_REQUIRED,
-        'site-update'       => InputOption::VALUE_REQUIRED,
-        'site-locale'       => InputOption::VALUE_REQUIRED,
-        'account-name'      => InputOption::VALUE_REQUIRED,
-        'account-password'  => InputOption::VALUE_REQUIRED,
-        'account-mail'      => InputOption::VALUE_REQUIRED,
-        'database-user'     => InputOption::VALUE_REQUIRED,
-        'database-password' => InputOption::VALUE_REQUIRED,
-        'database-host'     => InputOption::VALUE_REQUIRED,
-        'database-port'     => InputOption::VALUE_REQUIRED,
-        'database-name'     => InputOption::VALUE_REQUIRED,
-        'sites-subdir'      => InputOption::VALUE_REQUIRED,
+      'root'              => InputOption::VALUE_REQUIRED,
+      'base-url'          => InputOption::VALUE_REQUIRED,
+      'site-name'         => InputOption::VALUE_REQUIRED,
+      'site-mail'         => InputOption::VALUE_REQUIRED,
+      'site-profile'      => InputOption::VALUE_REQUIRED,
+      'site-update'       => InputOption::VALUE_REQUIRED,
+      'site-locale'       => InputOption::VALUE_REQUIRED,
+      'account-name'      => InputOption::VALUE_REQUIRED,
+      'account-password'  => InputOption::VALUE_REQUIRED,
+      'account-mail'      => InputOption::VALUE_REQUIRED,
+      'database-user'     => InputOption::VALUE_REQUIRED,
+      'database-password' => InputOption::VALUE_REQUIRED,
+      'database-host'     => InputOption::VALUE_REQUIRED,
+      'database-port'     => InputOption::VALUE_REQUIRED,
+      'database-name'     => InputOption::VALUE_REQUIRED,
+      'sites-subdir'      => InputOption::VALUE_REQUIRED,
     ])
     {
         $drush = $this->getConfig()->get('runner.bin_dir').'/drush';
-        $task  = $this->taskDrush($drush)
-            ->root($options['root'])
-            ->siteName($options['site-name'])
-            ->siteMail($options['site-mail'])
-            ->locale($options['site-locale'])
-            ->accountMail($options['account-mail'])
-            ->accountName($options['account-name'])
-            ->accountPassword($options['account-password'])
-            ->databaseUser($options['database-user'])
-            ->databasePassword($options['database-password'])
-            ->databaseHost($options['database-host'])
-            ->databasePort($options['database-port'])
-            ->databaseName($options['database-name'])
-            ->sitesSubdir($options['sites-subdir'])
-            ->siteProfile($options['site-profile']);
+        $task = $this->taskDrush($drush)
+          ->root($options['root'])
+          ->siteName($options['site-name'])
+          ->siteMail($options['site-mail'])
+          ->locale($options['site-locale'])
+          ->accountMail($options['account-mail'])
+          ->accountName($options['account-name'])
+          ->accountPassword($options['account-password'])
+          ->databaseUser($options['database-user'])
+          ->databasePassword($options['database-password'])
+          ->databaseHost($options['database-host'])
+          ->databasePort($options['database-port'])
+          ->databaseName($options['database-name'])
+          ->sitesSubdir($options['sites-subdir'])
+          ->siteProfile($options['site-profile']);
 
         return $this->collectionBuilder()->addTaskList([
             $this->sitePreInstall(),
@@ -225,8 +220,8 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function drushSetup(array $options = [
-        'root' => InputOption::VALUE_REQUIRED,
-        'config-dir' => InputOption::VALUE_REQUIRED,
+      'root' => InputOption::VALUE_REQUIRED,
+      'config-dir' => InputOption::VALUE_REQUIRED,
     ])
     {
         $config = $this->getConfig();
@@ -263,7 +258,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function settingsSetup(array $options = [
-        'root' => InputOption::VALUE_REQUIRED,
+      'root' => InputOption::VALUE_REQUIRED,
     ])
     {
         return $this->collectionBuilder()->addTaskList([
