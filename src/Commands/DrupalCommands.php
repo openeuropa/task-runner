@@ -2,13 +2,14 @@
 
 namespace OpenEuropa\TaskRunner\Commands;
 
+use Consolidation\AnnotatedCommand\CommandData;
+use NuvoleWeb\Robo\Task as NuvoleWebTasks;
 use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
+use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
+use OpenEuropa\TaskRunner\Traits as TaskRunnerTraits;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
-use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
-use OpenEuropa\TaskRunner\Traits as TaskRunnerTraits;
-use NuvoleWeb\Robo\Task as NuvoleWebTasks;
 
 /**
  * Class DrupalCommands.
@@ -44,6 +45,31 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         $rootFullPath = realpath($root);
         if ($rootFullPath) {
             $this->getConfig()->set('drupal.root_absolute', $rootFullPath);
+        }
+    }
+
+    /**
+     * @hook validate drupal:site-install
+     *
+     * @param CommandData $commandData
+     * @throws \Exception
+     */
+    public function validateSiteInstall(CommandData $commandData)
+    {
+        $input = $commandData->input();
+        $siteDirectory = implode('/', [
+            getcwd(),
+            $input->getOption('root'),
+            'sites',
+            $input->getOption('sites-subdir'),
+        ]);
+
+        // Check if required files/folders exist and they are writable.
+        $requiredFiles = [$siteDirectory, $siteDirectory.'/settings.php'];
+        foreach ($requiredFiles as $requiredFile) {
+            if (file_exists($requiredFile) && !is_writable($requiredFile)) {
+                throw new \Exception(sprintf('The file/folder %s must be writable for installation to continue.', $requiredFile));
+            }
         }
     }
 
