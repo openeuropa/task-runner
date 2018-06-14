@@ -57,13 +57,18 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
     public function validateSiteInstall(CommandData $commandData)
     {
         $input = $commandData->input();
-        $siteDirectory = getcwd().'/'.$input->getOption('root').'/sites/'.$input->getOption('sites-subdir');
+        $siteDirectory = implode('/', [
+            getcwd(),
+            $input->getOption('root'),
+            'sites',
+            $input->getOption('sites-subdir'),
+        ]);
 
-        // Check that if files/folders required exist and they are writable.
+        // Check if required files/folders exist and they are writable.
         $requiredFiles = [$siteDirectory, $siteDirectory.'/settings.php'];
         foreach ($requiredFiles as $requiredFile) {
             if (file_exists($requiredFile) && !is_writable($requiredFile)) {
-                throw new \Exception("The file/folder '$requiredFile' must be writable for installation to continue.");
+                throw new \Exception(sprintf('The file/folder %s must be writable for installation to continue.', $requiredFile));
             }
         }
     }
