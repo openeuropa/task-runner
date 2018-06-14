@@ -8,17 +8,6 @@ services:
     environment:
      - DOCUMENT_ROOT=/test/task-runner
 
-  frpc-tunnel:
-    image: fpfis/drone-frpc-plugin:latest
-    when:
-      event: [ push, tag ]
-    secrets: [ frpc_token, frpc_server ]
-    environment:
-      - PLUGIN_ENDPOINT=web:8080
-      - PLUGIN_GEN_AUTH=yes
-      - PLUGIN_DOMAIN=task-runner-${DRONE_BUILD_NUMBER}-${DRONE_JOB_NUMBER}.ci.fpfis.tech.ec.europa.eu
-      - PLUGIN_URL_OUTPUT_FILE=/test/task-runner/.frpc
-
 pipeline:
   composer-install:
     group: prepare

@@ -78,47 +78,47 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function siteInstall(array $options = [
-            'root' => InputOption::VALUE_REQUIRED,
-            'base-url' => InputOption::VALUE_REQUIRED,
-            'site-name' => InputOption::VALUE_REQUIRED,
-            'site-mail' => InputOption::VALUE_REQUIRED,
-            'site-profile' => InputOption::VALUE_REQUIRED,
-            'site-update' => InputOption::VALUE_REQUIRED,
-            'site-locale' => InputOption::VALUE_REQUIRED,
-            'account-name' => InputOption::VALUE_REQUIRED,
-            'account-password' => InputOption::VALUE_REQUIRED,
-            'account-mail' => InputOption::VALUE_REQUIRED,
-            'database-type' => InputOption::VALUE_REQUIRED,
-            'database-user' => InputOption::VALUE_OPTIONAL,
-            'database-password' => InputOption::VALUE_OPTIONAL,
-            'database-host' => InputOption::VALUE_OPTIONAL,
-            'database-port' => InputOption::VALUE_OPTIONAL,
-            'database-name' => InputOption::VALUE_OPTIONAL,
-            'sites-subdir' => InputOption::VALUE_REQUIRED,
-        ])
+        'root' => InputOption::VALUE_REQUIRED,
+        'base-url' => InputOption::VALUE_REQUIRED,
+        'site-name' => InputOption::VALUE_REQUIRED,
+        'site-mail' => InputOption::VALUE_REQUIRED,
+        'site-profile' => InputOption::VALUE_REQUIRED,
+        'site-update' => InputOption::VALUE_REQUIRED,
+        'site-locale' => InputOption::VALUE_REQUIRED,
+        'account-name' => InputOption::VALUE_REQUIRED,
+        'account-password' => InputOption::VALUE_REQUIRED,
+        'account-mail' => InputOption::VALUE_REQUIRED,
+        'database-scheme' => InputOption::VALUE_REQUIRED,
+        'database-user' => InputOption::VALUE_REQUIRED,
+        'database-password' => InputOption::VALUE_REQUIRED,
+        'database-host' => InputOption::VALUE_REQUIRED,
+        'database-port' => InputOption::VALUE_REQUIRED,
+        'database-name' => InputOption::VALUE_REQUIRED,
+        'sites-subdir' => InputOption::VALUE_REQUIRED,
+    ])
     {
         $drush = $this->getConfig()->get('runner.bin_dir').'/drush';
         $task  = $this->taskDrush($drush)
-                     ->root($options['root'])
-                     ->siteName($options['site-name'])
-                     ->siteMail($options['site-mail'])
-                     ->locale($options['site-locale'])
-                     ->accountMail($options['account-mail'])
-                     ->accountName($options['account-name'])
-                     ->accountPassword($options['account-password'])
-                     ->databaseType($options['database-type'])
-                     ->databaseUser($options['database-user'])
-                     ->databasePassword($options['database-password'])
-                     ->databaseHost($options['database-host'])
-                     ->databasePort($options['database-port'])
-                     ->databaseName($options['database-name'])
-                     ->sitesSubdir($options['sites-subdir'])
-                     ->siteProfile($options['site-profile']);
+            ->root($options['root'])
+            ->siteName($options['site-name'])
+            ->siteMail($options['site-mail'])
+            ->locale($options['site-locale'])
+            ->accountMail($options['account-mail'])
+            ->accountName($options['account-name'])
+            ->accountPassword($options['account-password'])
+            ->databaseScheme($options['database-scheme'])
+            ->databaseUser($options['database-user'])
+            ->databasePassword($options['database-password'])
+            ->databaseHost($options['database-host'])
+            ->databasePort($options['database-port'])
+            ->databaseName($options['database-name'])
+            ->sitesSubdir($options['sites-subdir'])
+            ->siteProfile($options['site-profile']);
 
         return $this->collectionBuilder()->addTaskList([
-                $this->sitePreInstall(),
-                $task->siteInstall(),
-                $this->sitePostInstall(),
+            $this->sitePreInstall(),
+            $task->siteInstall(),
+            $this->sitePostInstall(),
         ]);
     }
 
@@ -201,16 +201,16 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function drushSetup(array $options = [
-            'root' => InputOption::VALUE_REQUIRED,
-            'config-dir' => InputOption::VALUE_REQUIRED,
-        ])
+        'root' => InputOption::VALUE_REQUIRED,
+        'config-dir' => InputOption::VALUE_REQUIRED,
+    ])
     {
         $config = $this->getConfig();
         $yaml   = Yaml::dump($config->get('drupal.drush'));
 
         return $this->collectionBuilder()->addTaskList([
-                $this->taskWriteConfiguration($options['root'].'/sites/default/drushrc.php', $config)->setConfigKey('drupal.drush'),
-                $this->taskWriteToFile($options['config-dir'].'/drush.yml')->text($yaml),
+            $this->taskWriteConfiguration($options['root'].'/sites/default/drushrc.php', $config)->setConfigKey('drupal.drush'),
+            $this->taskWriteToFile($options['config-dir'].'/drush.yml')->text($yaml),
         ]);
     }
 
@@ -239,11 +239,11 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function settingsSetup(array $options = [
-            'root' => InputOption::VALUE_REQUIRED,
-        ])
+        'root' => InputOption::VALUE_REQUIRED,
+    ])
     {
         return $this->collectionBuilder()->addTaskList([
-                $this->taskAppendConfiguration($options['root'].'/sites/default/default.settings.php', $this->getConfig())->setConfigKey('drupal.settings'),
+            $this->taskAppendConfiguration($options['root'].'/sites/default/default.settings.php', $this->getConfig())->setConfigKey('drupal.settings'),
         ]);
     }
 }
