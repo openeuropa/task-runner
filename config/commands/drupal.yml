@@ -13,6 +13,9 @@ command:
         account-name: ${drupal.account.name}
         account-password: ${drupal.account.password}
         account-mail: ${drupal.account.mail}
+        # @deprecated
+        # The "database-type" option will be removed in version 1.0.0. Use "database-scheme".
+        database-type: ${drupal.database.type}
         database-scheme: ${drupal.database.scheme}
         database-host: ${drupal.database.host}
         database-port: ${drupal.database.port}

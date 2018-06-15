@@ -45,8 +45,12 @@ class Drush extends Exec
             'port' => $this->databasePort,
             'path' => $this->databaseName,
         ];
+        if ($this->databaseScheme === 'sqlite') {
+            $dbArray['user'] = '';
+            $dbArray['pass'] = '';
+            $dbArray['port'] = '';
+        }
         $dbUrl = http_build_url($dbArray, $dbArray);
-
 
         return $this->option('-y')
             ->rawArg("--root=$(pwd)/".$this->root)

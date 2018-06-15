@@ -36,6 +36,9 @@ drupal:
 
   # Database settings.
   database:
+    # @deprecated
+    # The "type" option will be removed in version 1.0.0. Use "scheme".
+    type: ""
     scheme: "mysql"
     host: "127.0.0.1"
     port: "3306"

@@ -64,6 +64,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @option account-name      Admin account name.
      * @option account-password  Admin account password.
      * @option account-mail      Admin email.
+     * @option database-type     Deprecated, use "database-scheme"
      * @option database-scheme   Database scheme.
      * @option database-host     Database host.
      * @option database-port     Database port.
@@ -89,6 +90,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         'account-name' => InputOption::VALUE_REQUIRED,
         'account-password' => InputOption::VALUE_REQUIRED,
         'account-mail' => InputOption::VALUE_REQUIRED,
+        'database-type' => InputOption::VALUE_REQUIRED,
         'database-scheme' => InputOption::VALUE_REQUIRED,
         'database-user' => InputOption::VALUE_REQUIRED,
         'database-password' => InputOption::VALUE_REQUIRED,
@@ -98,6 +100,11 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         'sites-subdir' => InputOption::VALUE_REQUIRED,
     ])
     {
+        if ($options['database-type']) {
+            $this->io()->warning("Option 'database-type' is deprecated and it will be removed in 1.0.0. Use 'database-scheme' instead.");
+            $options['database-scheme'] = $options['database-type'];
+        }
+
         $drush = $this->getConfig()->get('runner.bin_dir').'/drush';
         $task  = $this->taskDrush($drush)
             ->root($options['root'])
