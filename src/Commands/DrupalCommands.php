@@ -235,12 +235,12 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function drushSetup(array $options = [
-        'root' => InputOption::VALUE_REQUIRED,
-        'config-dir' => InputOption::VALUE_REQUIRED,
+      'root' => InputOption::VALUE_REQUIRED,
+      'config-dir' => InputOption::VALUE_REQUIRED,
     ])
     {
         $config = $this->getConfig();
-        $yaml   = Yaml::dump($config->get('drupal.drush'));
+        $yaml = Yaml::dump($config->get('drupal.drush'));
 
         return $this->collectionBuilder()->addTaskList([
             $this->taskWriteConfiguration($options['root'].'/sites/default/drushrc.php', $config)->setConfigKey('drupal.drush'),
@@ -273,7 +273,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function settingsSetup(array $options = [
-        'root' => InputOption::VALUE_REQUIRED,
+      'root' => InputOption::VALUE_REQUIRED,
     ])
     {
         return $this->collectionBuilder()->addTaskList([
