@@ -64,6 +64,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @option account-name      Admin account name.
      * @option account-password  Admin account password.
      * @option account-mail      Admin email.
+     * @option database-scheme   Database scheme.
      * @option database-host     Database host.
      * @option database-port     Database port.
      * @option database-name     Database name.

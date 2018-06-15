@@ -3,7 +3,6 @@
 namespace OpenEuropa\TaskRunner\Tasks\Drush;
 
 use Robo\Task\Base\Exec;
-use http_build_url;
 
 /**
  * Class Drush
@@ -38,15 +37,15 @@ class Drush extends Exec
      */
     public function siteInstall()
     {
-
-        $dbUrl = http_build_url([
+        $dbArray = [
             'scheme' => $this->databaseScheme,
             'user' => $this->databaseUser,
-            'password' => $this->databasePassword,
+            'pass' => $this->databasePassword,
             'host' => $this->databaseHost,
             'port' => $this->databasePort,
             'path' => $this->databaseName,
-        ]);
+        ];
+        $dbUrl = http_build_url($dbArray, $dbArray);
 
 
         return $this->option('-y')
@@ -63,7 +62,7 @@ class Drush extends Exec
             ], '=')
             ->arg('site-install')
             ->arg($this->siteProfile);
-    };
+    }
 
     /**
      * @param string $root

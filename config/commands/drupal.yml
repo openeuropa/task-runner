@@ -13,7 +13,7 @@ command:
         account-name: ${drupal.account.name}
         account-password: ${drupal.account.password}
         account-mail: ${drupal.account.mail}
-        database-type: ${drupal.database.type}
+        database-scheme: ${drupal.database.scheme}
         database-host: ${drupal.database.host}
         database-port: ${drupal.database.port}
         database-name: ${drupal.database.name}
