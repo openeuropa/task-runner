@@ -42,17 +42,17 @@ drupal:
     scheme: "mysql"
     host: "127.0.0.1"
     port: "3306"
-    name: "drupal"
-    user: "root"
-    password: "root"
+    name: ""
+    user: ""
+    password: ""
 
   # Config example for sqlite usage.
   # Note that empty strings should be used to override default settings.
   #    database:
   #      scheme: "sqlite"
-  #      host: "sites/default/files"
+  #      host: "/path/to/my/database"
   #      port: ""
-  #      name: ".ht.drupal"
+  #      name: "database.sqlite"
   #      user: ""
   #      password: ""
 
