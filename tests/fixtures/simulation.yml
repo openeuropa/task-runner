@@ -1,17 +1,32 @@
 - command: "drupal:site-install"
-  configuration: []
+  configuration:
+    drupal:
+      database:
+        name: "drupal"
+        user: "root"
+        password: "root"
   composer: ''
   contains:
     - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
 - command: 'drupal:site-install --site-name="Test site"'
-  configuration: []
+  configuration:
+    drupal:
+      database:
+        name: "drupal"
+        user: "root"
+        password: "root"
   composer: ''
   contains:
     - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
 - command: 'drupal:site-install --site-mail="test@example.com" --site-profile=minimal'
-  configuration: []
+  configuration:
+    drupal:
+      database:
+        name: "drupal"
+        user: "root"
+        password: "root"
   composer: ''
   contains:
     - "site-install minimal"
@@ -102,6 +117,10 @@
 - command: 'drupal:site-install'
   configuration:
     drupal:
+      database:
+        name: "drupal"
+        user: "root"
+        password: "root"
       post_install:
         - "./vendor/bin/drush en views -y"
         - "./vendor/bin/drush cr"
@@ -123,10 +142,66 @@
 - command: 'drupal:site-install'
   configuration:
     drupal:
+      database:
+        name: "drupal"
+        user: "root"
+        password: "root"
       post_install: []
   composer: ''
   contains:
     - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      post_install: []
+      database:
+        scheme: "sqlite"
+        host: "sites/default/files"
+        name: ".ht.drupal"
+        password: ''
+        port: ''
+  composer: ''
+  contains:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='sqlite://sites/default/files/.ht.drupal' site-install standard"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      post_install: []
+      database:
+        type: "sqlite"
+        host: "sites/default/files"
+        name: ".ht.drupal"
+        password: ''
+        port: ''
+  composer: ''
+  contains:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='sqlite://sites/default/files/.ht.drupal' site-install standard"
+
+- command: 'drupal:site-install --database-type=pgsql'
+  configuration:
+    drupal:
+      post_install: []
+      database:
+        name: "drupal"
+        user: 'root'
+        password: 'root'
+  composer: ''
+  contains:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='pgsql://root:root@127.0.0.1:3306/drupal' site-install standard"
+
+- command: 'drupal:site-install --database-scheme=pgsql'
+  configuration:
+    drupal:
+      post_install: []
+      database:
+        name: "drupal"
+        user: 'root'
+        password: 'root'
+  composer: ''
+  contains:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='pgsql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
 - command: 'custom:run-tasks'
   configuration:
