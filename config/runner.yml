@@ -5,8 +5,12 @@
 # -----------------------------------------------------------------------------
 # Global Task Runner settings
 # -----------------------------------------------------------------------------
+#
+# The "runner.working_dir" will contain the full path to current working directory.
+# @see OpenEuropa\TaskRunner\TaskRunner::createConfiguration()
 runner:
   bin_dir: "./vendor/bin"
+#  working_dir: ~
 
 # -----------------------------------------------------------------------------
 # Drupal-related settings.

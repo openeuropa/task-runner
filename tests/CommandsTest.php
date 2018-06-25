@@ -7,6 +7,7 @@ use OpenEuropa\TaskRunner\TaskRunner;
 use OpenEuropa\TaskRunner\Tests\AbstractTest;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -156,6 +157,25 @@ class CommandsTest extends AbstractTest
             $content = file_get_contents($this->getSandboxFilepath($row['file']));
             $this->assertContainsNotContains($content, $row);
         }
+    }
+
+    /**
+     * Test current working directory as a replaceable token.
+     */
+    public function testWorkingDirectoryToken()
+    {
+        $configFile = $this->getSandboxFilepath('runner.yml');
+        $config = [
+            'working_dir' => '${runner.working_dir}',
+        ];
+        file_put_contents($configFile, Yaml::dump($config));
+
+        $input = new StringInput("list --working-dir=".$this->getSandboxRoot());
+        $runner = new TaskRunner($input, new NullOutput());
+        $runner->run();
+
+        $this->assertContains('/tests/sandbox', $runner->getConfig()->get('runner.working_dir'));
+        $this->assertContains('/tests/sandbox', $runner->getConfig()->get('working_dir'));
     }
 
     /**

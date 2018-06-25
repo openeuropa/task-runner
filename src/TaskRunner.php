@@ -158,11 +158,15 @@ class TaskRunner
      */
     private function createConfiguration()
     {
-        return Robo::createConfiguration([
+        $config = new Config();
+        $config->set('runner.working_dir', realpath($this->workingDir));
+        Robo::loadConfiguration([
             __DIR__.'/../config/runner.yml',
             'runner.yml.dist',
             'runner.yml',
-        ]);
+        ], $config);
+
+        return $config;
     }
 
     /**
