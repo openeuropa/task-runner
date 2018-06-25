@@ -1,10 +1,18 @@
 # Change Log
 
+## [0.7.0](https://github.com/openeuropa/task-runner/tree/0.7.0) (2018-06-25)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/0.6.0...0.7.0)
+
+**Merged pull requests:**
+
+- OPENEUROPA-696 Make sure the Task Runner provides current working directory as a replaceable token [\#56](https://github.com/openeuropa/task-runner/pull/56) ([ademarco](https://github.com/ademarco))
+
 ## [0.6.0](https://github.com/openeuropa/task-runner/tree/0.6.0) (2018-06-19)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.5.0...0.6.0)
 
 **Merged pull requests:**
 
+- Update CHANGELOG.md for 0.6.0 release. [\#55](https://github.com/openeuropa/task-runner/pull/55) ([ademarco](https://github.com/ademarco))
 - OPENEUROPA-370: Allow a site to be installed using SQLite [\#54](https://github.com/openeuropa/task-runner/pull/54) ([richardcanoe](https://github.com/richardcanoe))
 - OPENEUROPA-287: Add sanity check before starting site install. [\#53](https://github.com/openeuropa/task-runner/pull/53) ([richardcanoe](https://github.com/richardcanoe))
 
