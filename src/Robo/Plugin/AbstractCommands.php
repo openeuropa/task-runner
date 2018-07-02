@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenEuropa\TaskRunner\Commands;
+namespace OpenEuropa\TaskRunner\Robo\Plugin;
 
 use Robo\Common\ConfigAwareTrait;
 use Robo\Common\IO;
@@ -10,6 +10,7 @@ use Robo\Contract\BuilderAwareInterface;
 use Robo\Exception\TaskException;
 use Robo\LoadAllTasks;
 use Robo\Robo;
+use Robo\Tasks;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
 /**
@@ -17,7 +18,7 @@ use Symfony\Component\Console\Event\ConsoleCommandEvent;
  *
  * @package OpenEuropa\TaskRunner\Commands
  */
-abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterface, ConfigAwareInterface
+abstract class AbstractCommands extends Tasks implements BuilderAwareInterface, IOAwareInterface, ConfigAwareInterface
 {
     use ConfigAwareTrait;
     use LoadAllTasks;

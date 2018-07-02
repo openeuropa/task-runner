@@ -4,12 +4,21 @@
 use Symfony\Component\Console\Input\ArgvInput;
 use OpenEuropa\TaskRunner\TaskRunner;
 
-if (file_exists(__DIR__.'/../vendor/autoload.php')) {
-    $classLoader = require __DIR__.'/../vendor/autoload.php';
-} elseif (file_exists(__DIR__.'/../../../autoload.php')) {
-    $classLoader = require __DIR__ . '/../../../autoload.php';
+// If we're running from phar load the phar autoload file.
+$pharPath = \Phar::running(true);
+if ($pharPath) {
+    $autoloaderPath = "$pharPath/vendor/autoload.php";
+} else {
+    if (file_exists(__DIR__.'/../vendor/autoload.php')) {
+        $autoloaderPath = __DIR__.'/../vendor/autoload.php';
+    } elseif (file_exists(__DIR__.'/../../../autoload.php')) {
+        $autoloaderPath = __DIR__ . '/../../../autoload.php';
+    } else {
+        die("Could not find autoloader. Run 'composer install'.");
+    }
 }
+$classLoader = require $autoloaderPath;
 
 $runner = new TaskRunner();
-$runner->registerExternalCommands($classLoader);
+$runner->setClassLoader($classLoader);
 exit($runner->run());

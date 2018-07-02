@@ -20,7 +20,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * Return a task collection given its array representation.
  *
- * @package OpenEuropa\TaskRunner\Tasks\YamlTaskFacorty
+ * @package OpenEuropa\TaskRunner\Tasks\YamlTaskFactory
  */
 class CollectionFactory extends BaseTask implements BuilderAwareInterface, SimulatedInterface
 {

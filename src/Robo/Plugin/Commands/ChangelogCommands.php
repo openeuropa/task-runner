@@ -1,8 +1,9 @@
 <?php
 
-namespace OpenEuropa\TaskRunner\Commands;
+namespace OpenEuropa\TaskRunner\Robo\Plugin\Commands;
 
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
+use OpenEuropa\TaskRunner\Robo\Plugin\AbstractCommands;
 use OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use Symfony\Component\Console\Input\InputOption;
 

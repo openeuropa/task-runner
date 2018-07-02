@@ -1,7 +1,8 @@
 <?php
 
-namespace OpenEuropa\TaskRunner\Commands;
+namespace OpenEuropa\TaskRunner\Robo\Plugin\Commands;
 
+use OpenEuropa\TaskRunner\Robo\Plugin\AbstractCommands;
 use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
 
 /**

@@ -2,13 +2,11 @@
 
 namespace OpenEuropa\TaskRunner;
 
-use Composer\Autoload\ClassLoader;
-use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Gitonomy\Git\Repository;
-use OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
 use OpenEuropa\TaskRunner\Contract\TimeAwareInterface;
+use OpenEuropa\TaskRunner\Robo\Plugin\Commands\DynamicCommands;
 use OpenEuropa\TaskRunner\Services\Composer;
 use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use League\Container\ContainerAwareTrait;
@@ -65,6 +63,11 @@ class TaskRunner
     private $workingDir;
 
     /**
+     * @var @TODO
+     */
+    private $classLoader;
+
+    /**
      * TaskRunner constructor.
      *
      * @param InputInterface       $input
@@ -88,67 +91,22 @@ class TaskRunner
     }
 
     /**
+     * @TODO
+     */
+    public function setClassLoader($classLoader) {
+        $this->classLoader = $classLoader;
+    }
+
+    /**
      * @return int
      */
     public function run()
     {
-        // Register command classes.
-        $this->runner->registerCommandClasses($this->application, $this->getCommandDiscovery()->discover(__DIR__, 'OpenEuropa\\TaskRunner'));
-
         // Register commands defined in runner.yml file.
         $this->registerDynamicCommands($this->application);
 
         // Run command.
         return $this->runner->run($this->input, $this->output, $this->application);
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return \OpenEuropa\TaskRunner\Commands\AbstractCommands
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    public function getCommands($class)
-    {
-        // Register command classes.
-        $this->runner->registerCommandClasses($this->application, $this->getCommandDiscovery()->discover(__DIR__, 'OpenEuropa\\TaskRunner'));
-
-        return $this->getContainer()->get("{$class}Commands");
-    }
-
-    /**
-     * @param \Composer\Autoload\ClassLoader $classLoader
-     */
-    public function registerExternalCommands(ClassLoader $classLoader)
-    {
-        $commands = [];
-        $discovery = $this->getCommandDiscovery();
-
-        foreach ($classLoader->getPrefixesPsr4() as $baseNamespace => $directoryList) {
-            $directoryList = array_filter($directoryList, function ($path) {
-                return is_dir($path.'/TaskRunner/Commands');
-            });
-
-            if (!empty($directoryList)) {
-                $discoveredCommands = $discovery->discover($directoryList, $baseNamespace);
-                $commands = array_merge($commands, $discoveredCommands);
-            }
-        }
-
-        $this->runner->registerCommandClasses($this->application, $commands);
-    }
-
-    /**
-     * @return \Consolidation\AnnotatedCommand\CommandFileDiscovery
-     */
-    private function getCommandDiscovery()
-    {
-        $discovery = new CommandFileDiscovery();
-        $discovery->setSearchPattern('*Commands.php')->setSearchLocations(['TaskRunner', 'Commands']);
-
-        return $discovery;
     }
 
     /**
