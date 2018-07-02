@@ -2,7 +2,7 @@
 
 namespace My\Custom\TaskRunner\Commands;
 
-use OpenEuropa\TaskRunner\Commands\AbstractCommands;
+use OpenEuropa\TaskRunner\Robo\Plugin\AbstractCommands;
 
 /**
  * Class SecondCustomCommands

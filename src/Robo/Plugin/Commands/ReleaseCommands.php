@@ -1,11 +1,12 @@
 <?php
 
-namespace OpenEuropa\TaskRunner\Commands;
+namespace OpenEuropa\TaskRunner\Robo\Plugin\Commands;
 
 use Gitonomy\Git\Reference\Branch;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
 use OpenEuropa\TaskRunner\Contract\TimeAwareInterface;
+use OpenEuropa\TaskRunner\Robo\Plugin\AbstractCommands;
 use OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
 use OpenEuropa\TaskRunner\Traits\RepositoryAwareTrait;
