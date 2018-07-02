@@ -4,11 +4,14 @@
 use Symfony\Component\Console\Input\ArgvInput;
 use OpenEuropa\TaskRunner\TaskRunner;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Composer\Autoload\ClassLoader;
 
 if (file_exists(__DIR__.'/../vendor/autoload.php')) {
     $classLoader = require __DIR__.'/../vendor/autoload.php';
 } elseif (file_exists(__DIR__.'/../../../autoload.php')) {
     $classLoader = require __DIR__ . '/../../../autoload.php';
+} else {
+    $classLoader = new ClassLoader();
 }
 
 $runner = new TaskRunner(new ArgvInput(), new ConsoleOutput(), $classLoader);
