@@ -63,6 +63,11 @@ class TaskRunner
     private $workingDir;
 
     /**
+     * @var @TODO
+     */
+    private $classLoader;
+
+    /**
      * TaskRunner constructor.
      *
      * @param InputInterface       $input
@@ -83,6 +88,13 @@ class TaskRunner
         // Create and initialize runner.
         $this->runner = new RoboRunner();
         $this->runner->setContainer($this->container);
+    }
+
+    /**
+     * @TODO
+     */
+    public function setClassLoader($classLoader) {
+        $this->classLoader = $classLoader;
     }
 
     /**
