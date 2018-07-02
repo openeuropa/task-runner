@@ -11,5 +11,4 @@ if (file_exists(__DIR__.'/../vendor/autoload.php')) {
 }
 
 $runner = new TaskRunner();
-$runner->registerExternalCommands($classLoader);
 exit($runner->run());
