@@ -18,7 +18,6 @@ use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
 use Robo\Robo;
 use Robo\Runner as RoboRunner;
-use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -67,20 +66,21 @@ class TaskRunner
     /**
      * TaskRunner constructor.
      *
-     * @param InputInterface       $input
-     * @param OutputInterface|null $output
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param \Composer\Autoload\ClassLoader                    $classLoader
      */
-    public function __construct(InputInterface $input = null, OutputInterface $output = null)
+    public function __construct(InputInterface $input, OutputInterface $output, ClassLoader $classLoader)
     {
-        $this->input = is_null($input) ? new ArgvInput() : $input;
-        $this->output = is_null($output) ? new ConsoleOutput() : $output;
+        $this->input = $input;
+        $this->output = $output;
 
         $this->workingDir = $this->getWorkingDir($this->input);
         chdir($this->workingDir);
 
         $this->config = $this->createConfiguration();
         $this->application = $this->createApplication();
-        $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config);
+        $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config, $classLoader);
 
         // Create and initialize runner.
         $this->runner = new RoboRunner();
@@ -179,9 +179,9 @@ class TaskRunner
      *
      * @return \League\Container\Container|\League\Container\ContainerInterface
      */
-    private function createContainer(InputInterface $input, OutputInterface $output, Application $application, Config $config)
+    private function createContainer(InputInterface $input, OutputInterface $output, Application $application, Config $config, ClassLoader $classLoader)
     {
-        $container = Robo::createDefaultContainer($input, $output, $application, $config);
+        $container = Robo::createDefaultContainer($input, $output, $application, $config, $classLoader);
         $container->get('commandFactory')->setIncludeAllPublicMethods(false);
         $container->share('task_runner.composer', Composer::class)->withArgument($this->workingDir);
         $container->share('task_runner.time', Time::class);

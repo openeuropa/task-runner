@@ -23,6 +23,13 @@ abstract class AbstractTest extends TestCase
         $filesystem->remove(glob($this->getSandboxRoot()."/*"));
     }
 
+    /**
+     * @return \Composer\Autoload\ClassLoader
+     */
+    protected function getClassLoader()
+    {
+        return require __DIR__.'/../vendor/autoload.php';
+    }
 
     /**
      * Call protected/private method of a class.

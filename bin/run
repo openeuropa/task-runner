@@ -3,6 +3,7 @@
 
 use Symfony\Component\Console\Input\ArgvInput;
 use OpenEuropa\TaskRunner\TaskRunner;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 if (file_exists(__DIR__.'/../vendor/autoload.php')) {
     $classLoader = require __DIR__.'/../vendor/autoload.php';
@@ -10,6 +11,5 @@ if (file_exists(__DIR__.'/../vendor/autoload.php')) {
     $classLoader = require __DIR__ . '/../../../autoload.php';
 }
 
-$runner = new TaskRunner();
-$runner->registerExternalCommands($classLoader);
+$runner = new TaskRunner(new ArgvInput(), new ConsoleOutput(), $classLoader);
 exit($runner->run());
