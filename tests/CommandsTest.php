@@ -14,6 +14,8 @@ use Symfony\Component\Yaml\Yaml;
  * Class DrupalCommandsTest.
  *
  * @package OpenEuropa\TaskRunner\Tests\Commands
+ *
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class CommandsTest extends AbstractTest
 {
