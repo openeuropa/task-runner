@@ -337,6 +337,50 @@ EOF;
     }
 
     /**
+     * Test the user config.
+     */
+    public function testUserConfigFile()
+    {
+        $fixtureName = 'userconfig.yml';
+
+        $settings = [
+            'TASKRUNNER_CONFIG' => __DIR__ . '/fixtures/' . $fixtureName,
+        ];
+
+        // Convert the array into a proper string.
+        $envSettings = implode(' ', array_map(
+            function ($value, $key) {
+                return sprintf('%s=%s', $key, $value);
+            },
+            $settings,
+            array_keys($settings)
+        ));
+
+        // Create a runner.
+        $input = new StringInput('list --working-dir=' . $this->getSandboxRoot());
+        $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
+        $runner->run();
+
+        // Extract a value from the default configuration.
+        $drupalRoot = $runner->getConfig()->get('drupal.root');
+
+        // Add the environment setting.
+        putenv($envSettings);
+
+        // Create a new runner.
+        $input = new StringInput('list --working-dir=' . $this->getSandboxRoot());
+        $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
+        $runner->run();
+
+        // Get the content of the fixture.
+        $content = $this->getFixtureContent($fixtureName);
+
+        $this->assertEquals($content['wordpress'], $runner->getConfig()->get('wordpress'));
+        $this->assertEquals($content['drupal']['root'], $runner->getConfig()->get('drupal.root'));
+        $this->assertNotEquals($drupalRoot, $runner->getConfig()->get('drupal.root'));
+    }
+
+    /**
      * @return array
      */
     public function simulationDataProvider()

@@ -144,6 +144,7 @@ class TaskRunner
             __DIR__.'/../config/runner.yml',
             'runner.yml.dist',
             'runner.yml',
+            getenv('TASKRUNNER_CONFIG') ?: getenv('HOME').'/.config/runner/runner.yml',
         ], $config);
 
         return $config;
