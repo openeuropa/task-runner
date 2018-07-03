@@ -2,7 +2,7 @@
 
 namespace OpenEuropa\TaskRunner\Tests\Commands;
 
-use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
+use OpenEuropa\TaskRunner\TaskRunner\Commands\ChangelogCommands;
 use OpenEuropa\TaskRunner\TaskRunner;
 use OpenEuropa\TaskRunner\Tests\AbstractTest;
 use Symfony\Component\Console\Input\StringInput;

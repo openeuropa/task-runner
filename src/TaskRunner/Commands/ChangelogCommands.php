@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenEuropa\TaskRunner\Commands;
+namespace OpenEuropa\TaskRunner\TaskRunner\Commands;
 
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
@@ -20,7 +20,7 @@ class ChangelogCommands extends AbstractCommands implements ComposerAwareInterfa
      */
     public function getConfigurationFile()
     {
-        return __DIR__.'/../../config/commands/changelog.yml';
+        return __DIR__.'/../../../config/commands/changelog.yml';
     }
 
     /**

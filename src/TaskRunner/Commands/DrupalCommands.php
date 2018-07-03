@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenEuropa\TaskRunner\Commands;
+namespace OpenEuropa\TaskRunner\TaskRunner\Commands;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use NuvoleWeb\Robo\Task as NuvoleWebTasks;
@@ -29,7 +29,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      */
     public function getConfigurationFile()
     {
-        return __DIR__.'/../../config/commands/drupal.yml';
+        return __DIR__.'/../../../config/commands/drupal.yml';
     }
 
     /**

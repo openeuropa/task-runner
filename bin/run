@@ -14,5 +14,8 @@ if (file_exists(__DIR__.'/../vendor/autoload.php')) {
 }
 $classLoader = require $autoloaderPath;
 
-$runner = new TaskRunner(new ArgvInput(), new ConsoleOutput(), $classLoader);
-exit($runner->run());
+$input = new ArgvInput();
+$output = new ConsoleOutput();
+
+$runner = new TaskRunner($input, $output, $classLoader);
+exit($runner->execute($input->getArguments(), null, null, $output));

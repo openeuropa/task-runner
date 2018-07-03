@@ -2,7 +2,7 @@
 
 namespace My\Custom\TaskRunner\Commands;
 
-use OpenEuropa\TaskRunner\Commands\AbstractCommands;
+use OpenEuropa\TaskRunner\TaskRunner\Commands\AbstractCommands;
 
 /**
  * Class FirstCustomCommands

@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenEuropa\TaskRunner\Commands;
+namespace OpenEuropa\TaskRunner\TaskRunner\Commands;
 
 use Robo\Common\ConfigAwareTrait;
 use Robo\Common\IO;
@@ -32,7 +32,7 @@ abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterfa
      */
     public function getConfigurationFile()
     {
-        return __DIR__.'/../../config/commands/base.yml';
+        return __DIR__.'/../../../config/commands/base.yml';
     }
 
     /**

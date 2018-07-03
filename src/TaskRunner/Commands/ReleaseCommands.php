@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenEuropa\TaskRunner\Commands;
+namespace OpenEuropa\TaskRunner\TaskRunner\Commands;
 
 use Gitonomy\Git\Reference\Branch;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;

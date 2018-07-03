@@ -4,7 +4,6 @@ namespace OpenEuropa\TaskRunner\Tests\Tasks;
 
 use OpenEuropa\TaskRunner\Tasks\ProcessConfigFile\ProcessConfigFile;
 use OpenEuropa\TaskRunner\Tests\AbstractTaskTest;
-use Robo\Task\Simulator;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -23,6 +22,8 @@ class ProcessConfigFileTest extends AbstractTaskTest
      * @param array $expected
      *
      * @dataProvider testTaskDataProvider
+     *
+     * @throws \Robo\Exception\TaskException
      */
     public function testTask(array $data, array $expected)
     {

@@ -3,7 +3,6 @@
 namespace OpenEuropa\TaskRunner\Tests\Commands;
 
 use Gitonomy\Git\Commit;
-use OpenEuropa\TaskRunner\Commands\ReleaseCommands;
 use OpenEuropa\TaskRunner\Services\Time;
 use OpenEuropa\TaskRunner\Tests\AbstractTest;
 use Gitonomy\Git\Reference;
