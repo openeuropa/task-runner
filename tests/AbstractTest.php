@@ -21,6 +21,7 @@ abstract class AbstractTest extends TestCase
     {
         $filesystem = new Filesystem();
         $filesystem->remove(glob($this->getSandboxRoot()."/*"));
+        date_default_timezone_set('Europe/London');
     }
 
     /**
