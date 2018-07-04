@@ -38,7 +38,7 @@ class ReleaseCommandsTest extends AbstractTest
 
         $input = new StringInput("release:create-archive {$options} --simulate --working-dir=".$this->getSandboxRoot());
         $output = new BufferedOutput();
-        $runner = new TaskRunner($input, $output);
+        $runner = new TaskRunner($input, $output, $this->getClassLoader());
 
         $runner->getContainer()->share('task_runner.composer', $this->getComposerMock('test_project'));
         $runner->getContainer()->share('repository', $this->getRepositoryMock($repository));
@@ -69,7 +69,7 @@ class ReleaseCommandsTest extends AbstractTest
 
         $input = new StringInput("release:create-archive --simulate --working-dir=".$this->getSandboxRoot());
         $output = new BufferedOutput();
-        $runner = new TaskRunner($input, $output);
+        $runner = new TaskRunner($input, $output, $this->getClassLoader());
 
         $runner->getContainer()->share('task_runner.time', $this->getTimeMock($timestamp));
         $runner->getContainer()->share('task_runner.composer', $this->getComposerMock('test_project'));

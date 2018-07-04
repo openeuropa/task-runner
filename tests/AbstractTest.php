@@ -21,8 +21,16 @@ abstract class AbstractTest extends TestCase
     {
         $filesystem = new Filesystem();
         $filesystem->remove(glob($this->getSandboxRoot()."/*"));
+        date_default_timezone_set('Europe/London');
     }
 
+    /**
+     * @return \Composer\Autoload\ClassLoader
+     */
+    protected function getClassLoader()
+    {
+        return require __DIR__.'/../vendor/autoload.php';
+    }
 
     /**
      * Call protected/private method of a class.
