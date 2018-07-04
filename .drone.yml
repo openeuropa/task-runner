@@ -4,14 +4,14 @@ workspace:
 
 services:
   web:
-    image: ${IMAGE_PHP=fpfis/php56-build:latest}
+    image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     environment:
      - DOCUMENT_ROOT=/test/task-runner
 
 pipeline:
   composer-install:
     group: prepare
-    image: ${IMAGE_PHP=fpfis/php56-build:latest}
+    image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     volumes:
       - /cache:/cache
     commands:
@@ -19,13 +19,13 @@ pipeline:
 
   grumphp:
     group: test
-    image: ${IMAGE_PHP=fpfis/php56-build:latest}
+    image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     commands:
       - ./vendor/bin/grumphp run
 
   phpunit:
     group: test
-    image: ${IMAGE_PHP=fpfis/php56-build:latest}
+    image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     commands:
       # Reset permission since installation runs as root. @todo Fix this.
       - mkdir -p tests
@@ -36,5 +36,5 @@ pipeline:
 
 matrix:
   IMAGE_PHP:
-    - fpfis/php56-build:latest
-    - fpfis/php71-build:latest
+    - fpfis/httpd-php-dev:5.6
+    - fpfis/httpd-php-dev:7.1
