@@ -2,13 +2,14 @@
 
 namespace OpenEuropa\TaskRunner\Commands;
 
+use Consolidation\AnnotatedCommand\CommandData;
+use NuvoleWeb\Robo\Task as NuvoleWebTasks;
 use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
+use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
+use OpenEuropa\TaskRunner\Traits as TaskRunnerTraits;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
-use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
-use OpenEuropa\TaskRunner\Traits as TaskRunnerTraits;
-use NuvoleWeb\Robo\Task as NuvoleWebTasks;
 
 /**
  * Class DrupalCommands.
@@ -48,6 +49,31 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
     }
 
     /**
+     * @hook validate drupal:site-install
+     *
+     * @param CommandData $commandData
+     * @throws \Exception
+     */
+    public function validateSiteInstall(CommandData $commandData)
+    {
+        $input = $commandData->input();
+        $siteDirectory = implode('/', [
+            getcwd(),
+            $input->getOption('root'),
+            'sites',
+            $input->getOption('sites-subdir'),
+        ]);
+
+        // Check if required files/folders exist and they are writable.
+        $requiredFiles = [$siteDirectory, $siteDirectory.'/settings.php'];
+        foreach ($requiredFiles as $requiredFile) {
+            if (file_exists($requiredFile) && !is_writable($requiredFile)) {
+                throw new \Exception(sprintf('The file/folder %s must be writable for installation to continue.', $requiredFile));
+            }
+        }
+    }
+
+    /**
      * Install target site.
      *
      * This command will install a target Drupal site using configuration values
@@ -64,6 +90,8 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @option account-name      Admin account name.
      * @option account-password  Admin account password.
      * @option account-mail      Admin email.
+     * @option database-type     Deprecated, use "database-scheme"
+     * @option database-scheme   Database scheme.
      * @option database-host     Database host.
      * @option database-port     Database port.
      * @option database-name     Database name.
@@ -78,40 +106,48 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function siteInstall(array $options = [
-      'root'              => InputOption::VALUE_REQUIRED,
-      'base-url'          => InputOption::VALUE_REQUIRED,
-      'site-name'         => InputOption::VALUE_REQUIRED,
-      'site-mail'         => InputOption::VALUE_REQUIRED,
-      'site-profile'      => InputOption::VALUE_REQUIRED,
-      'site-update'       => InputOption::VALUE_REQUIRED,
-      'site-locale'       => InputOption::VALUE_REQUIRED,
-      'account-name'      => InputOption::VALUE_REQUIRED,
-      'account-password'  => InputOption::VALUE_REQUIRED,
-      'account-mail'      => InputOption::VALUE_REQUIRED,
-      'database-user'     => InputOption::VALUE_REQUIRED,
-      'database-password' => InputOption::VALUE_REQUIRED,
-      'database-host'     => InputOption::VALUE_REQUIRED,
-      'database-port'     => InputOption::VALUE_REQUIRED,
-      'database-name'     => InputOption::VALUE_REQUIRED,
-      'sites-subdir'      => InputOption::VALUE_REQUIRED,
+        'root' => InputOption::VALUE_REQUIRED,
+        'base-url' => InputOption::VALUE_REQUIRED,
+        'site-name' => InputOption::VALUE_REQUIRED,
+        'site-mail' => InputOption::VALUE_REQUIRED,
+        'site-profile' => InputOption::VALUE_REQUIRED,
+        'site-update' => InputOption::VALUE_REQUIRED,
+        'site-locale' => InputOption::VALUE_REQUIRED,
+        'account-name' => InputOption::VALUE_REQUIRED,
+        'account-password' => InputOption::VALUE_REQUIRED,
+        'account-mail' => InputOption::VALUE_REQUIRED,
+        'database-type' => InputOption::VALUE_REQUIRED,
+        'database-scheme' => InputOption::VALUE_REQUIRED,
+        'database-user' => InputOption::VALUE_REQUIRED,
+        'database-password' => InputOption::VALUE_REQUIRED,
+        'database-host' => InputOption::VALUE_REQUIRED,
+        'database-port' => InputOption::VALUE_REQUIRED,
+        'database-name' => InputOption::VALUE_REQUIRED,
+        'sites-subdir' => InputOption::VALUE_REQUIRED,
     ])
     {
+        if ($options['database-type']) {
+            $this->io()->warning("Option 'database-type' is deprecated and it will be removed in 1.0.0. Use 'database-scheme' instead.");
+            $options['database-scheme'] = $options['database-type'];
+        }
+
         $drush = $this->getConfig()->get('runner.bin_dir').'/drush';
-        $task = $this->taskDrush($drush)
-          ->root($options['root'])
-          ->siteName($options['site-name'])
-          ->siteMail($options['site-mail'])
-          ->locale($options['site-locale'])
-          ->accountMail($options['account-mail'])
-          ->accountName($options['account-name'])
-          ->accountPassword($options['account-password'])
-          ->databaseUser($options['database-user'])
-          ->databasePassword($options['database-password'])
-          ->databaseHost($options['database-host'])
-          ->databasePort($options['database-port'])
-          ->databaseName($options['database-name'])
-          ->sitesSubdir($options['sites-subdir'])
-          ->siteProfile($options['site-profile']);
+        $task  = $this->taskDrush($drush)
+            ->root($options['root'])
+            ->siteName($options['site-name'])
+            ->siteMail($options['site-mail'])
+            ->locale($options['site-locale'])
+            ->accountMail($options['account-mail'])
+            ->accountName($options['account-name'])
+            ->accountPassword($options['account-password'])
+            ->databaseScheme($options['database-scheme'])
+            ->databaseUser($options['database-user'])
+            ->databasePassword($options['database-password'])
+            ->databaseHost($options['database-host'])
+            ->databasePort($options['database-port'])
+            ->databaseName($options['database-name'])
+            ->sitesSubdir($options['sites-subdir'])
+            ->siteProfile($options['site-profile']);
 
         return $this->collectionBuilder()->addTaskList([
             $this->sitePreInstall(),

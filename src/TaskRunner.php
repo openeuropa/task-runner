@@ -3,18 +3,23 @@
 namespace OpenEuropa\TaskRunner;
 
 use Composer\Autoload\ClassLoader;
-use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Gitonomy\Git\Repository;
+use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
+use OpenEuropa\TaskRunner\Commands\DrupalCommands;
 use OpenEuropa\TaskRunner\Commands\DynamicCommands;
+use OpenEuropa\TaskRunner\Commands\ReleaseCommands;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
+use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
+use OpenEuropa\TaskRunner\Contract\TimeAwareInterface;
 use OpenEuropa\TaskRunner\Services\Composer;
 use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use League\Container\ContainerAwareTrait;
+use OpenEuropa\TaskRunner\Services\Time;
 use Robo\Application;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
 use Robo\Robo;
 use Robo\Runner as RoboRunner;
-use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -61,30 +66,38 @@ class TaskRunner
     private $workingDir;
 
     /**
+     * @var array
+     */
+    private $defaultCommandClasses = [
+        ChangelogCommands::class,
+        DrupalCommands::class,
+        DynamicCommands::class,
+        ReleaseCommands::class,
+    ];
+
+    /**
      * TaskRunner constructor.
      *
-     * @param InputInterface       $input
-     * @param OutputInterface|null $output
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @param \Composer\Autoload\ClassLoader                    $classLoader
      */
-    public function __construct(InputInterface $input = null, OutputInterface $output = null)
+    public function __construct(InputInterface $input, OutputInterface $output, ClassLoader $classLoader)
     {
-        $this->input = is_null($input) ? new ArgvInput() : $input;
-        $this->output = is_null($output) ? new ConsoleOutput() : $output;
+        $this->input = $input;
+        $this->output = $output;
 
         $this->workingDir = $this->getWorkingDir($this->input);
         chdir($this->workingDir);
 
         $this->config = $this->createConfiguration();
         $this->application = $this->createApplication();
-        $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config);
+        $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config, $classLoader);
 
         // Create and initialize runner.
         $this->runner = new RoboRunner();
+        $this->runner->setRelativePluginNamespace('TaskRunner');
         $this->runner->setContainer($this->container);
-        $this->runner->registerCommandClasses($this->application, $this->getCommandDiscovery()->discover(__DIR__, 'OpenEuropa\\TaskRunner'));
-
-        // Register commands defined in runner.yml file.
-        $this->registerDynamicCommands($this->application);
     }
 
     /**
@@ -92,6 +105,13 @@ class TaskRunner
      */
     public function run()
     {
+        // Register command classes.
+        $this->runner->registerCommandClasses($this->application, $this->defaultCommandClasses);
+
+        // Register commands defined in runner.yml file.
+        $this->registerDynamicCommands($this->application);
+
+        // Run command.
         return $this->runner->run($this->input, $this->output, $this->application);
     }
 
@@ -105,40 +125,10 @@ class TaskRunner
      */
     public function getCommands($class)
     {
+        // Register command classes.
+        $this->runner->registerCommandClasses($this->application, $this->defaultCommandClasses);
+
         return $this->getContainer()->get("{$class}Commands");
-    }
-
-    /**
-     * @param \Composer\Autoload\ClassLoader $classLoader
-     */
-    public function registerExternalCommands(ClassLoader $classLoader)
-    {
-        $commands = [];
-        $discovery = $this->getCommandDiscovery();
-
-        foreach ($classLoader->getPrefixesPsr4() as $baseNamespace => $directoryList) {
-            $directoryList = array_filter($directoryList, function ($path) {
-                return is_dir($path.'/TaskRunner/Commands');
-            });
-
-            if (!empty($directoryList)) {
-                $discoveredCommands = $discovery->discover($directoryList, $baseNamespace);
-                $commands = array_merge($commands, $discoveredCommands);
-            }
-        }
-
-        $this->runner->registerCommandClasses($this->application, $commands);
-    }
-
-    /**
-     * @return \Consolidation\AnnotatedCommand\CommandFileDiscovery
-     */
-    private function getCommandDiscovery()
-    {
-        $discovery = new CommandFileDiscovery();
-        $discovery->setSearchPattern('*Commands.php')->setSearchLocations(['TaskRunner', 'Commands']);
-
-        return $discovery;
     }
 
     /**
@@ -148,11 +138,15 @@ class TaskRunner
      */
     private function createConfiguration()
     {
-        return Robo::createConfiguration([
+        $config = new Config();
+        $config->set('runner.working_dir', realpath($this->workingDir));
+        Robo::loadConfiguration([
             __DIR__.'/../config/runner.yml',
             'runner.yml.dist',
             'runner.yml',
-        ]);
+        ], $config);
+
+        return $config;
     }
 
     /**
@@ -165,18 +159,24 @@ class TaskRunner
      *
      * @return \League\Container\Container|\League\Container\ContainerInterface
      */
-    private function createContainer(InputInterface $input, OutputInterface $output, Application $application, Config $config)
+    private function createContainer(InputInterface $input, OutputInterface $output, Application $application, Config $config, ClassLoader $classLoader)
     {
-        $container = Robo::createDefaultContainer($input, $output, $application, $config);
+        $container = Robo::createDefaultContainer($input, $output, $application, $config, $classLoader);
         $container->get('commandFactory')->setIncludeAllPublicMethods(false);
         $container->share('task_runner.composer', Composer::class)->withArgument($this->workingDir);
+        $container->share('task_runner.time', Time::class);
+        $container->share('repository', Repository::class)->withArgument($this->workingDir);
         $container->share('filesystem', Filesystem::class);
 
         // Add service inflectors.
         $container->inflector(ComposerAwareInterface::class)
           ->invokeMethod('setComposer', ['task_runner.composer']);
+        $container->inflector(TimeAwareInterface::class)
+          ->invokeMethod('setTime', ['task_runner.time']);
         $container->inflector(FilesystemAwareInterface::class)
           ->invokeMethod('setFilesystem', ['filesystem']);
+        $container->inflector(RepositoryAwareInterface::class)
+          ->invokeMethod('setRepository', ['repository']);
 
         return $container;
     }

@@ -1,0 +1,53 @@
+- configuration: []
+  repository:
+    hash: "19di3458"
+    revision: "refs/heads/master"
+    tag: "1.0.0"
+    branches:
+      - { name: "develop", local: false, revision: "refs/heads/develop" }
+      - { name: "master", local: true, revision: "refs/heads/master" }
+  timestamp: 1514808000
+  expected:
+    release.version: "1.0.0"
+    release.date: "2018-01-01"
+    release.time: "12:00:00"
+    release.timestamp: 1514808000
+
+- configuration:
+    release:
+      tasks: []
+      time_format: "H:i"
+      date_format: "d/m/Y"
+  repository:
+    hash: "19di3458"
+    revision: "refs/heads/master"
+    tag: "1.0.0"
+    branches:
+      - { name: "develop", local: false, revision: "refs/heads/develop" }
+      - { name: "master", local: true, revision: "refs/heads/master" }
+  timestamp: 1514808000
+  expected:
+    release.version: "1.0.0"
+    release.date: "01/01/2018"
+    release.time: "12:00"
+    release.timestamp: 1514808000
+
+- configuration:
+    release:
+      tasks: []
+      time_format: "H:i"
+      date_format: "d/m/Y"
+  repository:
+    hash: "19di3458"
+    revision: "refs/heads/master"
+    tag: ~
+    branches:
+      - { name: "develop", local: false, revision: "refs/heads/develop" }
+      - { name: "master", local: true, revision: "refs/heads/master" }
+  timestamp: 1514808000
+  expected:
+    release.version: "master"
+    release.date: "01/01/2018"
+    release.time: "12:00"
+    release.timestamp: 1514808000
+

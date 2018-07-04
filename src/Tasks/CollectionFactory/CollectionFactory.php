@@ -117,6 +117,10 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 return $this->taskFilesystemStack()->touch($task['file'], $task['time'], $task['atime']);
 
             case "copy":
+                if (is_dir($task['from'])) {
+                    return $this->taskCopyDir([$task['from'] => $task['to']]);
+                }
+
                 return $this->taskFilesystemStack()->copy($task['from'], $task['to'], $task['force']);
 
             case "chmod":
@@ -142,6 +146,12 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
 
             case "process":
                 return $this->taskProcessConfigFile($task['source'], $task['destination']);
+
+            case "append":
+                return $this->collectionBuilder()->addTaskList([
+                    $this->taskWriteToFile($task['file'])->append()->text($task['text']),
+                    $this->taskProcessConfigFile($task['file'], $task['file']),
+                ]);
 
             case "run":
                 return $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')->arg($task['command']);

@@ -1,5 +1,37 @@
 # Change Log
 
+## [0.7.0](https://github.com/openeuropa/task-runner/tree/0.7.0) (2018-06-25)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/0.6.0...0.7.0)
+
+**Merged pull requests:**
+
+- OPENEUROPA-696 Make sure the Task Runner provides current working directory as a replaceable token [\#56](https://github.com/openeuropa/task-runner/pull/56) ([ademarco](https://github.com/ademarco))
+
+## [0.6.0](https://github.com/openeuropa/task-runner/tree/0.6.0) (2018-06-19)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/0.5.0...0.6.0)
+
+**Merged pull requests:**
+
+- Update CHANGELOG.md for 0.6.0 release. [\#55](https://github.com/openeuropa/task-runner/pull/55) ([ademarco](https://github.com/ademarco))
+- OPENEUROPA-370: Allow a site to be installed using SQLite [\#54](https://github.com/openeuropa/task-runner/pull/54) ([richardcanoe](https://github.com/richardcanoe))
+- OPENEUROPA-287: Add sanity check before starting site install. [\#53](https://github.com/openeuropa/task-runner/pull/53) ([richardcanoe](https://github.com/richardcanoe))
+
+## [0.5.0](https://github.com/openeuropa/task-runner/tree/0.5.0) (2018-04-19)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/0.4.0...0.5.0)
+
+**Closed issues:**
+
+- Allow users to customize the database type. [\#47](https://github.com/openeuropa/task-runner/issues/47)
+- OPENEUROPA-373: Implements command hooks [\#38](https://github.com/openeuropa/task-runner/issues/38)
+- OPENEUROPA-374: Add configuration validation per command [\#30](https://github.com/openeuropa/task-runner/issues/30)
+- OPENEUROPA-375: add command to run PHP server on given site [\#29](https://github.com/openeuropa/task-runner/issues/29)
+- NEPT-1105: Build command scaffolding [\#28](https://github.com/openeuropa/task-runner/issues/28)
+
+**Merged pull requests:**
+
+- OPENEUROPA-545: Add commands to create project releases [\#52](https://github.com/openeuropa/task-runner/pull/52) ([ademarco](https://github.com/ademarco))
+- Fix README reference to old robo file [\#43](https://github.com/openeuropa/task-runner/pull/43) ([claudiu-cristea](https://github.com/claudiu-cristea))
+
 ## [0.4.0](https://github.com/openeuropa/task-runner/tree/0.4.0) (2018-02-21)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.3.1...0.4.0)
 

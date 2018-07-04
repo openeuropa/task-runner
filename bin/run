@@ -3,13 +3,16 @@
 
 use Symfony\Component\Console\Input\ArgvInput;
 use OpenEuropa\TaskRunner\TaskRunner;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 if (file_exists(__DIR__.'/../vendor/autoload.php')) {
-    $classLoader = require __DIR__.'/../vendor/autoload.php';
+    $autoloaderPath = __DIR__.'/../vendor/autoload.php';
 } elseif (file_exists(__DIR__.'/../../../autoload.php')) {
-    $classLoader = require __DIR__ . '/../../../autoload.php';
+    $autoloaderPath = __DIR__ . '/../../../autoload.php';
+} else {
+    die("Could not find autoloader. Run 'composer install'.");
 }
+$classLoader = require $autoloaderPath;
 
-$runner = new TaskRunner();
-$runner->registerExternalCommands($classLoader);
+$runner = new TaskRunner(new ArgvInput(), new ConsoleOutput(), $classLoader);
 exit($runner->run());

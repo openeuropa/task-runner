@@ -2,8 +2,6 @@
 
 namespace OpenEuropa\TaskRunner\Tasks\Drush;
 
-use Robo\Common\ConfigAwareTrait;
-use Robo\Contract\ConfigAwareInterface;
 use Robo\Task\Base\Exec;
 
 /**
@@ -24,10 +22,11 @@ class Drush extends Exec
     protected $accountMail = '';
     protected $accountName = '';
     protected $accountPassword = '';
-    protected $databaseUser = '';
-    protected $databasePassword = '';
+    protected $databaseScheme = '';
     protected $databaseHost = '';
     protected $databasePort = '';
+    protected $databaseUser = '';
+    protected $databasePassword = '';
     protected $databaseName = '';
     protected $sitesSubdir = '';
 
@@ -38,34 +37,36 @@ class Drush extends Exec
      */
     public function siteInstall()
     {
-        return $this
-          ->option('-y')
-          ->rawArg("--root=$(pwd)/".$this->root)
-          ->options([
-              'site-name' => $this->siteName,
-              'site-mail' => $this->siteMail,
-              'locale' => $this->locale,
-              'account-mail' => $this->accountMail,
-              'account-name' => $this->accountName,
-              'account-pass' => $this->accountPassword,
-              'sites-subdir' => $this->sitesSubdir,
-              'db-url' => sprintf(
-                  "mysql://%s:%s@%s:%s/%s",
-                  $this->databaseUser,
-                  $this->databasePassword,
-                  $this->databaseHost,
-                  $this->databasePort,
-                  $this->databaseName
-              ),
-          ], '=')
-          ->arg('site-install')
-          ->arg($this->siteProfile);
+        $dbArray = [
+            'scheme' => $this->databaseScheme,
+            'user' => $this->databaseUser,
+            'pass' => $this->databasePassword,
+            'host' => $this->databaseHost,
+            'port' => $this->databasePort,
+            'path' => $this->databaseName,
+        ];
+        $dbUrl = http_build_url($dbArray, $dbArray);
+
+        return $this->option('-y')
+            ->rawArg("--root=$(pwd)/".$this->root)
+            ->options([
+                'site-name' => $this->siteName,
+                'site-mail' => $this->siteMail,
+                'locale' => $this->locale,
+                'account-mail' => $this->accountMail,
+                'account-name' => $this->accountName,
+                'account-pass' => $this->accountPassword,
+                'sites-subdir' => $this->sitesSubdir,
+                'db-url' => $dbUrl,
+            ], '=')
+            ->arg('site-install')
+            ->arg($this->siteProfile);
     }
 
     /**
      * @param string $root
      *
-     * @return Drush
+     * @return $this
      */
     public function root($root)
     {
@@ -77,7 +78,7 @@ class Drush extends Exec
     /**
      * @param string $locale
      *
-     * @return Drush
+     * @return $this
      */
     public function locale($locale)
     {
@@ -89,7 +90,7 @@ class Drush extends Exec
     /**
      * @param string $siteName
      *
-     * @return Drush
+     * @return $this
      */
     public function siteName($siteName)
     {
@@ -101,7 +102,7 @@ class Drush extends Exec
     /**
      * @param string $siteMail
      *
-     * @return Drush
+     * @return $this
      */
     public function siteMail($siteMail)
     {
@@ -113,7 +114,7 @@ class Drush extends Exec
     /**
      * @param string $siteLocale
      *
-     * @return Drush
+     * @return $this
      */
     public function siteLocale($siteLocale)
     {
@@ -125,7 +126,7 @@ class Drush extends Exec
     /**
      * @param string $siteProfile
      *
-     * @return Drush
+     * @return $this
      */
     public function siteProfile($siteProfile)
     {
@@ -137,7 +138,7 @@ class Drush extends Exec
     /**
      * @param string $accountMail
      *
-     * @return Drush
+     * @return $this
      */
     public function accountMail($accountMail)
     {
@@ -149,7 +150,7 @@ class Drush extends Exec
     /**
      * @param string $accountName
      *
-     * @return Drush
+     * @return $this
      */
     public function accountName($accountName)
     {
@@ -161,7 +162,7 @@ class Drush extends Exec
     /**
      * @param string $accountPassword
      *
-     * @return Drush
+     * @return $this
      */
     public function accountPassword($accountPassword)
     {
@@ -171,9 +172,21 @@ class Drush extends Exec
     }
 
     /**
+     * @param string $databaseScheme
+     *
+     * @return $this
+     */
+    public function databaseScheme($databaseScheme)
+    {
+        $this->databaseScheme = $databaseScheme;
+
+        return $this;
+    }
+
+    /**
      * @param string $databaseUser
      *
-     * @return Drush
+     * @return $this
      */
     public function databaseUser($databaseUser)
     {
@@ -185,7 +198,7 @@ class Drush extends Exec
     /**
      * @param string $databasePassword
      *
-     * @return Drush
+     * @return $this
      */
     public function databasePassword($databasePassword)
     {
@@ -197,7 +210,7 @@ class Drush extends Exec
     /**
      * @param string $databaseHost
      *
-     * @return Drush
+     * @return $this
      */
     public function databaseHost($databaseHost)
     {
@@ -209,7 +222,7 @@ class Drush extends Exec
     /**
      * @param string $databasePort
      *
-     * @return Drush
+     * @return $this
      */
     public function databasePort($databasePort)
     {
@@ -221,7 +234,7 @@ class Drush extends Exec
     /**
      * @param string $databaseName
      *
-     * @return Drush
+     * @return $this
      */
     public function databaseName($databaseName)
     {
@@ -233,7 +246,7 @@ class Drush extends Exec
     /**
      * @param string $sitesSubdir
      *
-     * @return Drush
+     * @return $this
      */
     public function sitesSubdir($sitesSubdir)
     {

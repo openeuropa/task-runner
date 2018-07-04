@@ -6,6 +6,7 @@ use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use OpenEuropa\TaskRunner\TaskRunner;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -33,7 +34,7 @@ class CommandsTest extends AbstractTest
 
         $input = new StringInput("{$command} --simulate --working-dir=".$this->getSandboxRoot());
         $output = new BufferedOutput();
-        $runner = new TaskRunner($input, $output);
+        $runner = new TaskRunner($input, $output, $this->getClassLoader());
         $runner->run();
 
         $text = $output->fetch();
@@ -63,7 +64,7 @@ class CommandsTest extends AbstractTest
 
         $input = new StringInput("{$command} --working-dir=".$this->getSandboxRoot());
         $output = new BufferedOutput();
-        $runner = new TaskRunner($input, $output);
+        $runner = new TaskRunner($input, $output, $this->getClassLoader());
         $runner->run();
 
         $actual = file_get_contents($destination);
@@ -81,7 +82,7 @@ class CommandsTest extends AbstractTest
      */
     public function testChangelogCommands(array $options, $expected)
     {
-        $runner = new TaskRunner();
+        $runner = new TaskRunner(new StringInput(''), new NullOutput(), $this->getClassLoader());
         /** @var ChangelogCommands $commands */
         $commands = $runner->getCommands(ChangelogCommands::class);
         $this->assertEquals($expected, $commands->generateChangelog($options)->getCommand());
@@ -94,9 +95,7 @@ class CommandsTest extends AbstractTest
     {
         $input = new StringInput("list");
         $output = new BufferedOutput();
-        $runner = new TaskRunner($input, $output);
-        $classLoader = require __DIR__.'/../vendor/autoload.php';
-        $runner->registerExternalCommands($classLoader);
+        $runner = new TaskRunner($input, $output, $this->getClassLoader());
         $runner->run();
 
         $expected = [
@@ -125,7 +124,7 @@ class CommandsTest extends AbstractTest
         file_put_contents($configFile, Yaml::dump($config));
 
         $input = new StringInput("drupal:drush-setup --working-dir=".$this->getSandboxRoot());
-        $runner = new TaskRunner($input, new BufferedOutput());
+        $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
         $runner->run();
 
         foreach ($expected as $row) {
@@ -147,7 +146,7 @@ class CommandsTest extends AbstractTest
         file_put_contents($configFile, Yaml::dump($config));
 
         $input = new StringInput("drupal:settings-setup --working-dir=".$this->getSandboxRoot());
-        $runner = new TaskRunner($input, new BufferedOutput());
+        $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
         $runner->run();
 
 
@@ -155,6 +154,25 @@ class CommandsTest extends AbstractTest
             $content = file_get_contents($this->getSandboxFilepath($row['file']));
             $this->assertContainsNotContains($content, $row);
         }
+    }
+
+    /**
+     * Test current working directory as a replaceable token.
+     */
+    public function testWorkingDirectoryToken()
+    {
+        $configFile = $this->getSandboxFilepath('runner.yml');
+        $config = [
+            'working_dir' => '${runner.working_dir}',
+        ];
+        file_put_contents($configFile, Yaml::dump($config));
+
+        $input = new StringInput("list --working-dir=".$this->getSandboxRoot());
+        $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
+        $runner->run();
+
+        $this->assertContains('/tests/sandbox', $runner->getConfig()->get('runner.working_dir'));
+        $this->assertContains('/tests/sandbox', $runner->getConfig()->get('working_dir'));
     }
 
     /**
