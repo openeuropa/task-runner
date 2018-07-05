@@ -3,7 +3,6 @@
 namespace OpenEuropa\TaskRunner\Tests\Commands;
 
 use Gitonomy\Git\Commit;
-use OpenEuropa\TaskRunner\Commands\ReleaseCommands;
 use OpenEuropa\TaskRunner\Services\Time;
 use OpenEuropa\TaskRunner\Tests\AbstractTest;
 use Gitonomy\Git\Reference;
@@ -13,6 +12,7 @@ use OpenEuropa\TaskRunner\TaskRunner;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Yaml\Yaml;
+use PHPUnit\Framework\MockObject\MockObject;
 
 /**
  * Class ReleaseCommandsTest
@@ -100,7 +100,7 @@ class ReleaseCommandsTest extends AbstractTest
     /**
      * @param array $repository
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     protected function getRepositoryMock(array $repository)
     {
@@ -153,7 +153,7 @@ class ReleaseCommandsTest extends AbstractTest
     /**
      * @param string $name
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     protected function getComposerMock($name)
     {
@@ -166,7 +166,7 @@ class ReleaseCommandsTest extends AbstractTest
     /**
      * @param int $timestamp
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     protected function getTimeMock($timestamp)
     {
