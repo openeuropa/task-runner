@@ -1,6 +1,6 @@
 {
     "name": "openeuropa/task-runner",
-    "license": "EUPL-1.1",
+    "license": "EUPL-1.2",
     "type": "library",
     "minimum-stability": "dev",
     "prefer-stable": true,
