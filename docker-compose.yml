@@ -2,7 +2,8 @@ version: '2'
 services:
 
   web:
-    image: fpfis/php71-dev
+    # image: fpfis/httpd-php-dev:5.6
+    image: fpfis/httpd-php-dev:7.1
     working_dir: /var/www/html
     ports:
       - 8080:8080
@@ -11,5 +12,3 @@ services:
     environment:
       XDEBUG_CONFIG: "remote_enable=1 remote_host=${DOCKER_HOST_IP} remote_port=9000 idekey=PHPSTORM remote_autostart=1"
       PHP_IDE_CONFIG: "serverName=Test"
-      COMPOSER_MEMORY_LIMIT: "2G"
-      COMPOSER_CACHE_DIR: "/tmp/composer"

@@ -1,9 +1,8 @@
 # Task Runner
-
-[![Build Status](https://travis-ci.org/openeuropa/task-runner.svg?branch=master)](https://travis-ci.org/openeuropa/task-runner)
+[![Build Status](https://drone.fpfis.eu/api/badges/openeuropa/task-runner/status.svg)](https://drone.fpfis.eu/openeuropa/task-runner)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/openeuropa/task-runner/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/openeuropa/task-runner/?branch=master)
 
-PHP task runner based on [Robo](http://robo.li), focused on extensibility. 
+PHP task runner based on [Robo](http://robo.li), focused on extensibility.
 
 Quick references:
 
@@ -21,7 +20,7 @@ Install it with [Composer](https://getcomposer.org):
 $ composer require openeuropa/task-runner
 ```
 
-After installation run `./vendor/bin/run` for a list of available commands. 
+After installation run `./vendor/bin/run` for a list of available commands.
 
 ## Configuration
 
@@ -42,7 +41,7 @@ The Task Runner comes with the following built-in commands:
 | `changelog:generate`         | Generate a changelog for the current project based on its GitHub issues and pull requests |
 | `drupal:site-install`        | Install a target Drupal site using default configuration values and/or CLI options |
 | `drupal:site-pre-install`    | Run Drupal pre-install commands as listed under the `drupal.pre_install` property |
-| `drupal:site-post-install`   | Run Drupal post-install commands as listed under the `drupal.post_install` property | 
+| `drupal:site-post-install`   | Run Drupal post-install commands as listed under the `drupal.post_install` property |
 | `drupal:settings-setup`      | Setup default Drupal settings file by appending values specified at `drupal.settings` |
 | `drupal:drush-setup`         | Setup Drush 8 and 9 configuration files |
 | `release:create-archive`     | Create and archive a release for the current project |
@@ -137,18 +136,18 @@ class MyCustomCommands extends AbstractCommands
 ```
 
 After doing that remember to refresh your local autoloader by running `composer dump-autoload`.
- 
+
 You can now access your new commands via the Task Runner main executable:
 
 ```
-$ ./vendor/bin/run 
-OpenEuropa Task Runner 
+$ ./vendor/bin/run
+OpenEuropa Task Runner
 
 Available commands:
  ...
  my-project
-  my-project:command-four       
-  my-project:command-one        
+  my-project:command-four
+  my-project:command-one
 ```
 
 **NOTE:** It is mandatory to place your command classes under `./src/TaskRunner/Commands`, otherwise the Task Runner will not
