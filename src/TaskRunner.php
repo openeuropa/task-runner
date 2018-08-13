@@ -188,7 +188,7 @@ class TaskRunner
      */
     private function createApplication()
     {
-        $application = new Application(self::APPLICATION_NAME, null);
+        $application = new Application(self::APPLICATION_NAME, '');
         $application
           ->getDefinition()
           ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', $this->workingDir));
