@@ -1,10 +1,22 @@
 # Change Log
 
+## [0.7.1](https://github.com/openeuropa/task-runner/tree/0.7.1) (2018-08-13)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/0.7.0...0.7.1)
+
+**Merged pull requests:**
+
+- OPENEUROPA-721: Update code-review and grump.yml.dist file. [\#67](https://github.com/openeuropa/task-runner/pull/67) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- OPENEUROPA-582: Update images on docker-compose and drone file. [\#66](https://github.com/openeuropa/task-runner/pull/66) ([voidtek](https://github.com/voidtek))
+- OPENEUROPA-544: Port task runner to use latest Robo version [\#61](https://github.com/openeuropa/task-runner/pull/61) ([ademarco](https://github.com/ademarco))
+- OPENEUROPA-369: Make sure that all OpenEuropa projects are released under EUPL-1.2 [\#59](https://github.com/openeuropa/task-runner/pull/59) ([drupol](https://github.com/drupol))
+- OPENEUROPA-623: Update to Phpunit 6. [\#58](https://github.com/openeuropa/task-runner/pull/58) ([imanoleguskiza](https://github.com/imanoleguskiza))
+
 ## [0.7.0](https://github.com/openeuropa/task-runner/tree/0.7.0) (2018-06-25)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.6.0...0.7.0)
 
 **Merged pull requests:**
 
+- Update CHANGELOG.md for 0.7.0 release. [\#57](https://github.com/openeuropa/task-runner/pull/57) ([ademarco](https://github.com/ademarco))
 - OPENEUROPA-696 Make sure the Task Runner provides current working directory as a replaceable token [\#56](https://github.com/openeuropa/task-runner/pull/56) ([ademarco](https://github.com/ademarco))
 
 ## [0.6.0](https://github.com/openeuropa/task-runner/tree/0.6.0) (2018-06-19)
