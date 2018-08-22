@@ -22,6 +22,26 @@ $ composer require openeuropa/task-runner
 
 After installation run `./vendor/bin/run` for a list of available commands.
 
+### Using Docker Compose
+
+The setup procedure can be simplified by using Docker Compose.
+
+Copy docker-compose.yml.dist into docker-compose.yml.
+
+You can make any alterations you need for your local Docker setup. However, the defaults should be enough to set the project up.
+
+Run:
+
+```
+$ docker-compose up -d
+```
+
+Then:
+
+```
+$ docker-compose exec web composer install
+```
+
 ## Configuration
 
 Execution of Task Runner commands can be controlled in two ways:
