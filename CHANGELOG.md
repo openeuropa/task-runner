@@ -1,10 +1,19 @@
 # Change Log
 
+## [0.8.0](https://github.com/openeuropa/task-runner/tree/0.8.0) (2018-08-28)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/0.7.1...0.8.0)
+
+**Merged pull requests:**
+
+- OPENEUROPA-616: Add --tag option to release:create-archive command [\#72](https://github.com/openeuropa/task-runner/pull/72) ([ademarco](https://github.com/ademarco))
+- OPENEUROPA-1119: Create a docker-compose.yml.dist file [\#71](https://github.com/openeuropa/task-runner/pull/71) ([netlooker](https://github.com/netlooker))
+
 ## [0.7.1](https://github.com/openeuropa/task-runner/tree/0.7.1) (2018-08-13)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.7.0...0.7.1)
 
 **Merged pull requests:**
 
+- Update CHANGELOG.md for 0.7.1 release. [\#70](https://github.com/openeuropa/task-runner/pull/70) ([ademarco](https://github.com/ademarco))
 - OPENEUROPA-721: Update code-review and grump.yml.dist file. [\#67](https://github.com/openeuropa/task-runner/pull/67) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - OPENEUROPA-582: Update images on docker-compose and drone file. [\#66](https://github.com/openeuropa/task-runner/pull/66) ([voidtek](https://github.com/voidtek))
 - OPENEUROPA-544: Port task runner to use latest Robo version [\#61](https://github.com/openeuropa/task-runner/pull/61) ([ademarco](https://github.com/ademarco))
