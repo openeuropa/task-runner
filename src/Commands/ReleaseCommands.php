@@ -11,6 +11,7 @@ use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
 use OpenEuropa\TaskRunner\Traits\RepositoryAwareTrait;
 use OpenEuropa\TaskRunner\Traits\TimeAwareTrait;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Project release commands.
@@ -60,6 +61,8 @@ class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface
      *
      * If you wish to keep the directory use the "--keep" option.
      *
+     * If you wish to override the current tag use the "--tag" option.
+     *
      * Before the release directory is archived you can run a list of packaging
      * commands in your runner.yml.dist, as shown below:
      *
@@ -77,14 +80,18 @@ class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface
      *
      * @command release:create-archive
      *
+     * @option tag  Release tag, will override current repository tag.
      * @option keep Whereas to keep the temporary release directory or not.
      *
      * @aliases release:ca,rca
      */
-    public function createRelease(array $options = ['keep' => false])
+    public function createRelease(array $options = [
+      'tag' => InputOption::VALUE_OPTIONAL,
+      'keep' => false,
+    ])
     {
         $name = $this->composer->getProject();
-        $version = $this->getVersionString();
+        $version = $options['tag'] !== null ? $options['tag'] : $this->getVersionString();
         $archive = "$name-$version.tar.gz";
 
         $tasks = [

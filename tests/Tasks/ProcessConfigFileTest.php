@@ -22,7 +22,7 @@ class ProcessConfigFileTest extends AbstractTaskTest
      * @param array $data
      * @param array $expected
      *
-     * @dataProvider testTaskDataProvider
+     * @dataProvider taskDataProvider
      */
     public function testTask(array $data, array $expected)
     {
@@ -58,7 +58,7 @@ class ProcessConfigFileTest extends AbstractTaskTest
     /**
      * @return array
      */
-    public function testTaskDataProvider()
+    public function taskDataProvider()
     {
         return $this->getFixtureContent('tasks/process-config-file/task.yml');
     }
