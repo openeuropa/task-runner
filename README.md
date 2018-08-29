@@ -1,5 +1,6 @@
 # Task Runner
 [![Build Status](https://drone.fpfis.eu/api/badges/openeuropa/task-runner/status.svg)](https://drone.fpfis.eu/openeuropa/task-runner)
+[![Packagist](https://img.shields.io/packagist/v/openeuropa/task-runner.svg)](https://packagist.org/packages/openeuropa/task-runner)
 
 PHP task runner based on [Robo](http://robo.li), focused on extensibility.
 
