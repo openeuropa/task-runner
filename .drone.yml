@@ -33,3 +33,7 @@ matrix:
   IMAGE_PHP:
     - fpfis/httpd-php-dev:5.6
     - fpfis/httpd-php-dev:7.1
+
+  COMPOSER_BOUNDARY:
+    - lowest
+    - highest
