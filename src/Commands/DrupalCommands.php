@@ -157,6 +157,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         }
 
         return $this->collectionBuilder()->addTaskList([
+            $this->sitePreInstall(),
             $this->setupPreInstallPermissions($options),
             $task->siteInstall(),
             $this->setupPostInstallPermissions(),
