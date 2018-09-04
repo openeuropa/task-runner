@@ -1,8 +1,0 @@
-- tasks:
-  - { task: "symlink", from: "${drupal.root}/modules/custom", to: "custom/modules" }
-  - { task: "symlink", from: "${drupal.root}/modules/custom", to: "custom/themes" }
-  - { task: "symlink", from: "${drupal.root}/modules/profiles", to: "custom/profiles" }
-  - { task: "process", source: "behat.yml.dist", destination: "behat.yml.dist" }
-  - { task: "process", source: "phpunit.xml.dist", destination: "phpunit.xml.dist" }
-  expected:
-    - ''

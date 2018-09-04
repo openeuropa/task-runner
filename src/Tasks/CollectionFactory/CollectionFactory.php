@@ -153,9 +153,8 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 return $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')->arg($task['command']);
 
             case "process-php":
-                $collection = $this->collectionBuilder()->addTask(
-                    $this->taskFilesystemStack()->copy($task['source'], $task['destination'], true)
-                );
+                // Copy source file to destination before processing it.
+                $tasks[] = $this->taskFilesystemStack()->copy($task['source'], $task['destination'], true);
 
                 // Map dynamic task type to actual task callback.
                 $map = [
@@ -169,10 +168,11 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 }
                 $method = $map[$task['type']];
 
-                return $collection->addTask(
-                    $this->{$method}($task['destination'], $this->getConfig())
-                    ->setConfigKey($task['config'])
-                );
+                // Add selected process task and return collection.
+                $tasks[] = $this->{$method}($task['destination'], $this->getConfig())
+                  ->setConfigKey($task['config']);
+
+                return $this->collectionBuilder()->addTaskList($tasks);
 
             default:
                 throw new TaskException($this, "Task '{$task['task']}' not supported.");

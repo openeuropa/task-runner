@@ -1,0 +1,41 @@
+- type: "append"
+  source: |
+    <?php
+    $foo = 'bar';
+  expected: |
+    <?php
+    $foo = 'bar';
+
+    // Start settings processor block.
+
+    $options["uri"] = 'http://127.0.0.1:8888';
+
+    // End settings processor block.
+
+- type: "prepend"
+  source: |
+    <?php
+    $foo = 'bar';
+  expected: |
+    <?php
+
+    // Start settings processor block.
+
+    $options["uri"] = 'http://127.0.0.1:8888';
+
+    // End settings processor block.
+
+    $foo = 'bar';
+
+- type: "write"
+  source: |
+    <?php
+    $foo = 'bar';
+  expected: |
+    <?php
+
+    // Start settings processor block.
+
+    $options["uri"] = 'http://127.0.0.1:8888';
+
+    // End settings processor block.
