@@ -124,6 +124,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         'database-port' => InputOption::VALUE_REQUIRED,
         'database-name' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
+        'config-dir' => InputOption::VALUE_OPTIONAL,
     ])
     {
         if ($options['database-type']) {
@@ -148,6 +149,10 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
             ->databaseName($options['database-name'])
             ->sitesSubdir($options['sites-subdir'])
             ->siteProfile($options['site-profile']);
+
+        if ($options['config-dir']) {
+            $task->setConfigDir($options['config-dir']);
+        }
 
         return $this->collectionBuilder()->addTaskList([
             $this->sitePreInstall(),

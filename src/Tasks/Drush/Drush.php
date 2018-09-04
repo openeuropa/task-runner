@@ -29,6 +29,7 @@ class Drush extends Exec
     protected $databasePassword = '';
     protected $databaseName = '';
     protected $sitesSubdir = '';
+    protected $configDir = '';
 
     /**
      * Build Drush site install command.
@@ -47,7 +48,7 @@ class Drush extends Exec
         ];
         $dbUrl = http_build_url($dbArray, $dbArray);
 
-        return $this->option('-y')
+        $this->option('-y')
             ->rawArg("--root=$(pwd)/".$this->root)
             ->options([
                 'site-name' => $this->siteName,
@@ -58,9 +59,13 @@ class Drush extends Exec
                 'account-pass' => $this->accountPassword,
                 'sites-subdir' => $this->sitesSubdir,
                 'db-url' => $dbUrl,
-            ], '=')
-            ->arg('site-install')
-            ->arg($this->siteProfile);
+            ], '=');
+
+        if (!empty($this->configDir)) {
+            $this->option('config-dir', $this->configDir, '=');
+        }
+
+        return $this->arg('site-install')->arg($this->siteProfile);
     }
 
     /**
@@ -251,6 +256,18 @@ class Drush extends Exec
     public function sitesSubdir($sitesSubdir)
     {
         $this->sitesSubdir = $sitesSubdir;
+
+        return $this;
+    }
+
+    /**
+     * @param string $configDir
+     *
+     * @return Drush
+     */
+    public function setConfigDir($configDir)
+    {
+        $this->configDir = $configDir;
 
         return $this;
     }

@@ -59,6 +59,18 @@
   contains:
     - "./bin/drush -y --root=$(pwd)/overridden"
 
+- command: 'drupal:site-install --site-name="Test site" --config-dir="../config-dir"'
+  configuration:
+    drupal:
+      database:
+        name: "drupal"
+        user: "root"
+        password: "root"
+  composer: ''
+  contains:
+  - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' --config-dir=../config-dir site-install standard"
+
+
 - command: 'changelog:generate'
   configuration:
     github:
