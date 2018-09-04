@@ -2,17 +2,12 @@
 
 namespace OpenEuropa\TaskRunner\Tasks\CollectionFactory;
 
-use OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
-use Robo\Common\BuilderAwareTrait;
-use Robo\Common\TaskIO;
 use Robo\Contract\BuilderAwareInterface;
 use Robo\Contract\SimulatedInterface;
 use Robo\Exception\TaskException;
 use Robo\LoadAllTasks;
-use Robo\Task as Task;
 use OpenEuropa\TaskRunner as TaskRunner;
 use Robo\Task\BaseTask;
-use Robo\TaskAccessor;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -26,6 +21,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
 {
     use LoadAllTasks;
     use TaskRunner\Tasks\ProcessConfigFile\loadTasks;
+    use \NuvoleWeb\Robo\Task\Config\Php\loadTasks;
 
     /**
      * @var array
@@ -155,6 +151,28 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
 
             case "run":
                 return $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')->arg($task['command']);
+
+            case "process-php":
+                $collection = $this->collectionBuilder()->addTask(
+                    $this->taskFilesystemStack()->copy($task['source'], $task['destination'], true)
+                );
+
+                // Map dynamic task type to actual task callback.
+                $map = [
+                  'append' => "taskAppendConfiguration",
+                  'prepend' => "taskPrependConfiguration",
+                  'write' => "taskWriteConfiguration",
+                ];
+
+                if (!isset($map[$task['type']])) {
+                    throw new TaskException($this, "'process-php' task type '{$task['type']}' is not supported, valid values are: 'append', 'prepend' and 'write'.");
+                }
+                $method = $map[$task['type']];
+
+                return $collection->addTask(
+                    $this->{$method}($task['destination'], $this->getConfig())
+                    ->setConfigKey($task['config'])
+                );
 
             default:
                 throw new TaskException($this, "Task '{$task['task']}' not supported.");
