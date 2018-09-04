@@ -244,8 +244,8 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function drushSetup(array $options = [
-        'root' => InputOption::VALUE_REQUIRED,
-        'config-dir' => InputOption::VALUE_REQUIRED,
+      'root' => InputOption::VALUE_REQUIRED,
+      'config-dir' => InputOption::VALUE_REQUIRED,
     ])
     {
         $config = $this->getConfig();
