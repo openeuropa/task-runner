@@ -16,6 +16,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @package OpenEuropa\TaskRunner\Commands
  */
+
 class DrupalCommands extends AbstractCommands implements FilesystemAwareInterface
 {
     use TaskRunnerTraits\ConfigurationTokensTrait;
@@ -156,10 +157,10 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         }
 
         return $this->collectionBuilder()->addTaskList([
-                $this->setupPreInstallPermissions($options),
-                $task->siteInstall(),
-                $this->setupPostInstallPermissions(),
-                $this->sitePostInstall(),
+            $this->setupPreInstallPermissions($options),
+            $task->siteInstall(),
+            $this->setupPostInstallPermissions(),
+            $this->sitePostInstall(),
         ]);
     }
 
@@ -242,8 +243,8 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function drushSetup(array $options = [
-      'root' => InputOption::VALUE_REQUIRED,
-      'config-dir' => InputOption::VALUE_REQUIRED,
+        'root' => InputOption::VALUE_REQUIRED,
+        'config-dir' => InputOption::VALUE_REQUIRED,
     ])
     {
         $config = $this->getConfig();
@@ -344,16 +345,16 @@ EOF;
      * @return \Robo\Collection\CollectionBuilder
      */
     public function setupPreInstallPermissions(array $options = [
-            'root' => InputOption::VALUE_REQUIRED,
-        ])
+        'root' => InputOption::VALUE_REQUIRED,
+    ])
     {
         $root = $options['root'];
 
         return $this->collectionBuilder()->addTaskList([
-                $this->taskFilesystemStack()->chmod($root.'/sites/default', '509', 0000, true),
-                $this->taskFilesystemStack()->touch($root.'/sites/default/settings.php'),
-                $this->taskFilesystemStack()->chmod($root.'/sites/default/settings.php', '436'),
-                $this->taskFilesystemStack()->remove($root.'/sites/default/settings.php'),
+            $this->taskFilesystemStack()->chmod($root.'/sites/default', '509', 0000, true),
+            $this->taskFilesystemStack()->touch($root.'/sites/default/settings.php'),
+            $this->taskFilesystemStack()->chmod($root.'/sites/default/settings.php', '436'),
+            $this->taskFilesystemStack()->remove($root.'/sites/default/settings.php'),
         ]);
     }
 
@@ -373,8 +374,8 @@ EOF;
         $root = $this->getConfig()->get('drupal.root');
 
         return $this->collectionBuilder()->addTaskList([
-                $this->taskFilesystemStack()->chmod($root.'/sites/default', '509', 0000, true),
-                $this->taskFilesystemStack()->chmod($root.'/sites/default/settings.php', '436'),
+            $this->taskFilesystemStack()->chmod($root.'/sites/default', '509', 0000, true),
+            $this->taskFilesystemStack()->chmod($root.'/sites/default/settings.php', '436'),
 
         ]);
     }
