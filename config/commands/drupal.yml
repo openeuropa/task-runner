@@ -23,6 +23,7 @@ command:
         database-user: ${drupal.database.user}
         database-password: ${drupal.database.password}
         sites-subdir: ${drupal.site.sites_subdir}
+        config-dir: ${drupal.site.config_dir}
     drush-setup:
       options:
         config-dir: ${drupal.root}/drush

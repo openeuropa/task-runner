@@ -31,6 +31,7 @@ drupal:
     update: "false"
     locale: "en"
     sites_subdir: "default"
+    config_dir: ~
 
   # Administrator account information.
   account:

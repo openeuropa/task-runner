@@ -98,6 +98,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @option database-user     Database username.
      * @option database-password Database password.
      * @option sites-subdir      Sites sub-directory.
+     * @option config-dir        Config export directory.
      *
      * @aliases drupal:si,dsi
      *
@@ -124,7 +125,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         'database-port' => InputOption::VALUE_REQUIRED,
         'database-name' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
-        'config-dir' => InputOption::VALUE_OPTIONAL,
+        'config-dir' => InputOption::VALUE_REQUIRED,
     ])
     {
         if ($options['database-type']) {
@@ -150,7 +151,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
             ->sitesSubdir($options['sites-subdir'])
             ->siteProfile($options['site-profile']);
 
-        if ($options['config-dir']) {
+        if (!empty($options['config-dir'])) {
             $task->setConfigDir($options['config-dir']);
         }
 
