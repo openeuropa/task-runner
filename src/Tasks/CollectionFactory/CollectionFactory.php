@@ -153,7 +153,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 return $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')->arg($task['command']);
 
             case "process-php":
-                $this->secureOption($task, 'override', true);
+                $this->secureOption($task, 'override', false);
 
                 // If we don't override destination file simply exit here.
                 if (!$task['override'] && file_exists($task['destination'])) {

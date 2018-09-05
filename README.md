@@ -93,20 +93,23 @@ Commands can reference each-other, allowing for complex scenarios to be implemen
 
 At the moment the following tasks are supported (optional argument default values in parenthesis):
 
-| Task      | Task                      | Arguments |
-| --------- | ------------------------- | --------- |
-| `mkdir`   | `taskFilesystemStack()`   | `dir`, `mode` (0777) |
-| `touch`   | `taskFilesystemStack()`   | `file`, `time` (current time), `atime` (current time) |
-| `copy`    | `taskFilesystemStack()`   | `from`, `to`, `force` (false) |
-| `chmod`   | `taskFilesystemStack()`   | `file`, `permissions`, `umask` (0000), `recursive` (false) |
-| `chgrp`   | `taskFilesystemStack()`   | `file`, `group`, `recursive` (false) |
-| `chown`   | `taskFilesystemStack()`   | `file`, `user`, `recursive` (false) |
-| `remove`  | `taskFilesystemStack()`   | `file` |
-| `rename`  | `taskFilesystemStack()`   | `from`, `to`, `force` (false) |
-| `symlink` | `taskFilesystemStack()`   | `from`, `to`, `copyOnWindows` (false) |
-| `mirror`  | `taskFilesystemStack()`   | `from`, `to` |
-| `process` | `taskProcessConfigFile()` | `from`, `to` |
-| `run`     | `taskExec()`              | `command` (will run `./vendor/bin/run [command]`) |
+| Task          | Task                         | Arguments |
+| ------------- | ---------------------------- | --------- |
+| `mkdir`       | `taskFilesystemStack()`      | `dir`, `mode` (0777) |
+| `touch`       | `taskFilesystemStack()`      | `file`, `time` (current time), `atime` (current time) |
+| `copy`        | `taskFilesystemStack()`      | `from`, `to`, `force` (false) |
+| `chmod`       | `taskFilesystemStack()`      | `file`, `permissions`, `umask` (0000), `recursive` (false) |
+| `chgrp`       | `taskFilesystemStack()`      | `file`, `group`, `recursive` (false) |
+| `chown`       | `taskFilesystemStack()`      | `file`, `user`, `recursive` (false) |
+| `remove`      | `taskFilesystemStack()`      | `file` |
+| `rename`      | `taskFilesystemStack()`      | `from`, `to`, `force` (false) |
+| `symlink`     | `taskFilesystemStack()`      | `from`, `to`, `copyOnWindows` (false) |
+| `mirror`      | `taskFilesystemStack()`      | `from`, `to` |
+| `process`     | `taskProcessConfigFile()`    | `from`, `to` |
+| `process-php` | `taskAppendConfiguration()`  | `type: append`, `config`, `source`, `destination`, `override` (false) |
+| `process-php` | `taskPrependConfiguration()` | `type: prepend`, `config`, `source`, `destination`, `override` (false) |
+| `process-php` | `taskWriteConfiguration()`   | `type: write`, `config`, `source`, `destination`, `override` (false) |
+| `run`         | `taskExec()`                 | `command` (will run `./vendor/bin/run [command]`) |
 
 Tasks provided as plain-text strings will be executed as is in the current working directory.
 

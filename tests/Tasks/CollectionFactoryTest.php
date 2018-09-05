@@ -49,6 +49,7 @@ class CollectionFactoryTest extends AbstractTaskTest
         $sourceFile = $this->getSandboxFilepath('default.settings.php');
         $destinationFile = $this->getSandboxFilepath('settings.php');
         file_put_contents($sourceFile, $source);
+        @unlink($destinationFile);
 
         $tasks = [];
         $tasks[] = [

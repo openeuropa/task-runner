@@ -64,7 +64,12 @@
     $foo = 'bar';
   expected: |
     <?php
-    $foo = 'bar';
+
+    // Start settings processor block.
+
+    $options["uri"] = 'http://127.0.0.1:8888';
+
+    // End settings processor block.
 
 - type: "write"
   override: true
