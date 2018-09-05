@@ -36,13 +36,15 @@ class CollectionFactoryTest extends AbstractTaskTest
     /**
      * Test dynamic "process-php" task.
      *
-     * @param string $type
-     * @param string $source
-     * @param string $expected
+     * @param string    $type
+     * @param bool|null $override
+     * @param bool      $destinationExists
+     * @param string    $source
+     * @param string    $expected
      *
      * @dataProvider processPhpTaskDataProvider
      */
-    public function testProcessPhpTask($type, $source, $expected)
+    public function testProcessPhpTask($type, $override, $destinationExists, $source, $expected)
     {
         $sourceFile = $this->getSandboxFilepath('default.settings.php');
         $destinationFile = $this->getSandboxFilepath('settings.php');
@@ -56,6 +58,16 @@ class CollectionFactoryTest extends AbstractTaskTest
           'source' => $sourceFile,
           'destination' => $destinationFile,
         ];
+
+        // Make sure we test default override option by not setting it if null.
+        if ($override !== null) {
+            $tasks[0]['override'] = $override;
+        }
+
+        // Create destination file before running the task, if required.
+        if ($destinationExists) {
+            file_put_contents($destinationFile, $source);
+        }
 
         $this->taskCollectionFactory($tasks)->run();
         $this->assertEquals(trim($expected), trim(file_get_contents($destinationFile)));

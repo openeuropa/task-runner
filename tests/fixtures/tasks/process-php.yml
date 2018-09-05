@@ -1,4 +1,6 @@
 - type: "append"
+  override: ~
+  destiantion_exists: false
   source: |
     <?php
     $foo = 'bar';
@@ -13,6 +15,8 @@
     // End settings processor block.
 
 - type: "prepend"
+  override: ~
+  destiantion_exists: false
   source: |
     <?php
     $foo = 'bar';
@@ -28,6 +32,8 @@
     $foo = 'bar';
 
 - type: "write"
+  override: ~
+  destiantion_exists: false
   source: |
     <?php
     $foo = 'bar';
@@ -39,3 +45,54 @@
     $options["uri"] = 'http://127.0.0.1:8888';
 
     // End settings processor block.
+
+- type: "write"
+  override: false
+  destiantion_exists: true
+  source: |
+    <?php
+    $foo = 'bar';
+  expected: |
+    <?php
+    $foo = 'bar';
+
+- type: "write"
+  override: false
+  destiantion_exists: false
+  source: |
+    <?php
+    $foo = 'bar';
+  expected: |
+    <?php
+    $foo = 'bar';
+
+- type: "write"
+  override: true
+  destiantion_exists: true
+  source: |
+    <?php
+    $foo = 'bar';
+  expected: |
+    <?php
+
+    // Start settings processor block.
+
+    $options["uri"] = 'http://127.0.0.1:8888';
+
+    // End settings processor block.
+
+- type: "write"
+  override: true
+  destiantion_exists: false
+  source: |
+    <?php
+    $foo = 'bar';
+  expected: |
+    <?php
+
+    // Start settings processor block.
+
+    $options["uri"] = 'http://127.0.0.1:8888';
+
+    // End settings processor block.
+
