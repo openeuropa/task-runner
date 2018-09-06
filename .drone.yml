@@ -10,26 +10,26 @@ services:
 
 pipeline:
   composer-install-lowest:
-      group: prepare
-      image: ${IMAGE_PHP=fpfis/httpd-php-dev:7.1}
-      volumes:
-        - /cache:/cache
-      commands:
-        - composer update --prefer-lowest
-      when:
-        matrix:
-          COMPOSER_BOUNDARY: lowest
+    group: prepare
+    image: ${IMAGE_PHP=fpfis/httpd-php-dev:7.1}
+    volumes:
+      - /cache:/cache
+    commands:
+      - composer update --prefer-lowest
+    when:
+      matrix:
+        COMPOSER_BOUNDARY: lowest
 
-    composer-install-highest:
-      group: prepare
-      image: ${IMAGE_PHP=fpfis/httpd-php-dev:7.1}
-      volumes:
-        - /cache:/cache
-      commands:
-        - composer update
-      when:
-        matrix:
-          COMPOSER_BOUNDARY: highest
+  composer-install-highest:
+    group: prepare
+    image: ${IMAGE_PHP=fpfis/httpd-php-dev:7.1}
+    volumes:
+      - /cache:/cache
+    commands:
+      - composer update
+    when:
+      matrix:
+        COMPOSER_BOUNDARY: highest
 
   grumphp:
     group: test
