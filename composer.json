@@ -8,7 +8,7 @@
         "consolidation/robo": "^1.2.2",
         "gitonomy/gitlib": "~1.0",
         "nuvoleweb/robo-config": "~0.2",
-        "jakeasmith/http_build_url": "^1.0"
+        "jakeasmith/http_build_url": "^1.0.1"
     },
     "require-dev": {
         "openeuropa/code-review": "~1.0",
