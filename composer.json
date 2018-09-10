@@ -5,9 +5,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "consolidation/robo": "^1.2.0",
+        "consolidation/robo": "^1.2.2",
         "gitonomy/gitlib": "~1.0",
-        "nuvoleweb/robo-config": "~0.2",
+        "nuvoleweb/robo-config": "~0.2.1",
         "jakeasmith/http_build_url": "^1.0.1"
     },
     "require-dev": {
