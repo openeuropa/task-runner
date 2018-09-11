@@ -9,27 +9,13 @@ services:
      - DOCUMENT_ROOT=/test/task-runner
 
 pipeline:
-  composer-install-lowest:
+  composer-install:
     group: prepare
     image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     volumes:
       - /cache:/cache
     commands:
-      - composer update --prefer-lowest
-    when:
-      matrix:
-        COMPOSER_BOUNDARY: lowest
-
-  composer-install-highest:
-    group: prepare
-    image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
-    volumes:
-      - /cache:/cache
-    commands:
-      - composer install
-    when:
-      matrix:
-        COMPOSER_BOUNDARY: highest
+      - composer update ${COMPOSER_BOUNDARY}
 
   grumphp:
     group: test
@@ -48,5 +34,5 @@ matrix:
     - fpfis/httpd-php-dev:5.6
     - fpfis/httpd-php-dev:7.1
   COMPOSER_BOUNDARY:
-    - lowest
-    - highest
+    - '--prefer-lowest'
+    - ''
