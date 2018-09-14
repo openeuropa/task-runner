@@ -15,7 +15,7 @@ pipeline:
     volumes:
       - /cache:/cache
     commands:
-      - composer install
+      - composer update ${COMPOSER_BOUNDARY}
 
   grumphp:
     group: test
@@ -33,3 +33,6 @@ matrix:
   IMAGE_PHP:
     - fpfis/httpd-php-dev:5.6
     - fpfis/httpd-php-dev:7.1
+  COMPOSER_BOUNDARY:
+    - '--prefer-lowest'
+    - ''
