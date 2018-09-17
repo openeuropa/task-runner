@@ -6,33 +6,47 @@ services:
   web:
     image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     environment:
-     - DOCUMENT_ROOT=/test/task-runner
+    - DOCUMENT_ROOT=/test/task-runner
 
 pipeline:
-  composer-install:
+  composer-install-lowest:
     group: prepare
     image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     volumes:
-      - /cache:/cache
+    - /cache:/cache
     commands:
-      - composer update ${COMPOSER_BOUNDARY}
+    - composer update --prefer-lowest --ansi
+    when:
+      matrix:
+        COMPOSER_BOUNDARY: lowest
+
+  composer-install-highest:
+    group: prepare
+    image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
+    volumes:
+    - /cache:/cache
+    commands:
+    - composer update --ansi
+    when:
+      matrix:
+        COMPOSER_BOUNDARY: highest
 
   grumphp:
     group: test
     image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     commands:
-      - ./vendor/bin/grumphp run
+    - ./vendor/bin/grumphp run
 
   phpunit:
     group: test
     image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     commands:
-      - ./vendor/bin/phpunit
+    - ./vendor/bin/phpunit
 
 matrix:
   IMAGE_PHP:
-    - fpfis/httpd-php-dev:5.6
-    - fpfis/httpd-php-dev:7.1
+  - fpfis/httpd-php-dev:5.6
+  - fpfis/httpd-php-dev:7.1
   COMPOSER_BOUNDARY:
-    - '--prefer-lowest'
-    - ''
+  - lowest
+  - highest
