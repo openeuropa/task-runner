@@ -15,7 +15,7 @@ pipeline:
     volumes:
       - /cache:/cache
     commands:
-      - composer update ${COMPOSER_BOUNDARY}
+      - composer update ${COMPOSER_BOUNDARY} --ansi
 
   grumphp:
     group: test
