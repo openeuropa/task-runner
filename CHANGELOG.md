@@ -1,5 +1,18 @@
 # Change Log
 
+## [1.0.0-beta1](https://github.com/openeuropa/task-runner/tree/1.0.0-beta1) (2018-09-18)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/0.8.0...1.0.0-beta1)
+
+**Merged pull requests:**
+
+- OPENEUROPA-1218: Update code-review version. [\#80](https://github.com/openeuropa/task-runner/pull/80) ([dxvargas](https://github.com/dxvargas))
+- OPENEUROPA-1202: Fix Task Runner PHP process dynamic tasks [\#79](https://github.com/openeuropa/task-runner/pull/79) ([ademarco](https://github.com/ademarco))
+- OPENEUROPA-1198: Expose PHP configuration process tasks in dynamic commands [\#78](https://github.com/openeuropa/task-runner/pull/78) ([ademarco](https://github.com/ademarco))
+- OPENEUROPA-1161: Add --config-dir option do drupal:site-install command [\#77](https://github.com/openeuropa/task-runner/pull/77) ([ademarco](https://github.com/ademarco))
+- OPENEUROPA-776: Make sure component dependencies are as relaxed as possible [\#76](https://github.com/openeuropa/task-runner/pull/76) ([aritomelo](https://github.com/aritomelo))
+- OPENEUROPA-540: Fix badges on README.md [\#74](https://github.com/openeuropa/task-runner/pull/74) ([ademarco](https://github.com/ademarco))
+- Update CHANGELOG.md for 0.8.0 release [\#73](https://github.com/openeuropa/task-runner/pull/73) ([ademarco](https://github.com/ademarco))
+
 ## [0.8.0](https://github.com/openeuropa/task-runner/tree/0.8.0) (2018-08-28)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.7.1...0.8.0)
 
