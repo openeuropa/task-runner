@@ -11,13 +11,13 @@
 - OPENEUROPA-1161: Add --config-dir option do drupal:site-install command [\#77](https://github.com/openeuropa/task-runner/pull/77) ([ademarco](https://github.com/ademarco))
 - OPENEUROPA-776: Make sure component dependencies are as relaxed as possible [\#76](https://github.com/openeuropa/task-runner/pull/76) ([aritomelo](https://github.com/aritomelo))
 - OPENEUROPA-540: Fix badges on README.md [\#74](https://github.com/openeuropa/task-runner/pull/74) ([ademarco](https://github.com/ademarco))
-- Update CHANGELOG.md for 0.8.0 release [\#73](https://github.com/openeuropa/task-runner/pull/73) ([ademarco](https://github.com/ademarco))
 
 ## [0.8.0](https://github.com/openeuropa/task-runner/tree/0.8.0) (2018-08-28)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.7.1...0.8.0)
 
 **Merged pull requests:**
 
+- Update CHANGELOG.md for 0.8.0 release [\#73](https://github.com/openeuropa/task-runner/pull/73) ([ademarco](https://github.com/ademarco))
 - OPENEUROPA-616: Add --tag option to release:create-archive command [\#72](https://github.com/openeuropa/task-runner/pull/72) ([ademarco](https://github.com/ademarco))
 - OPENEUROPA-1119: Create a docker-compose.yml.dist file [\#71](https://github.com/openeuropa/task-runner/pull/71) ([netlooker](https://github.com/netlooker))
 
