@@ -282,8 +282,20 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
       'root' => InputOption::VALUE_REQUIRED,
     ])
     {
+        $settings_file = $options['root'].'/sites/default/settings.php';
+        $settings_local_file = $options['root'] . '/sites/default/settings.local.php';
         return $this->collectionBuilder()->addTaskList([
-            $this->taskAppendConfiguration($options['root'].'/sites/default/default.settings.php', $this->getConfig())->setConfigKey('drupal.settings'),
+            $this->taskFilesystemStack()->copy($options['root'] . '/sites/default/default.settings.php', $settings_file),
+            $this->taskWriteToFile($settings_file)->append()->lines([
+                'if (file_exists($app_root . \'/\' . $site_path . \'/settings.local.php\')) {',
+                '  include $app_root . \'/\' . $site_path . \'/settings.local.php\';',
+                '}'
+            ]),
+            $this->taskWriteToFile($settings_local_file)->lines([
+                '<?php',
+                '',
+            ]),
+            $this->taskAppendConfiguration($settings_local_file, $this->getConfig())->setConfigKey('drupal.settings'),
         ]);
     }
 }
