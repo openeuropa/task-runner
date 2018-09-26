@@ -15,11 +15,11 @@ use Symfony\Component\Yaml\Yaml;
 use PHPUnit\Framework\MockObject\MockObject;
 
 /**
- * Class DrupalSettingsPermissionsTest
+ * Class DrupalCommandsTest
  *
  * @package OpenEuropa\TaskRunner\Tests\DrupalSettings
  */
-class DrupalSettingsPermissionsTest extends AbstractTest
+class DrupalCommandsTest extends AbstractTest
 {
     /**
      * @param string $config
@@ -28,7 +28,6 @@ class DrupalSettingsPermissionsTest extends AbstractTest
      */
     public function testDrupalSettingsPermissions($config)
     {
-        print_r($config);
         $subdir = $config['drupal']['settings']['sites-subdir'];
         $settings = $subdir . '/' . $config['drupal']['settings']['settings_file'];
         $this->assertContains('default', $subdir);
