@@ -91,10 +91,10 @@ class CommandsTest extends AbstractTest
         $subdir = $config['drupal']['settings']['sites-subdir'];
         $settings = $subdir . '/' . $config['drupal']['settings']['settings_file'];
         print ("Name = $settings\n");
-//        $this->assertContains('default', $subdir);
-        $filePermission = substr( sprintf( '%o', fileperms( $settings ) ), - 4 );
-        $this->assertEquals( "0777", $filePermission );
-        $this->assertEquals( "good", 'bad' );
+        $this->assertContains('default', $subdir);
+        $filePermission = substr(sprintf('%o', fileperms($settings)), - 4);
+        $this->assertEquals('0777', $filePermission);
+        $this->assertEquals('good', 'bad');
     }
 
     /**

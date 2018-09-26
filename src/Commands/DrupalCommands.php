@@ -157,7 +157,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
 
         return $this->collectionBuilder()->addTaskList([
             $this->sitePreInstall(),
-//            $this->setupPreInstallPermissions($options),
+            $this->setupPreInstallPermissions($options),
             $task->siteInstall(),
             $this->setupPostInstallPermissions($options),
             $this->sitePostInstall(),
@@ -353,19 +353,15 @@ EOF;
         $subdir = $options['sites-subdir'];
 
         if (file_exists("$root/sites/$subdir/settings.php")) {
-            return $this->collectionBuilder()->addTaskList(
-                [
-                    $this->taskFilesystemStack()->chmod("$root/sites/$subdir", '509', 0000, true),
-                    $this->taskFilesystemStack()->chmod("$root/sites/$subdir/settings.php", '436'),
-                    $this->taskFilesystemStack()->remove("$root/sites/$subdir/settings.php"),
-                ]
-            );
+            return $this->collectionBuilder()->addTaskList([
+                $this->taskFilesystemStack()->chmod("$root/sites/$subdir", '509', 0000, true),
+                $this->taskFilesystemStack()->chmod("$root/sites/$subdir/settings.php", '436'),
+                $this->taskFilesystemStack()->remove("$root/sites/$subdir/settings.php"),
+            ]);
         } else {
-            return $this->collectionBuilder()->addTaskList(
-                [
-                    $this->taskFilesystemStack()->chmod("$root/sites/$subdir", '509', 0000, true),
-                ]
-            );
+            return $this->collectionBuilder()->addTaskList([
+                $this->taskFilesystemStack()->chmod("$root/sites/$subdir", '509', 0000, true),
+            ]);
         }
     }
 
