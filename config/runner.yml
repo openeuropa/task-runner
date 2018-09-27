@@ -22,7 +22,6 @@ drupal:
   root: "build"
   root_absolute: ~
   base_url: "http://127.0.0.1:8888"
-  settings_local_file: 'settings.override.php'
 
   # Basic Drupal site information.
   site:
@@ -33,6 +32,7 @@ drupal:
     locale: "en"
     sites_subdir: "default"
     config_dir: ~
+    settings_override_file: "settings.override.php"
 
   # Administrator account information.
   account:
