@@ -285,7 +285,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
     {
         $settings_file = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.php';
         $settings_override_filename = $this->getConfig()->get('drupal.settings_local_file');
-        $settings_override_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/' . $this->getConfig()->get('drupal.settings_local_file');
+        $settings_override_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/' . $settings_override_filename;
         return $this->collectionBuilder()->addTaskList([
             $this->taskFilesystemStack()->copy($options['root'] . '/sites/default/default.settings.php', $settings_file, true),
             $this->taskWriteToFile($settings_file)->append()->lines([
