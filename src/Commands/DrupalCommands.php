@@ -273,6 +273,8 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @command drupal:settings-setup
      *
      * @option root Drupal root.
+     * @option sites-subdir Drupal site subdirectory.
+     * @option settings-override-file Drupal site settings override filename.
      *
      * @param array $options
      *
@@ -281,10 +283,11 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
     public function settingsSetup(array $options = [
         'root' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
+        'settings-override-file' => InputOption::VALUE_REQUIRED,
     ])
     {
         $settings_file = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.php';
-        $settings_override_filename = $this->getConfig()->get('drupal.settings_local_file');
+        $settings_override_filename = $options['settings-override-file'];
         $settings_override_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/' . $settings_override_filename;
         return $this->collectionBuilder()->addTaskList([
             $this->taskFilesystemStack()->copy($options['root'] . '/sites/default/default.settings.php', $settings_file, true),
