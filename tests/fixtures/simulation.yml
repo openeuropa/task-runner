@@ -256,13 +256,13 @@
   configuration: []
   composer: ''
   contains:
-    - "AppendConfiguration('build/sites/default/default.settings.php'"
+    - "AppendConfiguration('build/sites/default/settings.override.php'"
 
 - command: 'drupal:settings-setup --root=web'
   configuration: []
   composer: ''
   contains:
-    - "AppendConfiguration('web/sites/default/default.settings.php'"
+    - "AppendConfiguration('web/sites/default/settings.override.php'"
 
 - command: 'drupal:site-setup'
   configuration:
