@@ -27,3 +27,6 @@ command:
     drush-setup:
       options:
         config-dir: ${drupal.root}/drush
+    settings-setup:
+        options:
+          sites-subdir: ${drupal.site.sites_subdir}
