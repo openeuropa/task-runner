@@ -279,23 +279,25 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @return \Robo\Collection\CollectionBuilder
      */
     public function settingsSetup(array $options = [
-      'root' => InputOption::VALUE_REQUIRED,
+        'root' => InputOption::VALUE_REQUIRED,
+        'sites-subdir' => InputOption::VALUE_REQUIRED,
     ])
     {
-        $settings_file = $options['root'].'/sites/default/settings.php';
-        $settings_local_file = $options['root'] . $this->getConfig()->get('drupal.settings_local_file');
+        $settings_file = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.php';
+        $settings_override_filename = $this->getConfig()->get('drupal.settings_local_file');
+        $settings_override_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/' . $this->getConfig()->get('drupal.settings_local_file');
         return $this->collectionBuilder()->addTaskList([
             $this->taskFilesystemStack()->copy($options['root'] . '/sites/default/default.settings.php', $settings_file, true),
             $this->taskWriteToFile($settings_file)->append()->lines([
-                'if (file_exists($app_root . \'' . $settings_local_file . '\')) {',
-                '  include $app_root . \'' . $settings_local_file . '\';',
+                'if (file_exists($app_root . \'/\' . $site_path . \'/' . $settings_override_filename . '\')) {',
+                '  include $app_root . \'/\' . $site_path . \'/' . $settings_override_filename . '\';',
                 '}'
             ]),
-            $this->taskWriteToFile($settings_local_file)->lines([
+            $this->taskWriteToFile($settings_override_path)->lines([
                 '<?php',
                 '',
             ]),
-            $this->taskAppendConfiguration($settings_local_file, $this->getConfig())->setConfigKey('drupal.settings'),
+            $this->taskAppendConfiguration($settings_override_path, $this->getConfig())->setConfigKey('drupal.settings'),
         ]);
     }
 }
