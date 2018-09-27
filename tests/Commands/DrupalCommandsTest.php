@@ -22,25 +22,27 @@ use PHPUnit\Framework\MockObject\MockObject;
 class DrupalCommandsTest extends AbstractTest
 {
     /**
-     * @param string $config
+     * @param array $config
      *
      * @dataProvider drupalSettingsDataProvider
      */
-    public function testDrupalSettingsPermissions($config)
+    public function testPermissions(array $config)
     {
-        $subdir = $config['drupal']['settings']['sites-subdir'];
-        $settings = $subdir . '/' . $config['drupal']['settings']['settings_file'];
-        $this->assertContains('default', $subdir);
-        $filePermission = substr(sprintf('%o', fileperms($settings)), - 4);
-        $this->assertEquals('0777', $filePermission);
-
         $configFile = $this->getSandboxFilepath('runner.yml');
-
         file_put_contents($configFile, Yaml::dump($config));
 
-        $input = new StringInput("drupal:settings-setup --working-dir=".$this->getSandboxRoot());
+        $sitesSubdir = $this->getSandboxFilepath('build/sites/default/');
+        mkdir($sitesSubdir, 0777, true);
+
+        touch($sitesSubdir . 'settings.php');
+
+        $input = new StringInput("drupal:permissions-setup --working-dir=".$this->getSandboxRoot());
         $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
         $runner->run();
+
+        $sitesSubdirPermissions = substr(sprintf('%o', fileperms($sitesSubdir)), -4);
+
+        $this->assertEquals('0775', $sitesSubdirPermissions);
     }
 
     /**
@@ -48,6 +50,6 @@ class DrupalCommandsTest extends AbstractTest
      */
     public function drupalSettingsDataProvider()
     {
-        return $this->getFixtureContent('simulation.yml');
+        return $this->getFixtureContent('commands/drupal-site-install.yml');
     }
 }

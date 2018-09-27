@@ -126,6 +126,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         'database-name' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
         'config-dir' => InputOption::VALUE_REQUIRED,
+        'permissions-setup' => InputOption::VALUE_REQUIRED,
     ])
     {
         if ($options['database-type']) {
@@ -157,9 +158,8 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
 
         return $this->collectionBuilder()->addTaskList([
             $this->sitePreInstall(),
-            $this->setupPreInstallPermissions($options),
+            $this->permissionsSetup($options),
             $task->siteInstall(),
-            $this->setupPostInstallPermissions($options),
             $this->sitePostInstall(),
         ]);
     }
@@ -292,6 +292,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         'root' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
         'settings-override-file' => InputOption::VALUE_REQUIRED,
+        'permissions-setup' => InputOption::VALUE_REQUIRED,
         'force' => false,
     ])
     {
@@ -329,66 +330,49 @@ EOF;
             $this->getConfig()
         )->setConfigKey('drupal.settings');
 
+        $collection[] = $this->permissionsSetup($options);
+
         return $this->collectionBuilder()->addTaskList($collection);
     }
 
     /**
-     * Setup required Drupal permissions before installation.
+     * Setup required Drupal permissions.
      *
-     * This command will set the necessary permissions on the default folder
-     * before installation. Note that the chmod command takes decimal values.
+     * This command will set the necessary permissions on the default folder.
+     * Note that the chmod command takes decimal values.
      *
-     * @command drupal:setup-pre-install-permissions
+     * @command drupal:permissions-setup
      *
      * @param array $options
      *
      * @return \Robo\Collection\CollectionBuilder
      */
-    public function setupPreInstallPermissions(array $options = [
+    public function permissionsSetup(array $options = [
         'root' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
+        'permissions-setup' => InputOption::VALUE_REQUIRED,
     ])
     {
+        $collection = $this->collectionBuilder();
+
+        if (!$options['permissions-setup']) {
+            return $collection;
+        }
+
         $root = $options['root'];
         $subdir = $options['sites-subdir'];
 
+        $collection = $this->collectionBuilder()->addTaskList([
+            $this->taskFilesystemStack()->chmod("$root/sites/$subdir", '509', 0000, true),
+        ]);
+
         if (file_exists("$root/sites/$subdir/settings.php")) {
-            return $this->collectionBuilder()->addTaskList([
-                $this->taskFilesystemStack()->chmod("$root/sites/$subdir", '509', 0000, true),
+            $collection->addTaskList([
                 $this->taskFilesystemStack()->chmod("$root/sites/$subdir/settings.php", '436'),
                 $this->taskFilesystemStack()->remove("$root/sites/$subdir/settings.php"),
             ]);
-        } else {
-            return $this->collectionBuilder()->addTaskList([
-                $this->taskFilesystemStack()->chmod("$root/sites/$subdir", '509', 0000, true),
-            ]);
         }
-    }
 
-    /**
-     * Setup required Drupal permissions after installation.
-     *
-     * This command will set the necessary permissions on the default folder
-     * before installation. Note that the chmod command takes decimal values.
-     *
-     * @command drupal:setup-post-install-permissions
-     *
-     * @param array $options
-     *
-     * @return \Robo\Collection\CollectionBuilder
-     *
-     */
-    public function setupPostInstallPermissions(array $options = [
-        'root' => InputOption::VALUE_REQUIRED,
-        'sites-subdir' => InputOption::VALUE_REQUIRED,
-    ])
-    {
-        $root = $options['root'];
-        $subdir = $options['sites-subdir'];
-
-        return $this->collectionBuilder()->addTaskList([
-            $this->taskFilesystemStack()->chmod("$root/sites/$subdir", '509', 0000, true),
-            $this->taskFilesystemStack()->chmod("$root/sites/$subdir/settings.php", '436'),
-        ]);
+        return $collection;
     }
 }

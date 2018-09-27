@@ -24,6 +24,7 @@ command:
         database-password: ${drupal.database.password}
         sites-subdir: ${drupal.site.sites_subdir}
         config-dir: ${drupal.site.config_dir}
+        permissions-setup: true
     drush-setup:
       options:
         config-dir: ${drupal.root}/drush
@@ -32,9 +33,7 @@ command:
         sites-subdir: ${drupal.site.sites_subdir}
         settings-override-file: ${drupal.site.settings_override_file}
         force: ${drupal.site.force}
-    setup-pre-install-permissions:
+    setup-permissions:
       options:
         sites-subdir: ${drupal.site.sites_subdir}
-    setup-post-install-permissions:
-      options:
-        sites-subdir: ${drupal.site.sites_subdir}
+        permissions-setup: true
