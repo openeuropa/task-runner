@@ -145,13 +145,13 @@ class CommandsTest extends AbstractTest
         $configFile = $this->getSandboxFilepath('runner.yml');
 
         file_put_contents($configFile, Yaml::dump($config));
-        mkdir($this->getSandboxRoot() . '/build/sites/default/', 0777, true);
-        file_put_contents($this->getSandboxRoot() . '/build/sites/default/default.settings.php', '');
+        $sites_subdir = $config['drupal']['site']['sites_subdir'] ?: 'default';
+        mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0777, true);
+        file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
 
         $input = new StringInput("drupal:settings-setup --working-dir=".$this->getSandboxRoot());
         $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
         $runner->run();
-
 
         foreach ($expected as $row) {
             $content = file_get_contents($this->getSandboxFilepath($row['file']));

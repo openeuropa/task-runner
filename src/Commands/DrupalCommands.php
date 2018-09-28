@@ -286,21 +286,18 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         'settings-override-file' => InputOption::VALUE_REQUIRED,
     ])
     {
-        $settings_file = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.php';
-        $settings_override_filename = $options['settings-override-file'];
-        $settings_override_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/' . $settings_override_filename;
+        $settings_default_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/default.settings.php';
+        $settings_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.php';
+        $settings_override_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/' . $options['settings-override-file'];
+
         return $this->collectionBuilder()->addTaskList([
-            $this->taskFilesystemStack()->copy($options['root'] . '/sites/default/default.settings.php', $settings_file, true),
-            $this->taskWriteToFile($settings_file)->append()->lines([
-                'if (file_exists($app_root . \'/\' . $site_path . \'/' . $settings_override_filename . '\')) {',
-                '  include $app_root . \'/\' . $site_path . \'/' . $settings_override_filename . '\';',
-                '}'
+            $this->taskFilesystemStack()->copy($settings_default_path, $settings_path, true),
+            $this->taskWriteToFile($settings_path)->append()->lines([
+                "if (file_exists(\$app_root . '/' . \$site_path . '/" . $options['settings-override-file'] . "')) {",
+                "  include \$app_root . '/' . \$site_path . '/" . $options['settings-override-file'] . "';",
+                "}"
             ]),
-            $this->taskWriteToFile($settings_override_path)->lines([
-                '<?php',
-                '',
-            ]),
-            $this->taskAppendConfiguration($settings_override_path, $this->getConfig())->setConfigKey('drupal.settings'),
+            $this->taskWriteConfiguration($settings_override_path, $this->getConfig())->setConfigKey('drupal.settings'),
         ]);
     }
 }
