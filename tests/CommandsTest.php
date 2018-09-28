@@ -160,6 +160,32 @@ class CommandsTest extends AbstractTest
     }
 
     /**
+     * @param array $config
+     * @param array $expected
+     *
+     * @dataProvider settingsSetupForceDataProvider
+     */
+    public function testSettingsSetupForce(array $config, array $expected)
+    {
+        $configFile = $this->getSandboxFilepath('runner.yml');
+        file_put_contents($configFile, Yaml::dump($config));
+
+        $sites_subdir = $config['drupal']['site']['sites_subdir'] ?: 'default';
+        mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0777, true);
+        file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
+        file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/settings.php', '# Already existing file.');
+
+        $input = new StringInput("drupal:settings-setup --working-dir=".$this->getSandboxRoot());
+        $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
+        $runner->run();
+
+        foreach ($expected as $row) {
+            $content = file_get_contents($this->getSandboxFilepath($row['file']));
+            $this->assertContainsNotContains($content, $row);
+        }
+    }
+
+    /**
      * Test current working directory as a replaceable token.
      */
     public function testWorkingDirectoryToken()
@@ -200,6 +226,14 @@ class CommandsTest extends AbstractTest
     public function settingsSetupDataProvider()
     {
         return $this->getFixtureContent('commands/drupal-settings-setup.yml');
+    }
+
+    /**
+     * @return array
+     */
+    public function settingsSetupForceDataProvider()
+    {
+        return $this->getFixtureContent('commands/drupal-settings-setup-force.yml');
     }
 
     /**

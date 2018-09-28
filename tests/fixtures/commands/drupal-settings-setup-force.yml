@@ -1,0 +1,17 @@
+- configuration:
+    drupal:
+      site:
+        force: false
+  expected:
+    - file: "build/sites/default/settings.php"
+      contains: "# Already existing file."
+      not_contains: ~
+
+- configuration:
+    drupal:
+      site:
+        force: true
+  expected:
+    - file: "build/sites/default/settings.php"
+      contains: "include $app_root . '/' . $site_path . '/settings.override.php';"
+      not_contains: "# Already existing file."

@@ -289,20 +289,15 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         'root' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
         'settings-override-file' => InputOption::VALUE_REQUIRED,
-        'force-override-file' => InputOption::VALUE_OPTIONAL,
+        'force' => false,
     ])
     {
         $settings_default_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/default.settings.php';
         $settings_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.php';
         $settings_override_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/' . $options['settings-override-file'];
-        $force_override_file = !empty($options['force-override-file']) ? $options['force-override-file'] : 'false';
-
-        if (file_exists($requiredFile) && ($force_override_file !== 'true')) {
-            return $this->collectionBuilder();
-        }
 
         return $this->collectionBuilder()->addTaskList([
-            $this->taskFilesystemStack()->copy($settings_default_path, $settings_path, true),
+            $this->taskFilesystemStack()->copy($settings_default_path, $settings_path, ($options['force'] === true) ? $options['force'] : false),
             $this->taskWriteToFile($settings_path)->append()->lines([
                 "if (file_exists(\$app_root . '/' . \$site_path . '/" . $options['settings-override-file'] . "')) {",
                 "  include \$app_root . '/' . \$site_path . '/" . $options['settings-override-file'] . "';",
