@@ -145,7 +145,7 @@ class CommandsTest extends AbstractTest
         $configFile = $this->getSandboxFilepath('runner.yml');
 
         file_put_contents($configFile, Yaml::dump($config));
-        mkdir($this->getSandboxRoot() . '/build/sites/default/', 0777, TRUE);
+        mkdir($this->getSandboxRoot() . '/build/sites/default/', 0777, true);
         file_put_contents($this->getSandboxRoot() . '/build/sites/default/default.settings.php', '');
 
         $input = new StringInput("drupal:settings-setup --working-dir=".$this->getSandboxRoot());
