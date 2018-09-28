@@ -146,7 +146,7 @@ class CommandsTest extends AbstractTest
 
         file_put_contents($configFile, Yaml::dump($config));
 
-        $sites_subdir = ($config['drupal']['site'] && $config['drupal']['site']['sites_subdir']) ? $config['drupal']['site']['sites_subdir'] : 'default';
+        $sites_subdir = isset($config['drupal']['site']['sites_subdir']) ? $config['drupal']['site']['sites_subdir'] : 'default';
         mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0777, true);
         file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
 
@@ -171,7 +171,7 @@ class CommandsTest extends AbstractTest
         $configFile = $this->getSandboxFilepath('runner.yml');
         file_put_contents($configFile, Yaml::dump($config));
 
-        $sites_subdir = ($config['drupal']['site'] && $config['drupal']['site']['sites_subdir']) ? $config['drupal']['site']['sites_subdir'] : 'default';
+        $sites_subdir = isset($config['drupal']['site']['sites_subdir']) ? $config['drupal']['site']['sites_subdir'] : 'default';
         mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0777, true);
         file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
         file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/settings.php', '# Already existing file.');
