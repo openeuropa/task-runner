@@ -31,3 +31,4 @@ command:
         options:
           sites-subdir: ${drupal.site.sites_subdir}
           settings-override-file: ${drupal.site.settings_override_file}
+          force-override-file: ${drupal.site.force_override_file}
