@@ -255,11 +255,13 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
     }
 
     /**
-     * Setup default Drupal settings file.
+     * Setup Drupal settings overrides.
      *
-     * This command will append settings specified at "drupal.settings" to the
-     * current site's "default.settings.php" which, in turn, will be used
-     * to generate the actual "settings.php" at installation time.
+     * This command will:
+     *
+     * - Copy "default.settings.php" to "settings.php", which will be overridden if existing
+     * - Append to "settings.php" an include operation for a "settings.override.php" file
+     * - Write settings specified at "drupal.settings" in "settings.override.php"
      *
      * Default settings can be customized in your local runner.yml.dist/runner.yml
      * as shown below:
@@ -270,11 +272,14 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * >       sync: '../config/sync'
      * >       prod: '../config/prod'
      *
+     * The settings override file name can be changed in the Task Runner
+     * configuration by setting the "drupal.site.settings_override_file" property.
+     *
      * @command drupal:settings-setup
      *
-     * @option root Drupal root.
-     * @option sites-subdir Drupal site subdirectory.
-     * @option settings-override-file Drupal site settings override filename.
+     * @option root                     Drupal root.
+     * @option sites-subdir             Drupal site subdirectory.
+     * @option settings-override-file   Drupal site settings override filename.
      *
      * @param array $options
      *
