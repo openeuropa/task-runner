@@ -369,7 +369,6 @@ EOF;
         if (file_exists("$root/sites/$subdir/settings.php")) {
             $collection->addTaskList([
                 $this->taskFilesystemStack()->chmod("$root/sites/$subdir/settings.php", '436'),
-                $this->taskFilesystemStack()->remove("$root/sites/$subdir/settings.php"),
             ]);
         }
 
