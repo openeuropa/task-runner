@@ -134,7 +134,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         }
 
         $drush = $this->getConfig()->get('runner.bin_dir').'/drush';
-        $task  = $this->taskDrush($drush)
+        $task = $this->taskDrush($drush)
             ->root($options['root'])
             ->siteName($options['site-name'])
             ->siteMail($options['site-mail'])

@@ -28,7 +28,7 @@ command:
       options:
         config-dir: ${drupal.root}/drush
     settings-setup:
-        options:
-          sites-subdir: ${drupal.site.sites_subdir}
-          settings-override-file: ${drupal.site.settings_override_file}
-          force: ${drupal.site.force}
+      options:
+        sites-subdir: ${drupal.site.sites_subdir}
+        settings-override-file: ${drupal.site.settings_override_file}
+        force: ${drupal.site.force}
