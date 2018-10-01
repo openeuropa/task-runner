@@ -126,7 +126,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         'database-name' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
         'config-dir' => InputOption::VALUE_REQUIRED,
-        'permissions-setup' => InputOption::VALUE_REQUIRED,
+        'skip-permissions-setup' => false,
     ])
     {
         if ($options['database-type']) {
@@ -283,6 +283,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @option sites-subdir             Drupal site subdirectory.
      * @option settings-override-file   Drupal site settings override filename.
      * @option force                    Drupal force generation of a new settings.php.
+     * @option skip-permissions-setup   Drupal skip permissions setup.
      *
      * @param array $options
      *
@@ -292,8 +293,8 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         'root' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
         'settings-override-file' => InputOption::VALUE_REQUIRED,
-        'permissions-setup' => InputOption::VALUE_REQUIRED,
         'force' => false,
+        'skip-permissions-setup' => false,
     ])
     {
         $settings_default_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/default.settings.php';
@@ -336,12 +337,16 @@ EOF;
     }
 
     /**
-     * Setup required Drupal permissions.
+     * Setup Drupal permissions.
      *
      * This command will set the necessary permissions on the default folder.
      * Note that the chmod command takes decimal values.
      *
      * @command drupal:permissions-setup
+     *
+     * @option root                     Drupal root.
+     * @option sites-subdir             Drupal site subdirectory.
+     * @option skip-permissions-setup   Drupal skip permissions setup.
      *
      * @param array $options
      *
@@ -350,19 +355,19 @@ EOF;
     public function permissionsSetup(array $options = [
         'root' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
-        'permissions-setup' => InputOption::VALUE_REQUIRED,
+        'skip-permissions-setup' => false,
     ])
     {
         $collection = $this->collectionBuilder();
 
-        if (!$options['permissions-setup']) {
+        if ($options['skip-permissions-setup']) {
             return $collection;
         }
 
         $root = $options['root'];
         $subdir = $options['sites-subdir'];
 
-        $collection = $this->collectionBuilder()->addTaskList([
+        $collection->addTaskList([
             $this->taskFilesystemStack()->chmod("$root/sites/$subdir", '509', 0000, true),
         ]);
 

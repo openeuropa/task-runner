@@ -35,7 +35,7 @@ class DrupalCommandsTest extends AbstractTest
         chmod($siteSettings, 0777);
 
         // Run command.
-        $input = new StringInput("drupal:permissions-setup --working-dir=".$this->getSandboxRoot());
+        $input = new StringInput("drupal:permissions-setup --working-dir=" . $this->getSandboxRoot());
         $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
         $runner->run();
 
