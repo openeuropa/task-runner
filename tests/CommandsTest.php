@@ -158,6 +158,31 @@ class CommandsTest extends AbstractTest
             $content = file_get_contents($this->getSandboxFilepath($row['file']));
             $this->assertContainsNotContains($content, $row);
         }
+
+        // Generate a random function name.
+        $fct = $this->generateRandomString(20);
+
+        // Generate a dummy PHP code.
+        $config_override_dummy_script = <<< EOF
+<?php 
+function $fct() {}
+EOF;
+
+        $config_override_filename = isset($config['drupal']['site']['settings_override_file']) ?
+            $config['drupal']['site']['settings_override_file'] :
+            'settings.override.php';
+
+        // Add the dummy PHP code to the config override file.
+        file_put_contents(
+            $this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/' . $config_override_filename,
+            $config_override_dummy_script
+        );
+
+        // Include the config override file.
+        include_once $this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/' . $config_override_filename;
+
+        // Test if the dummy PHP code has been properly included.
+        $this->assertTrue(\function_exists($fct));
     }
 
     /**
@@ -188,6 +213,31 @@ class CommandsTest extends AbstractTest
             $content = file_get_contents($this->getSandboxFilepath($row['file']));
             $this->assertContainsNotContains($content, $row);
         }
+
+        // Generate a random function name.
+        $fct = $this->generateRandomString(20);
+
+        // Generate a dummy PHP code.
+        $config_override_dummy_script = <<< EOF
+<?php 
+function $fct() {}
+EOF;
+
+        $config_override_filename = isset($config['drupal']['site']['settings_override_file']) ?
+            $config['drupal']['site']['settings_override_file'] :
+            'settings.override.php';
+
+        // Add the dummy PHP code to the config override file.
+        file_put_contents(
+            $this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/' . $config_override_filename,
+            $config_override_dummy_script
+        );
+
+        // Include the config override file.
+        include_once $this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/' . $config_override_filename;
+
+        // Test if the dummy PHP code has been properly included.
+        $this->assertTrue(\function_exists($fct));
     }
 
     /**

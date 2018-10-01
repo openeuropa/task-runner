@@ -79,4 +79,18 @@ abstract class AbstractTest extends TestCase
     {
         return __DIR__."/sandbox";
     }
+
+    /**
+     * Generate a random string.
+     *
+     * @param int $length
+     *   The desired length.
+     *
+     * @return string
+     *   The random string.
+     */
+    protected function generateRandomString($length = 10)
+    {
+        return substr(str_shuffle(str_repeat($x = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)))), 1, $length);
+    }
 }
