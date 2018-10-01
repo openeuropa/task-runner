@@ -280,7 +280,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @option root                     Drupal root.
      * @option sites-subdir             Drupal site subdirectory.
      * @option settings-override-file   Drupal site settings override filename.
-     * @option force                    Drupal force site settings override.
+     * @option force                    Drupal force generation of a new settings.php.
      *
      * @param array $options
      *
@@ -290,7 +290,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         'root' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
         'settings-override-file' => InputOption::VALUE_REQUIRED,
-        'force' => InputOption::VALUE_REQUIRED,
+        'force' => false,
     ])
     {
         $settings_default_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/default.settings.php';

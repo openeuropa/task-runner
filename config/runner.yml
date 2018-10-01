@@ -33,7 +33,6 @@ drupal:
     sites_subdir: "default"
     config_dir: ~
     settings_override_file: "settings.override.php"
-    force: true
 
   # Administrator account information.
   account:
