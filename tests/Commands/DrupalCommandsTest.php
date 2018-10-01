@@ -25,18 +25,27 @@ class DrupalCommandsTest extends AbstractTest
         $configFile = $this->getSandboxFilepath('runner.yml');
         file_put_contents($configFile, Yaml::dump($config));
 
+        // Prepare site directory.
         $sitesSubdir = $this->getSandboxFilepath('build/sites/default/');
         mkdir($sitesSubdir, 0777, true);
 
-        touch($sitesSubdir . 'settings.php');
+        // Prepare site settings file.
+        $siteSettings = $sitesSubdir . 'settings.php';
+        touch($siteSettings);
+        chmod($siteSettings, 0777);
 
+        // Run command.
         $input = new StringInput("drupal:permissions-setup --working-dir=".$this->getSandboxRoot());
         $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
         $runner->run();
 
+        // Check site directory.
         $sitesSubdirPermissions = substr(sprintf('%o', fileperms($sitesSubdir)), -4);
-
         $this->assertEquals('0775', $sitesSubdirPermissions);
+
+        // Check site settings file.
+        $siteSettingsPermissions = substr(sprintf('%o', fileperms($siteSettings)), -4);
+        $this->assertEquals('0664', $siteSettingsPermissions);
     }
 
     /**
