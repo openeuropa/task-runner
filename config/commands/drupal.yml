@@ -38,4 +38,3 @@ command:
     permissions-setup:
       options:
         sites-subdir: ${drupal.site.sites_subdir}
-        skip-permissions-setup: ${drupal.site.skip_permissions_setup}

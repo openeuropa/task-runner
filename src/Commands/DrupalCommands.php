@@ -156,12 +156,17 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
             $task->setConfigDir($options['config-dir']);
         }
 
-        return $this->collectionBuilder()->addTaskList([
+        // Define collection of tasks.
+        $collection = [
             $this->sitePreInstall(),
-            $this->permissionsSetup($options),
-            $task->siteInstall(),
-            $this->sitePostInstall(),
-        ]);
+        ];
+        if (!$options['skip-permissions-setup']) {
+            $collection[] = $this->permissionsSetup($options);
+        }
+        $collection[] = $task->siteInstall();
+        $collection[] = $this->sitePostInstall();
+
+        return $this->collectionBuilder()->addTaskList($collection);
     }
 
     /**
@@ -331,7 +336,9 @@ EOF;
             $this->getConfig()
         )->setConfigKey('drupal.settings');
 
-        $collection[] = $this->permissionsSetup($options);
+        if (!$options['skip-permissions-setup']) {
+            $collection[] = $this->permissionsSetup($options);
+        }
 
         return $this->collectionBuilder()->addTaskList($collection);
     }
@@ -355,14 +362,9 @@ EOF;
     public function permissionsSetup(array $options = [
         'root' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
-        'skip-permissions-setup' => false,
     ])
     {
         $collection = $this->collectionBuilder();
-
-        if ($options['skip-permissions-setup']) {
-            return $collection;
-        }
 
         $root = $options['root'];
         $subdir = $options['sites-subdir'];
