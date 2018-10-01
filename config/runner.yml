@@ -32,6 +32,7 @@ drupal:
     locale: "en"
     sites_subdir: "default"
     config_dir: ~
+    settings_override_file: "settings.override.php"
 
   # Administrator account information.
   account:

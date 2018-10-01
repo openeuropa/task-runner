@@ -15,7 +15,10 @@ pipeline:
     volumes:
     - /cache:/cache
     commands:
-    - composer update --prefer-lowest --ansi
+    # @todo remove "composer install" step once the following issue is fixed.
+    # @link https://webgate.ec.europa.eu/CITnet/jira/browse/OPENEUROPA-1234
+    - composer install --ansi --no-suggest --no-progress
+    - composer update --prefer-lowest --ansi --no-suggest --no-progress
     when:
       matrix:
         COMPOSER_BOUNDARY: lowest
@@ -26,7 +29,7 @@ pipeline:
     volumes:
     - /cache:/cache
     commands:
-    - composer install --ansi
+    - composer install --ansi --no-suggest --no-progress
     when:
       matrix:
         COMPOSER_BOUNDARY: highest
