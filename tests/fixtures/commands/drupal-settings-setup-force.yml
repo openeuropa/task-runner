@@ -5,7 +5,7 @@
   expected:
     - file: "build/sites/default/settings.php"
       contains: "# Already existing file."
-      not_contains: ~
+      not_contains: "include $app_root . '/' . $site_path . '/settings.override.php';"
 
 - configuration:
     drupal:

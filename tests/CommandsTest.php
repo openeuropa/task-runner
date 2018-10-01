@@ -176,7 +176,11 @@ class CommandsTest extends AbstractTest
         file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
         file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/settings.php', '# Already existing file.');
 
-        $input = new StringInput("drupal:settings-setup --working-dir=".$this->getSandboxRoot());
+        $input = new StringInput('drupal:settings-setup --working-dir=' . $this->getSandboxRoot());
+
+        if (true === $config['drupal']['site']['force']) {
+            $input = new StringInput('drupal:settings-setup --working-dir=' . $this->getSandboxRoot() . ' --force');
+        }
         $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
         $runner->run();
 
@@ -260,8 +264,8 @@ class CommandsTest extends AbstractTest
     protected function assertContainsNotContains($content, array $expected)
     {
         $this->assertContains($expected['contains'], $content);
-        if (!empty($row['not_contains'])) {
-            $this->assertNotContains($row['not_contains'], $content);
+        if (!empty($expected['not_contains'])) {
+            $this->assertNotContains($expected['not_contains'], $content);
         }
     }
 }
