@@ -57,6 +57,12 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
     public function validateSiteInstall(CommandData $commandData)
     {
         $input = $commandData->input();
+
+        // Validate if permissions will be set up.
+        if (!$input->getOption('skip-permissions-setup')) {
+            return;
+        }
+
         $siteDirectory = implode('/', [
             getcwd(),
             $input->getOption('root'),
