@@ -34,7 +34,6 @@ command:
         settings-override-file: ${drupal.site.settings_override_file}
         force: ${drupal.site.force}
         skip-permissions-setup: ${drupal.site.skip_permissions_setup}
-        teste: ${drupal.site.teste}
     permissions-setup:
       options:
         sites-subdir: ${drupal.site.sites_subdir}
