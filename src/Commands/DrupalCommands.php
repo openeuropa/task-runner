@@ -364,21 +364,17 @@ EOF;
         'sites-subdir' => InputOption::VALUE_REQUIRED,
     ])
     {
-        $collection = $this->collectionBuilder();
+        $subdirPath = $options['root'] . '/sites/' . $options['sites-subdir'];
 
-        $root = $options['root'];
-        $subdir = $options['sites-subdir'];
+        // Define collection of tasks.
+        $collection = [
+            $this->taskFilesystemStack()->chmod($subdirPath, '509', 0000, true),
+        ];
 
-        $collection->addTaskList([
-            $this->taskFilesystemStack()->chmod("$root/sites/$subdir", '509', 0000, true),
-        ]);
-
-        if (file_exists("$root/sites/$subdir/settings.php")) {
-            $collection->addTaskList([
-                $this->taskFilesystemStack()->chmod("$root/sites/$subdir/settings.php", '436'),
-            ]);
+        if (file_exists($settingsPath)) {
+            $collection[] = $this->taskFilesystemStack()->chmod($subdirPath . '/settings.php', '436');
         }
 
-        return $collection;
+        return $this->collectionBuilder()->addTaskList($collection);
     }
 }
