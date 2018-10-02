@@ -377,7 +377,7 @@ EOF;
             $this->taskFilesystemStack()->chmod($subdirPath, '509', 0000, true),
         ];
 
-        if (file_exists($settingsPath)) {
+        if (file_exists($subdirPath . '/settings.php')) {
             $collection[] = $this->taskFilesystemStack()->chmod($subdirPath . '/settings.php', '436');
         }
 
