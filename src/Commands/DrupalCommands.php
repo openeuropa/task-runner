@@ -156,9 +156,10 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         }
 
         return $this->collectionBuilder()->addTaskList([
-            $this->sitePreInstall(),
-            $task->siteInstall(),
-            $this->sitePostInstall(),
+                $this->setupPreInstallPermissions($options),
+                $task->siteInstall(),
+                $this->setupPostInstallPermissions(),
+                $this->sitePostInstall(),
         ]);
     }
 
@@ -328,5 +329,53 @@ EOF;
         )->setConfigKey('drupal.settings');
 
         return $this->collectionBuilder()->addTaskList($collection);
+    }
+
+    /**
+     * Setup required Drupal permissions before installation.
+     *
+     * This command will set the necessary permissions on the default folder
+     * before installation. Note that the chmod command takes decimal values.
+     *
+     * @command drupal:setup-pre-install-permissions
+     *
+     * @param array $options
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     */
+    public function setupPreInstallPermissions(array $options = [
+            'root' => InputOption::VALUE_REQUIRED,
+        ])
+    {
+        $root = $options['root'];
+
+        return $this->collectionBuilder()->addTaskList([
+                $this->taskFilesystemStack()->chmod($root.'/sites/default', '509', 0000, true),
+                $this->taskFilesystemStack()->touch($root.'/sites/default/settings.php'),
+                $this->taskFilesystemStack()->chmod($root.'/sites/default/settings.php', '436'),
+                $this->taskFilesystemStack()->remove($root.'/sites/default/settings.php'),
+        ]);
+    }
+
+    /**
+     * Setup required Drupal permissions after installation.
+     *
+     * This command will set the necessary permissions on the default folder
+     * before installation. Note that the chmod command takes decimal values.
+     *
+     * @command drupal:setup-post-install-permissions
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     *
+     */
+    public function setupPostInstallPermissions()
+    {
+        $root = $this->getConfig()->get('drupal.root');
+
+        return $this->collectionBuilder()->addTaskList([
+                $this->taskFilesystemStack()->chmod($root.'/sites/default', '509', 0000, true),
+                $this->taskFilesystemStack()->chmod($root.'/sites/default/settings.php', '436'),
+
+        ]);
     }
 }
