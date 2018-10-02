@@ -57,6 +57,12 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
     public function validateSiteInstall(CommandData $commandData)
     {
         $input = $commandData->input();
+
+        // Validate if permissions will be set up.
+        if (!$input->getOption('skip-permissions-setup')) {
+            return;
+        }
+
         $siteDirectory = implode('/', [
             getcwd(),
             $input->getOption('root'),
@@ -126,6 +132,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         'database-name' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
         'config-dir' => InputOption::VALUE_REQUIRED,
+        'skip-permissions-setup' => false,
     ])
     {
         if ($options['database-type']) {
@@ -155,11 +162,17 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
             $task->setConfigDir($options['config-dir']);
         }
 
-        return $this->collectionBuilder()->addTaskList([
+        // Define collection of tasks.
+        $collection = [
             $this->sitePreInstall(),
-            $task->siteInstall(),
-            $this->sitePostInstall(),
-        ]);
+        ];
+        if (!$options['skip-permissions-setup']) {
+            $collection[] = $this->permissionsSetup($options);
+        }
+        $collection[] = $task->siteInstall();
+        $collection[] = $this->sitePostInstall();
+
+        return $this->collectionBuilder()->addTaskList($collection);
     }
 
     /**
@@ -281,6 +294,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @option sites-subdir             Drupal site subdirectory.
      * @option settings-override-file   Drupal site settings override filename.
      * @option force                    Drupal force generation of a new settings.php.
+     * @option skip-permissions-setup   Drupal skip permissions setup.
      *
      * @param array $options
      *
@@ -291,6 +305,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         'sites-subdir' => InputOption::VALUE_REQUIRED,
         'settings-override-file' => InputOption::VALUE_REQUIRED,
         'force' => false,
+        'skip-permissions-setup' => false,
     ])
     {
         $settings_default_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/default.settings.php';
@@ -326,6 +341,45 @@ EOF;
             $settings_override_path,
             $this->getConfig()
         )->setConfigKey('drupal.settings');
+
+        if (!$options['skip-permissions-setup']) {
+            $collection[] = $this->permissionsSetup($options);
+        }
+
+        return $this->collectionBuilder()->addTaskList($collection);
+    }
+
+    /**
+     * Setup Drupal permissions.
+     *
+     * This command will set the necessary permissions on the default folder.
+     * Note that the chmod command takes decimal values.
+     *
+     * @command drupal:permissions-setup
+     *
+     * @option root                     Drupal root.
+     * @option sites-subdir             Drupal site subdirectory.
+     * @option skip-permissions-setup   Drupal skip permissions setup.
+     *
+     * @param array $options
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     */
+    public function permissionsSetup(array $options = [
+        'root' => InputOption::VALUE_REQUIRED,
+        'sites-subdir' => InputOption::VALUE_REQUIRED,
+    ])
+    {
+        $subdirPath = $options['root'] . '/sites/' . $options['sites-subdir'];
+
+        // Define collection of tasks.
+        $collection = [
+            $this->taskFilesystemStack()->chmod($subdirPath, '509', 0000, true),
+        ];
+
+        if (file_exists($subdirPath . '/settings.php')) {
+            $collection[] = $this->taskFilesystemStack()->chmod($subdirPath . '/settings.php', '436');
+        }
 
         return $this->collectionBuilder()->addTaskList($collection);
     }

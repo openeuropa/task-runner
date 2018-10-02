@@ -1,0 +1,5 @@
+- configuration:
+    drupal:
+      settings:
+        sites-subdir: "build/sites/default/"
+        settings_file: "settings.php"
