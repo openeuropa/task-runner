@@ -1,6 +1,8 @@
 - configuration:
     drupal:
-      settings:
+      - settings:
+        sites-subdir: "${drupal.root}/sites/${drupal.sites-subdir"
+        settings_file: "settings.php"
         conf:
           file_scan_ignore_directories:
             - "node_modules"

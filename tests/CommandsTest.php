@@ -71,6 +71,31 @@ class CommandsTest extends AbstractTest
         $actual = file_get_contents($destination);
         $this->assertEquals($expected, $actual);
     }
+    /**
+     * @param array $config
+     * @param array $expected
+     *
+     * @dataProvider settingsSetupDataProvider
+     */
+    public function testSettingsPermissions(array $config, array $expected)
+    {
+        $configFile = $this->getSandboxFilepath('runner.yml');
+
+        file_put_contents($configFile, Yaml::dump($config));
+
+        $input = new StringInput("drupal:settings-setup --working-dir=".$this->getSandboxRoot());
+        $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
+        $runner->run();
+
+        print_r($config);
+        $subdir = $config['drupal']['settings']['sites-subdir'];
+        $settings = $subdir . '/' . $config['drupal']['settings']['settings_file'];
+        print ("Name = $settings\n");
+//        $this->assertContains('default', $subdir);
+        $filePermission = substr( sprintf( '%o', fileperms( $settings ) ), - 4 );
+        $this->assertEquals( "0777", $filePermission );
+        $this->assertEquals( "good", 'bad' );
+    }
 
     /**
      * @param array  $options

@@ -16,7 +16,6 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @package OpenEuropa\TaskRunner\Commands
  */
-
 class DrupalCommands extends AbstractCommands implements FilesystemAwareInterface
 {
     use TaskRunnerTraits\ConfigurationTokensTrait;
@@ -158,9 +157,9 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
 
         return $this->collectionBuilder()->addTaskList([
             $this->sitePreInstall(),
-            $this->setupPreInstallPermissions($options),
+//            $this->setupPreInstallPermissions($options),
             $task->siteInstall(),
-            $this->setupPostInstallPermissions(),
+            $this->setupPostInstallPermissions($options),
             $this->sitePostInstall(),
         ]);
     }
@@ -347,16 +346,27 @@ EOF;
      */
     public function setupPreInstallPermissions(array $options = [
         'root' => InputOption::VALUE_REQUIRED,
+        'sites-subdir' => InputOption::VALUE_REQUIRED,
     ])
     {
         $root = $options['root'];
+        $subdir = $options['sites-subdir'];
 
-        return $this->collectionBuilder()->addTaskList([
-            $this->taskFilesystemStack()->chmod($root.'/sites/default', '509', 0000, true),
-            $this->taskFilesystemStack()->touch($root.'/sites/default/settings.php'),
-            $this->taskFilesystemStack()->chmod($root.'/sites/default/settings.php', '436'),
-            $this->taskFilesystemStack()->remove($root.'/sites/default/settings.php'),
-        ]);
+        if (file_exists("$root/sites/$subdir/settings.php")) {
+            return $this->collectionBuilder()->addTaskList(
+                [
+                    $this->taskFilesystemStack()->chmod("$root/sites/$subdir", '509', 0000, true),
+                    $this->taskFilesystemStack()->chmod("$root/sites/$subdir/settings.php", '436'),
+                    $this->taskFilesystemStack()->remove("$root/sites/$subdir/settings.php"),
+                ]
+            );
+        } else {
+            return $this->collectionBuilder()->addTaskList(
+                [
+                    $this->taskFilesystemStack()->chmod("$root/sites/$subdir", '509', 0000, true),
+                ]
+            );
+        }
     }
 
     /**
@@ -367,17 +377,22 @@ EOF;
      *
      * @command drupal:setup-post-install-permissions
      *
+     * @param array $options
+     *
      * @return \Robo\Collection\CollectionBuilder
      *
      */
-    public function setupPostInstallPermissions()
+    public function setupPostInstallPermissions(array $options = [
+        'root' => InputOption::VALUE_REQUIRED,
+        'sites-subdir' => InputOption::VALUE_REQUIRED,
+    ])
     {
-        $root = $this->getConfig()->get('drupal.root');
+        $root = $options['root'];
+        $subdir = $options['sites-subdir'];
 
         return $this->collectionBuilder()->addTaskList([
-            $this->taskFilesystemStack()->chmod($root.'/sites/default', '509', 0000, true),
-            $this->taskFilesystemStack()->chmod($root.'/sites/default/settings.php', '436'),
-
+            $this->taskFilesystemStack()->chmod("$root/sites/$subdir", '509', 0000, true),
+            $this->taskFilesystemStack()->chmod("$root/sites/$subdir/settings.php", '436'),
         ]);
     }
 }
