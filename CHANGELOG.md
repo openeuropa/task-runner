@@ -1,10 +1,19 @@
 # Change Log
 
+## [1.0.0-beta2](https://github.com/openeuropa/task-runner/tree/1.0.0-beta2) (2018-10-03)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta1...1.0.0-beta2)
+
+**Merged pull requests:**
+
+- OPENEUROPA-1149: Provide alternative method to override settings in settings.php [\#82](https://github.com/openeuropa/task-runner/pull/82) ([sergepavle](https://github.com/sergepavle))
+- OPENEUROPA-1140: Add permissions setup command. [\#75](https://github.com/openeuropa/task-runner/pull/75) ([richardcanoe](https://github.com/richardcanoe))
+
 ## [1.0.0-beta1](https://github.com/openeuropa/task-runner/tree/1.0.0-beta1) (2018-09-18)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.8.0...1.0.0-beta1)
 
 **Merged pull requests:**
 
+- Update CHANGELOG.md for 1.0.0-beta1 release [\#81](https://github.com/openeuropa/task-runner/pull/81) ([dxvargas](https://github.com/dxvargas))
 - OPENEUROPA-1218: Update code-review version. [\#80](https://github.com/openeuropa/task-runner/pull/80) ([dxvargas](https://github.com/dxvargas))
 - OPENEUROPA-1202: Fix Task Runner PHP process dynamic tasks [\#79](https://github.com/openeuropa/task-runner/pull/79) ([ademarco](https://github.com/ademarco))
 - OPENEUROPA-1198: Expose PHP configuration process tasks in dynamic commands [\#78](https://github.com/openeuropa/task-runner/pull/78) ([ademarco](https://github.com/ademarco))
