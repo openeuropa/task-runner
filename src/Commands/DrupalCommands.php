@@ -353,7 +353,6 @@ EOF;
      * Setup Drupal permissions.
      *
      * This command will set the necessary permissions on the default folder.
-     * Note that the chmod command takes decimal values.
      *
      * @command drupal:permissions-setup
      *
@@ -374,11 +373,13 @@ EOF;
 
         // Define collection of tasks.
         $collection = [
-            $this->taskFilesystemStack()->chmod($subdirPath, '509', 0000, true),
+            // Note that the chmod() method takes decimal values.
+            $this->taskFilesystemStack()->chmod($subdirPath, octdec(775), 0000, true),
         ];
 
         if (file_exists($subdirPath . '/settings.php')) {
-            $collection[] = $this->taskFilesystemStack()->chmod($subdirPath . '/settings.php', '436');
+            // Note that the chmod() method takes decimal values.
+            $collection[] = $this->taskFilesystemStack()->chmod($subdirPath . '/settings.php', octdec(664));
         }
 
         return $this->collectionBuilder()->addTaskList($collection);
