@@ -39,6 +39,7 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
     {
         return [
             'drupal:site-install' => [
+                'existing-config' => 'drupal.site.existing_config',
                 'skip-permissions-setup' => 'drupal.site.skip_permissions_setup',
             ],
         ];
@@ -116,7 +117,8 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      * @option database-user          Database username.
      * @option database-password      Database password.
      * @option sites-subdir           Sites sub-directory.
-     * @option config-dir             Config export directory.
+     * @option config-dir             Deprecated, use "existing-config" for Drupal 8.6 and higher.
+     * @option existing-config        Whether existing config should be imported during installation.
      * @option skip-permissions-setup Whether to skip making the settings file and folder writable during installation.
      *
      * @aliases drupal:si,dsi
@@ -145,12 +147,17 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
         'database-name' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
         'config-dir' => InputOption::VALUE_REQUIRED,
+        'existing-config' => false,
         'skip-permissions-setup' => false,
     ])
     {
         if ($options['database-type']) {
             $this->io()->warning("Option 'database-type' is deprecated and it will be removed in 1.0.0. Use 'database-scheme' instead.");
             $options['database-scheme'] = $options['database-type'];
+        }
+        if ($options['config-dir']) {
+            $this->io()->warning("The 'config-dir' option is deprecated. Use 'existing-config' instead.");
+            $options['existing-config'] = true;
         }
 
         $drush = $this->getConfig()->get('runner.bin_dir').'/drush';
@@ -171,8 +178,8 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
             ->sitesSubdir($options['sites-subdir'])
             ->siteProfile($options['site-profile']);
 
-        if (!empty($options['config-dir'])) {
-            $task->setConfigDir($options['config-dir']);
+        if (!empty($options['existing-config'])) {
+            $task->setExistingConfig($options['existing-config']);
         }
 
         // Define collection of tasks.

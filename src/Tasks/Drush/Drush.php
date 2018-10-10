@@ -29,7 +29,7 @@ class Drush extends Exec
     protected $databasePassword = '';
     protected $databaseName = '';
     protected $sitesSubdir = '';
-    protected $configDir = '';
+    protected $existingConfig = false;
 
     /**
      * Build Drush site install command.
@@ -61,8 +61,8 @@ class Drush extends Exec
                 'db-url' => $dbUrl,
             ], '=');
 
-        if (!empty($this->configDir)) {
-            $this->option('config-dir', $this->configDir, '=');
+        if (!empty($this->existingConfig)) {
+            $this->option('existing-config');
         }
 
         return $this->arg('site-install')->arg($this->siteProfile);
@@ -261,13 +261,13 @@ class Drush extends Exec
     }
 
     /**
-     * @param string $configDir
+     * @param bool $existingConfig
      *
      * @return Drush
      */
-    public function setConfigDir($configDir)
+    public function setExistingConfig($existingConfig)
     {
-        $this->configDir = $configDir;
+        $this->existingConfig = $existingConfig;
 
         return $this;
     }
