@@ -33,6 +33,18 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getValuelessConfigurationKeys()
+    {
+        return [
+            'drupal:site-install' => [
+                'skip-permissions-setup' => 'drupal.site.skip_permissions_setup',
+            ],
+        ];
+    }
+
+    /**
      * Set runtime configuration values.
      *
      * @param \Symfony\Component\Console\Event\ConsoleCommandEvent $event
@@ -87,24 +99,25 @@ class DrupalCommands extends AbstractCommands implements FilesystemAwareInterfac
      *
      * @command drupal:site-install
      *
-     * @option root              Drupal root.
-     * @option site-name         Site name.
-     * @option site-mail         Site mail.
-     * @option site-profile      Installation profile
-     * @option site-update       Whereas to enable the update module or not.
-     * @option site-locale       Default site locale.
-     * @option account-name      Admin account name.
-     * @option account-password  Admin account password.
-     * @option account-mail      Admin email.
-     * @option database-type     Deprecated, use "database-scheme"
-     * @option database-scheme   Database scheme.
-     * @option database-host     Database host.
-     * @option database-port     Database port.
-     * @option database-name     Database name.
-     * @option database-user     Database username.
-     * @option database-password Database password.
-     * @option sites-subdir      Sites sub-directory.
-     * @option config-dir        Config export directory.
+     * @option root                   Drupal root.
+     * @option site-name              Site name.
+     * @option site-mail              Site mail.
+     * @option site-profile           Installation profile
+     * @option site-update            Whereas to enable the update module or not.
+     * @option site-locale            Default site locale.
+     * @option account-name           Admin account name.
+     * @option account-password       Admin account password.
+     * @option account-mail           Admin email.
+     * @option database-type          Deprecated, use "database-scheme"
+     * @option database-scheme        Database scheme.
+     * @option database-host          Database host.
+     * @option database-port          Database port.
+     * @option database-name          Database name.
+     * @option database-user          Database username.
+     * @option database-password      Database password.
+     * @option sites-subdir           Sites sub-directory.
+     * @option config-dir             Config export directory.
+     * @option skip-permissions-setup Whether to skip making the settings file and folder writable during installation.
      *
      * @aliases drupal:si,dsi
      *

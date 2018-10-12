@@ -20,6 +20,7 @@ abstract class AbstractTest extends TestCase
     protected function setUp()
     {
         $filesystem = new Filesystem();
+        $filesystem->chmod($this->getSandboxRoot(), 0777, umask(), true);
         $filesystem->remove(glob($this->getSandboxRoot()."/*"));
         date_default_timezone_set('Europe/London');
     }

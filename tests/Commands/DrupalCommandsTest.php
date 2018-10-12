@@ -17,10 +17,22 @@ class DrupalCommandsTest extends AbstractTest
 {
     /**
      * @param array $config
+     *   The configuration array to pass to the command.
+     * @param string $command
+     *   The command to execute.
+     * @param bool $expected_error
+     *   Whether or not it is expected that the command will return an error
+     *   code.
+     * @param string $expected_settings_dir_permission
+     *   A string representing the octal permission number that is expected to
+     *   be applied on the settings folder.
+     * @param string $expected_settings_file_permission
+     *   A string representing the octal permission number that is expected to
+     *   be applied on the settings file.
      *
      * @dataProvider drupalSettingsDataProvider
      */
-    public function testPermissions(array $config)
+    public function testPermissions(array $config, $command, $expected_error, $expected_settings_dir_permission, $expected_settings_file_permission)
     {
         $configFile = $this->getSandboxFilepath('runner.yml');
         file_put_contents($configFile, Yaml::dump($config));
@@ -32,20 +44,28 @@ class DrupalCommandsTest extends AbstractTest
         // Prepare site settings file.
         $siteSettings = $sitesSubdir . 'settings.php';
         touch($siteSettings);
-        chmod($siteSettings, 0777);
+
+        // Make the settings folder and file unwritable so we can detect whether
+        // the exception is thrown in `DrupalCommands::validateSiteInstall()` as
+        // well as whether the permissions are correctly set.
+        chmod($siteSettings, 0444);
+        chmod($sitesSubdir, 0555);
 
         // Run command.
-        $input = new StringInput("drupal:permissions-setup --working-dir=" . $this->getSandboxRoot());
+        $input = new StringInput("$command --working-dir=" . $this->getSandboxRoot());
         $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
-        $runner->run();
+        $exit_code = $runner->run();
+
+        // Check if an error is returned when this is expected.
+        $this->assertEquals($expected_error, $exit_code != 0);
 
         // Check site directory.
         $sitesSubdirPermissions = substr(sprintf('%o', fileperms($sitesSubdir)), -4);
-        $this->assertEquals('0775', $sitesSubdirPermissions);
+        $this->assertEquals($expected_settings_dir_permission, $sitesSubdirPermissions);
 
         // Check site settings file.
         $siteSettingsPermissions = substr(sprintf('%o', fileperms($siteSettings)), -4);
-        $this->assertEquals('0664', $siteSettingsPermissions);
+        $this->assertEquals($expected_settings_file_permission, $siteSettingsPermissions);
     }
 
     /**
