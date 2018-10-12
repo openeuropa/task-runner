@@ -31,7 +31,10 @@ drupal:
     update: "false"
     locale: "en"
     sites_subdir: "default"
+    # The "drupal.site.config_dir" option is deprecated. For Drupal 8.6 and
+    # higher, use "drupal.site.existing_config" instead.
     config_dir: ~
+    existing_config: false
     settings_override_file: "settings.override.php"
 
   # Administrator account information.

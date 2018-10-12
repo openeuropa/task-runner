@@ -59,6 +59,9 @@
   contains:
     - "./bin/drush -y --root=$(pwd)/overridden"
 
+# Test for passing the deprecated option --config-dir on the command line. This
+# should emit a warning, and should be automatically converted to the new option
+# --existing-config.
 - command: 'drupal:site-install --site-name="Test site" --config-dir="../config-dir"'
   configuration:
     drupal:
@@ -68,8 +71,12 @@
         password: "root"
   composer: ''
   contains:
-  - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' --config-dir=../config-dir site-install standard"
+  - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' --existing-config site-install standard"
+  - "[WARNING] The 'config-dir' option is deprecated. Use 'existing-config' instead."
 
+# Test for setting the deprecated option --config-dir in a configuration file.
+# This should emit a warning, and should be automatically converted to the new
+# option --existing-config.
 - command: 'drupal:site-install --site-name="Test site"'
   configuration:
     drupal:
@@ -81,7 +88,8 @@
         password: "root"
   composer: ''
   contains:
-  - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' --config-dir=../config/sync site-install standard"
+  - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' --existing-config site-install standard"
+  - "[WARNING] The 'config-dir' option is deprecated. Use 'existing-config' instead."
 
 - command: 'changelog:generate'
   configuration:
@@ -292,3 +300,49 @@
     - "{ task: run, command: 'drupal:settings-setup' }"
     - "{ task: run, command: 'setup:behat' }"
     - "{ task: run, command: 'setup:phpunit' }"
+
+# Check that if the "existing-config" option is set to TRUE in a configuration
+# file, it is passed as a valueless option on the command line (i.e. not
+# followed by an '=' symbol).
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      site:
+        existing_config: true
+  composer: ''
+  contains:
+  - "./vendor/bin/drush -y"
+  - "--existing-config "
+
+# Check that if the "existing-config" option is passed on the command line, it
+# is passed on the the Drush command as a valueless option (i.e. not followed by
+# an '=' symbol).
+- command: 'drupal:site-install --existing-config'
+  configuration: []
+  composer: ''
+  contains:
+  - "./vendor/bin/drush -y"
+  - "--existing-config "
+
+# Check that if the "existing_config" option is set to FALSE it is not passed on
+# the command line.
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      site:
+        existing_config: false
+  composer: ''
+  contains:
+  - "./vendor/bin/drush -y"
+  not_contains:
+  - "--existing-config"
+
+# Check that if the "existing_config" option is neither set in a configuration
+# file nor passed to the command, it is not passed on to the Drush command.
+- command: 'drupal:site-install'
+  configuration: []
+  composer: ''
+  contains:
+  - "./vendor/bin/drush -y"
+  not_contains:
+  - "--existing-config"

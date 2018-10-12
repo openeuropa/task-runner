@@ -23,6 +23,8 @@ command:
         database-user: ${drupal.database.user}
         database-password: ${drupal.database.password}
         sites-subdir: ${drupal.site.sites_subdir}
+        # @deprecated
+        # Should only be used with Drupal 8.5 and lower. Use "existing-config".
         config-dir: ${drupal.site.config_dir}
     drush-setup:
       options:
