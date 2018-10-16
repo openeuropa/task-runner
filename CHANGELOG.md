@@ -1,15 +1,29 @@
 # Change Log
 
+## [1.0.0-beta3](https://github.com/openeuropa/task-runner/tree/1.0.0-beta3) (2018-10-16)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta2...1.0.0-beta3)
+
+**Merged pull requests:**
+
+- OPENEUROPA-1272: For Drupal 8.6 the option --config-dir is replaced with --existing-config [\#86](https://github.com/openeuropa/task-runner/pull/86) ([pfrenssen](https://github.com/pfrenssen))
+- OPENEUROPA-1271: Valueless options are ignored when put into configuration [\#85](https://github.com/openeuropa/task-runner/pull/85) ([pfrenssen](https://github.com/pfrenssen))
+- Express permission values in octal [\#84](https://github.com/openeuropa/task-runner/pull/84) ([pfrenssen](https://github.com/pfrenssen))
+
 ## [1.0.0-beta2](https://github.com/openeuropa/task-runner/tree/1.0.0-beta2) (2018-10-03)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta1...1.0.0-beta2)
 
 **Merged pull requests:**
 
+- Update CHANGELOG.md for 1.0.0-beta2 release. [\#83](https://github.com/openeuropa/task-runner/pull/83) ([dxvargas](https://github.com/dxvargas))
 - OPENEUROPA-1149: Provide alternative method to override settings in settings.php [\#82](https://github.com/openeuropa/task-runner/pull/82) ([sergepavle](https://github.com/sergepavle))
-- OPENEUROPA-1140: Add permissions setup command. [\#75](https://github.com/openeuropa/task-runner/pull/75) ([richardcanoe](https://github.com/richardcanoe))
+- OPENEUROPA-1140: Add pre and post install perms commands. [\#75](https://github.com/openeuropa/task-runner/pull/75) ([richardcanoe](https://github.com/richardcanoe))
 
 ## [1.0.0-beta1](https://github.com/openeuropa/task-runner/tree/1.0.0-beta1) (2018-09-18)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.8.0...1.0.0-beta1)
+
+**Closed issues:**
+
+- WIP [\#64](https://github.com/openeuropa/task-runner/issues/64)
 
 **Merged pull requests:**
 
