@@ -7,4 +7,4 @@ behat.yml
 *.tar.gz
 /.idea/
 runner.yml
-docker-compose.yml
+docker-compose.*.yml
