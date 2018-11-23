@@ -1,0 +1,72 @@
+- configuration:
+    drupal:
+      core: 7
+      settings:
+        conf:
+          file_scan_ignore_directories:
+            - "node_modules"
+            - "bower_components"
+            - "vendor"
+            - "${drupal.root}"
+  expected:
+    - file: "build/sites/default/settings.override.php"
+      contains: "$conf[\"file_scan_ignore_directories\"] = array(0 => 'node_modules',1 => 'bower_components',2 => 'vendor',3 => 'build');"
+      not_contains: ~
+    - file: "build/sites/default/settings.php"
+      contains: "include DRUPAL_ROOT . '/' . $conf_path . '/settings.override.php';"
+      not_contains: ~
+
+- configuration:
+    drupal:
+      core: 7
+      settings:
+        settings:
+          file_scan_ignore_directories:
+            - "${drupal.root}"
+  expected:
+    - file: "build/sites/default/settings.override.php"
+      contains: "$settings[\"file_scan_ignore_directories\"] = array(0 => 'build');"
+      not_contains: ~
+
+- configuration:
+    drupal:
+      settings: []
+  expected:
+    - file: "build/sites/default/settings.override.php"
+      contains: "// Start settings processor block."
+      not_contains: "file_scan_ignore_directories"
+
+- configuration:
+    drupal:
+      core: 7
+      settings:
+        settings:
+          file_scan_ignore_directories:
+            - "${drupal.root}"
+      site:
+        settings_override_file: "settings.overridemeplease.php"
+  expected:
+    - file: "build/sites/default/settings.overridemeplease.php"
+      contains: "$settings[\"file_scan_ignore_directories\"] = array(0 => 'build');"
+      not_contains: ~
+    - file: "build/sites/default/settings.php"
+      contains: "include DRUPAL_ROOT . '/' . $conf_path . '/settings.overridemeplease.php';"
+      not_contains: ~
+
+- configuration:
+    drupal:
+      core: 7
+      settings:
+        settings:
+          file_scan_ignore_directories:
+            - "${drupal.root}"
+      site:
+        sites_subdir: "inea"
+        settings_override_file: "settings.overridemeplease.php"
+  expected:
+    - file: "build/sites/inea/settings.overridemeplease.php"
+      contains: "$settings[\"file_scan_ignore_directories\"] = array(0 => 'build');"
+      not_contains: ~
+    - file: "build/sites/inea/settings.php"
+      contains: "include DRUPAL_ROOT . '/' . $conf_path . '/settings.overridemeplease.php';"
+      not_contains: ~

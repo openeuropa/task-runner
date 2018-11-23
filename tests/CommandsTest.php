@@ -164,9 +164,9 @@ class CommandsTest extends AbstractTest
      * @param array $config
      * @param array $expected
      *
-     * @dataProvider settingsSetupDataProvider
+     * @dataProvider drupal7SettingsSetupDataProvider
      */
-    public function testSettingsSetup(array $config, array $expected)
+    public function testDrupal7SettingsSetup(array $config, array $expected)
     {
         $configFile = $this->getSandboxFilepath('runner.yml');
 
@@ -176,7 +176,58 @@ class CommandsTest extends AbstractTest
         mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0777, true);
         file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
 
-        $input = new StringInput("drupal:settings-setup --working-dir=".$this->getSandboxRoot());
+        $input = new StringInput('drupal:settings-setup --working-dir=' . $this->getSandboxRoot());
+        $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
+        $runner->run();
+
+        foreach ($expected as $row) {
+            $content = file_get_contents($this->getSandboxFilepath($row['file']));
+            $this->assertContainsNotContains($content, $row);
+        }
+
+        // Generate a random function name.
+        $fct = $this->generateRandomString(20);
+
+        // Generate a dummy PHP code.
+        $config_override_dummy_script = <<< EOF
+<?php 
+function $fct() {}
+EOF;
+
+        $config_override_filename = isset($config['drupal']['site']['settings_override_file']) ?
+            $config['drupal']['site']['settings_override_file'] :
+            'settings.override.php';
+
+        // Add the dummy PHP code to the config override file.
+        file_put_contents(
+            $this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/' . $config_override_filename,
+            $config_override_dummy_script
+        );
+
+        // Include the config override file.
+        include_once $this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/' . $config_override_filename;
+
+        // Test if the dummy PHP code has been properly included.
+        $this->assertTrue(\function_exists($fct));
+    }
+
+    /**
+     * @param array $config
+     * @param array $expected
+     *
+     * @dataProvider drupal8SettingsSetupDataProvider
+     */
+    public function testDrupal8SettingsSetup(array $config, array $expected)
+    {
+        $configFile = $this->getSandboxFilepath('runner.yml');
+
+        file_put_contents($configFile, Yaml::dump($config));
+
+        $sites_subdir = isset($config['drupal']['site']['sites_subdir']) ? $config['drupal']['site']['sites_subdir'] : 'default';
+        mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0777, true);
+        file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
+
+        $input = new StringInput('drupal:settings-setup --working-dir=' . $this->getSandboxRoot());
         $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
         $runner->run();
 
@@ -304,9 +355,17 @@ EOF;
     /**
      * @return array
      */
-    public function settingsSetupDataProvider()
+    public function drupal7SettingsSetupDataProvider()
     {
-        return $this->getFixtureContent('commands/drupal-settings-setup.yml');
+        return $this->getFixtureContent('commands/drupal7-settings-setup.yml');
+    }
+
+    /**
+     * @return array
+     */
+    public function drupal8SettingsSetupDataProvider()
+    {
+        return $this->getFixtureContent('commands/drupal8-settings-setup.yml');
     }
 
     /**
