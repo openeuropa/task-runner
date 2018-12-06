@@ -1,6 +1,7 @@
 command:
   drupal:
     options:
+      core: ${drupal.core}
       root: ${drupal.root}
       base-url: ${drupal.base_url}
     site-install:
