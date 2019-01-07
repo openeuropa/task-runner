@@ -1,10 +1,23 @@
 # Change Log
 
+## [1.0.0-beta4](https://github.com/openeuropa/task-runner/tree/1.0.0-beta4) (2019-01-07)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta3...1.0.0-beta4)
+
+**Closed issues:**
+
+- Unable to get it working for Drupal 7 [\#89](https://github.com/openeuropa/task-runner/issues/89)
+
+**Merged pull requests:**
+
+- Issue \#89: Make sure it works with Drupal 7 and 8. [\#90](https://github.com/openeuropa/task-runner/pull/90) ([drupol](https://github.com/drupol))
+- OPENEUROPA-1322: Use the proper Docker way of overriding docker-composer.yml file. [\#88](https://github.com/openeuropa/task-runner/pull/88) ([drupol](https://github.com/drupol))
+
 ## [1.0.0-beta3](https://github.com/openeuropa/task-runner/tree/1.0.0-beta3) (2018-10-16)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta2...1.0.0-beta3)
 
 **Merged pull requests:**
 
+- Update CHANGELOG.md for 1.0.0-beta3 release. [\#87](https://github.com/openeuropa/task-runner/pull/87) ([voidtek](https://github.com/voidtek))
 - OPENEUROPA-1272: For Drupal 8.6 the option --config-dir is replaced with --existing-config [\#86](https://github.com/openeuropa/task-runner/pull/86) ([pfrenssen](https://github.com/pfrenssen))
 - OPENEUROPA-1271: Valueless options are ignored when put into configuration [\#85](https://github.com/openeuropa/task-runner/pull/85) ([pfrenssen](https://github.com/pfrenssen))
 - Express permission values in octal [\#84](https://github.com/openeuropa/task-runner/pull/84) ([pfrenssen](https://github.com/pfrenssen))
