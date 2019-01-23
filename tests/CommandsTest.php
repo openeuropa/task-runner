@@ -345,19 +345,6 @@ EOF;
     {
         $fixtureName = 'userconfig.yml';
 
-        $settings = [
-            'TASKRUNNER_CONFIG' => __DIR__ . '/fixtures/' . $fixtureName,
-        ];
-
-        // Convert the array into a proper string.
-        $envSettings = implode(' ', array_map(
-            function ($value, $key) {
-                return sprintf('%s=%s', $key, $value);
-            },
-            $settings,
-            array_keys($settings)
-        ));
-
         // Create a runner.
         $input = new StringInput('list --working-dir=' . $this->getSandboxRoot());
         $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
@@ -367,7 +354,7 @@ EOF;
         $drupalRoot = $runner->getConfig()->get('drupal.root');
 
         // Add the environment setting.
-        putenv($envSettings);
+        putenv('TASKRUNNER_CONFIG=' . __DIR__ . '/fixtures/userconfig.yml');
 
         // Create a new runner.
         $input = new StringInput('list --working-dir=' . $this->getSandboxRoot());
