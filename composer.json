@@ -31,5 +31,8 @@
         "enable-patching": true,
         "composer-exit-on-patch-failure": true
     },
-    "bin": ["bin/run"]
+    "bin": ["bin/run"],
+    "config": {
+        "sort-packages": true
+    }
 }
