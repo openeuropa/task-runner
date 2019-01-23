@@ -1,7 +1,7 @@
 {
     "name": "openeuropa/task-runner",
     "description": "PHP task runner based on Robo, focused on extensibility.",
-    "keywords": ["Robo", "automation"],
+    "keywords": ["Robo", "automation", "task-runner", "yaml"],
     "license": "EUPL-1.2",
     "type": "library",
     "minimum-stability": "dev",
