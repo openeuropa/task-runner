@@ -359,6 +359,7 @@ EOF;
         // Create a new runner.
         $input = new StringInput('list --working-dir=' . $this->getSandboxRoot());
         $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
+        $runner->disableAutoExit();
         $runner->run();
 
         // Get the content of the fixture.

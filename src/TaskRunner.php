@@ -248,4 +248,12 @@ class TaskRunner
             $application->add($command);
         }
     }
+
+    /**
+     * For testing purpose we could disable auto exit of application.
+     */
+    public function disableAutoExit()
+    {
+        $this->application->setAutoExit(false);
+    }
 }
