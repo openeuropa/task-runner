@@ -20,3 +20,8 @@
     concat: "${drupal.root}/${drupal.site.profile}"
   expected:
     concat: "build/standard"
+
+- source:
+    comma-delimited: "${drupal.account}"
+  expected:
+    comma-delimited: "admin,admin,admin@example.org"

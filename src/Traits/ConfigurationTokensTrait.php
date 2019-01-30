@@ -39,7 +39,11 @@ trait ConfigurationTokensTrait
         $config = $this->getConfig();
 
         return array_map(function ($key) use ($config) {
-            return $config->get($key);
+            $value = $config->get($key);
+            if (is_array($value)) {
+                return implode(',', $value);
+            }
+            return $value;
         }, $this->extractRawTokens($text));
     }
 }
