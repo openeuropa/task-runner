@@ -41,8 +41,8 @@ class ChangelogCommands extends AbstractCommands implements ComposerAwareInterfa
      * @return \Robo\Task\Docker\Run
      */
     public function generateChangelog(array $options = [
-      'token' => InputOption::VALUE_REQUIRED,
-      'tag' => InputOption::VALUE_OPTIONAL,
+        'token' => InputOption::VALUE_REQUIRED,
+        'tag' => InputOption::VALUE_OPTIONAL,
     ])
     {
         $projectName = $this->getComposer()->getName();
@@ -52,10 +52,10 @@ class ChangelogCommands extends AbstractCommands implements ComposerAwareInterfa
         }
 
         $task = $this->taskDockerRun('muccg/github-changelog-generator')
-          ->option('rm')
-          ->rawArg('-v $(pwd):$(pwd)')
-          ->rawArg('-w $(pwd)')
-          ->exec($exec);
+            ->option('rm')
+            ->rawArg('-v $(pwd):$(pwd)')
+            ->rawArg('-w $(pwd)')
+            ->exec($exec);
 
         return $task;
     }

@@ -30,8 +30,8 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
     public function getDrupal()
     {
         return $this->getConfig()->get('drupal.core') === 7 ?
-            new Drupal7Commands() :
-            new Drupal8Commands();
+        new Drupal7Commands() :
+        new Drupal8Commands();
     }
 
     /**
@@ -284,8 +284,8 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      * @return \Robo\Collection\CollectionBuilder
      */
     public function drushSetup(array $options = [
-      'root' => InputOption::VALUE_REQUIRED,
-      'config-dir' => InputOption::VALUE_REQUIRED,
+        'root' => InputOption::VALUE_REQUIRED,
+        'config-dir' => InputOption::VALUE_REQUIRED,
     ])
     {
         $config = $this->getConfig();

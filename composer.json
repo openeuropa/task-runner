@@ -1,5 +1,7 @@
 {
     "name": "openeuropa/task-runner",
+    "description": "PHP task runner based on Robo, focused on extensibility.",
+    "keywords": ["Robo", "automation"],
     "license": "EUPL-1.2",
     "type": "library",
     "minimum-stability": "dev",
@@ -11,7 +13,7 @@
         "jakeasmith/http_build_url": "^1.0.1"
     },
     "require-dev": {
-        "openeuropa/code-review": "~1.0.0-alpha3",
+        "openeuropa/code-review": "~1.0@beta",
         "phpunit/phpunit": "~5.5||~6.0"
     },
     "autoload": {
@@ -24,6 +26,10 @@
             "OpenEuropa\\TaskRunner\\Tests\\": "./tests/",
             "My\\Custom\\": "./tests/custom/src/"
         }
+    },
+    "extra": {
+        "enable-patching": true,
+        "composer-exit-on-patch-failure": true
     },
     "bin": ["bin/run"]
 }

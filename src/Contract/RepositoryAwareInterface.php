@@ -12,15 +12,15 @@ use Gitonomy\Git\Repository;
 interface RepositoryAwareInterface
 {
 
-  /**
-   * @return Repository
-   */
+    /**
+     * @return Repository
+     */
     public function getRepository();
 
-  /**
-   * @param \Gitonomy\Git\Repository $repository
-   *
-   * @return $this
-   */
+    /**
+     * @param \Gitonomy\Git\Repository $repository
+     *
+     * @return $this
+     */
     public function setRepository(Repository $repository);
 }

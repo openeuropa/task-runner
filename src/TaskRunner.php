@@ -170,13 +170,13 @@ class TaskRunner
 
         // Add service inflectors.
         $container->inflector(ComposerAwareInterface::class)
-          ->invokeMethod('setComposer', ['task_runner.composer']);
+            ->invokeMethod('setComposer', ['task_runner.composer']);
         $container->inflector(TimeAwareInterface::class)
-          ->invokeMethod('setTime', ['task_runner.time']);
+            ->invokeMethod('setTime', ['task_runner.time']);
         $container->inflector(FilesystemAwareInterface::class)
-          ->invokeMethod('setFilesystem', ['filesystem']);
+            ->invokeMethod('setFilesystem', ['filesystem']);
         $container->inflector(RepositoryAwareInterface::class)
-          ->invokeMethod('setRepository', ['repository']);
+            ->invokeMethod('setRepository', ['repository']);
 
         return $container;
     }
@@ -190,8 +190,8 @@ class TaskRunner
     {
         $application = new Application(self::APPLICATION_NAME, 'UNKNOWN');
         $application
-          ->getDefinition()
-          ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', $this->workingDir));
+            ->getDefinition()
+            ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', $this->workingDir));
 
         return $application;
     }
