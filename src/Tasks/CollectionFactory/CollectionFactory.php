@@ -165,9 +165,9 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
 
                 // Map dynamic task type to actual task callback.
                 $map = [
-                  'append' => "taskAppendConfiguration",
-                  'prepend' => "taskPrependConfiguration",
-                  'write' => "taskWriteConfiguration",
+                    'append' => "taskAppendConfiguration",
+                    'prepend' => "taskPrependConfiguration",
+                    'write' => "taskWriteConfiguration",
                 ];
 
                 if (!isset($map[$task['type']])) {
@@ -177,7 +177,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
 
                 // Add selected process task and return collection.
                 $tasks[] = $this->{$method}($task['destination'], $this->getConfig())
-                  ->setConfigKey($task['config']);
+                    ->setConfigKey($task['config']);
 
                 return $this->collectionBuilder()->addTaskList($tasks);
 

@@ -53,11 +53,11 @@ class CollectionFactoryTest extends AbstractTaskTest
 
         $tasks = [];
         $tasks[] = [
-          'task' => 'process-php',
-          'config' => 'drupal.drush',
-          'type' => $type,
-          'source' => $sourceFile,
-          'destination' => $destinationFile,
+            'task' => 'process-php',
+            'config' => 'drupal.drush',
+            'type' => $type,
+            'source' => $sourceFile,
+            'destination' => $destinationFile,
         ];
 
         // Make sure we test default override option by not setting it if null.

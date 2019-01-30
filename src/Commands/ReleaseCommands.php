@@ -86,8 +86,8 @@ class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface
      * @aliases release:ca,rca
      */
     public function createRelease(array $options = [
-      'tag' => InputOption::VALUE_OPTIONAL,
-      'keep' => false,
+        'tag' => InputOption::VALUE_OPTIONAL,
+        'keep' => false,
     ])
     {
         $name = $this->composer->getProject();
@@ -96,12 +96,12 @@ class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface
 
         $tasks = [
             // Make sure we do not have a release directory yet.
-          $this->taskFilesystemStack()->remove([$archive, $name]),
+            $this->taskFilesystemStack()->remove([$archive, $name]),
 
             // Get non-modified code using git archive.
-          $this->taskGitStack()->exec(["archive", "HEAD", "-o $name.zip"]),
-          $this->taskExtract("$name.zip")->to("$name"),
-          $this->taskFilesystemStack()->remove("$name.zip"),
+            $this->taskGitStack()->exec(["archive", "HEAD", "-o $name.zip"]),
+            $this->taskExtract("$name.zip")->to("$name"),
+            $this->taskFilesystemStack()->remove("$name.zip"),
         ];
 
         // Append release tasks defined in runner.yml.dist.

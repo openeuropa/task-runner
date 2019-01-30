@@ -121,23 +121,23 @@ class ReleaseCommandsTest extends AbstractTest
         }
 
         $mock = $this->getMockBuilder(Repository::class)
-          ->disableOriginalConstructor()
-          ->setMethods([
-              'getHead',
-              'getReferences',
-              'resolveTags',
-              'getBranches',
-          ])
-          ->getMock();
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getHead',
+                'getReferences',
+                'resolveTags',
+                'getBranches',
+            ])
+            ->getMock();
 
         $head = $this->getMockBuilder(Commit::class)
-          ->disableOriginalConstructor()
-          ->setMethods([
-              'getCommit',
-              'getRevision',
-              'getHash',
-          ])
-          ->getMock();
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getCommit',
+                'getRevision',
+                'getHash',
+            ])
+            ->getMock();
         $head->expects($this->any())->method('getCommit')->willReturnSelf();
         $head->expects($this->any())->method('getHash')->willReturn($repository['hash']);
         $head->expects($this->any())->method('getRevision')->willReturn($repository['revision']);

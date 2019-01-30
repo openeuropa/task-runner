@@ -126,10 +126,10 @@ class CommandsTest extends AbstractTest
         $runner->run();
 
         $expected = [
-          "custom:command-four",
-          "custom:command-one",
-          "custom:command-three",
-          "custom:command-two",
+            "custom:command-four",
+            "custom:command-one",
+            "custom:command-three",
+            "custom:command-two",
         ];
 
         $text = $output->fetch();
@@ -195,8 +195,8 @@ function $fct() {}
 EOF;
 
         $config_override_filename = isset($config['drupal']['site']['settings_override_file']) ?
-            $config['drupal']['site']['settings_override_file'] :
-            'settings.override.php';
+        $config['drupal']['site']['settings_override_file'] :
+        'settings.override.php';
 
         // Add the dummy PHP code to the config override file.
         file_put_contents(
@@ -246,8 +246,8 @@ function $fct() {}
 EOF;
 
         $config_override_filename = isset($config['drupal']['site']['settings_override_file']) ?
-            $config['drupal']['site']['settings_override_file'] :
-            'settings.override.php';
+        $config['drupal']['site']['settings_override_file'] :
+        'settings.override.php';
 
         // Add the dummy PHP code to the config override file.
         file_put_contents(
@@ -301,8 +301,8 @@ function $fct() {}
 EOF;
 
         $config_override_filename = isset($config['drupal']['site']['settings_override_file']) ?
-            $config['drupal']['site']['settings_override_file'] :
-            'settings.override.php';
+        $config['drupal']['site']['settings_override_file'] :
+        'settings.override.php';
 
         // Add the dummy PHP code to the config override file.
         file_put_contents(
