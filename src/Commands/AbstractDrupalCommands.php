@@ -391,7 +391,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
 
         // Define collection of tasks.
         $collection = [
-            // Note that the chmod() method takes decimal values.
+        // Note that the chmod() method takes decimal values.
             $this->taskFilesystemStack()->chmod($subdirPath, octdec(775), 0000, true),
         ];
 
