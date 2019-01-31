@@ -24,7 +24,7 @@ After installation run `./vendor/bin/run` for a list of available commands.
 
 ### Using Docker Compose
 
-Alternatively, you can build a development site using [Docker](https://www.docker.com/get-docker) and 
+Alternatively, you can build a development site using [Docker](https://www.docker.com/get-docker) and
 [Docker Compose](https://docs.docker.com/compose/) with the provided configuration.
 
 Docker provides the necessary services and tools to get the tests running, regardless of your local host configuration.
@@ -38,7 +38,7 @@ Docker provides the necessary services and tools to get the tests running, regar
 
 By default, Docker Compose reads two files, a `docker-compose.yml` and an optional `docker-compose.override.yml` file.
 By convention, the `docker-compose.yml` contains your base configuration and it's provided by default.
-The override file, as its name implies, can contain configuration overrides for existing services or entirely new 
+The override file, as its name implies, can contain configuration overrides for existing services or entirely new
 services.
 If a service is defined in both files, Docker Compose merges the configurations.
 
@@ -81,13 +81,39 @@ docker-compose exec web ./vendor/bin/phpunit
 
 ## Configuration
 
-Execution of Task Runner commands can be controlled in two ways:
+Task Runner commands can be customized in two ways:
 
 1. By setting arguments and options when running a command.
-2. By customizing default values in a local `runner.yml.dist` configuration file, which can be selectively overridden
-   by providing an extra `runner.yml`.
+2. By providing default values in configuration files. The task runner will read
+   the following files in the specified order. Options supplied in later files
+   will override earlier ones:
+    * The defaults provided by Task Runner. This file is located inside the Task
+      Runner repository in `config/runner.yml`.
+    * `runner.yml.dist` - project specific defaults. This file should be placed
+      in the root folder of the project that depends on the Task Runner. Use
+      this file to declare default options which are expected to work with your
+      application under regular circumstances. This file should be committed in
+      the project.
+    * `runner.yml` - project specific user overrides. This file is also located
+      in the root folder of the project that depends on the Task Runner. This
+      file can be used to override options with values that are specific to the
+      user's local environment. It is considered good practice to add this file
+      to `.gitignore` to prevent `runner.yml` from being accidentally committed
+      in the project repository.
+    * User provided global overrides stored in environment variables. These can
+      be used to define environment specific configuration that applies to all
+      projects that use the Task Runner, such as database credentials and the
+      Github access token. The following locations will be checked and the first
+      one that is found will be used:
+        * `$TASKRUNNER_CONFIG`
+        * `$XDG_CONFIG_HOME/openeuropa/taskrunner/runner.yml`
+        * `$HOME/.config/openeuropa/taskrunner/runner.yml`
 
-A list of default values, with a brief explanation, can be found at the default [`runner.yml`](./config/runner.yml).
+- [Installation](#installation)
+
+A list of default values, with a brief explanation, can be found at the default
+[`runner.yml`](./config/runner.yml).
+
 
 ## Built-in commands
 
