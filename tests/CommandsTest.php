@@ -354,12 +354,11 @@ EOF;
         $drupalRoot = $runner->getConfig()->get('drupal.root');
 
         // Add the environment setting.
-        putenv('TASKRUNNER_CONFIG=' . __DIR__ . '/fixtures/userconfig.yml');
+        putenv('OPENEUROPA_TASKRUNNER_CONFIG=' . __DIR__ . '/fixtures/userconfig.yml');
 
         // Create a new runner.
         $input = new StringInput('list --working-dir=' . $this->getSandboxRoot());
         $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
-        $runner->disableAutoExit();
         $runner->run();
 
         // Get the content of the fixture.

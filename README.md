@@ -105,7 +105,7 @@ Task Runner commands can be customized in two ways:
       projects that use the Task Runner, such as database credentials and the
       Github access token. The following locations will be checked and the first
       one that is found will be used:
-        * `$TASKRUNNER_CONFIG`
+        * `$OPENEUROPA_TASKRUNNER_CONFIG`
         * `$XDG_CONFIG_HOME/openeuropa/taskrunner/runner.yml`
         * `$HOME/.config/openeuropa/taskrunner/runner.yml`
 

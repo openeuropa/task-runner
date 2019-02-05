@@ -92,6 +92,7 @@ class TaskRunner
 
         $this->config = $this->createConfiguration();
         $this->application = $this->createApplication();
+        $this->application->setAutoExit(false);
         $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config, $classLoader);
 
         // Create and initialize runner.
@@ -150,18 +151,18 @@ class TaskRunner
         return $config;
     }
 
-  /**
-   * Get the local configuration filepath.
-   *
-   * @param string $configuration_file
-   *   The default filepath.
-   *
-   * @return string|null
-   *   The local configuration file path, or null if it doesn't exist.
-   */
+    /**
+     * Get the local configuration filepath.
+     *
+     * @param string $configuration_file
+     *   The default filepath.
+     *
+     * @return string|null
+     *   The local configuration file path, or null if it doesn't exist.
+     */
     private function getLocalConfigurationFilepath($configuration_file = 'openeuropa/taskrunner/runner.yml')
     {
-        if ($config = getenv('TASKRUNNER_CONFIG')) {
+        if ($config = getenv('OPENEUROPA_TASKRUNNER_CONFIG')) {
             return $config;
         }
 
@@ -247,13 +248,5 @@ class TaskRunner
             $command = $commandFactory->createCommand($commandInfo, $commandClass)->setName($name);
             $application->add($command);
         }
-    }
-
-    /**
-     * For testing purpose we could disable auto exit of application.
-     */
-    public function disableAutoExit()
-    {
-        $this->application->setAutoExit(false);
     }
 }
