@@ -92,6 +92,7 @@ class TaskRunner
 
         $this->config = $this->createConfiguration();
         $this->application = $this->createApplication();
+        $this->application->setAutoExit(false);
         $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config, $classLoader);
 
         // Create and initialize runner.
@@ -144,9 +145,36 @@ class TaskRunner
             __DIR__.'/../config/runner.yml',
             'runner.yml.dist',
             'runner.yml',
+            $this->getLocalConfigurationFilepath(),
         ], $config);
 
         return $config;
+    }
+
+    /**
+     * Get the local configuration filepath.
+     *
+     * @param string $configuration_file
+     *   The default filepath.
+     *
+     * @return string|null
+     *   The local configuration file path, or null if it doesn't exist.
+     */
+    private function getLocalConfigurationFilepath($configuration_file = 'openeuropa/taskrunner/runner.yml')
+    {
+        if ($config = getenv('OPENEUROPA_TASKRUNNER_CONFIG')) {
+            return $config;
+        }
+
+        if ($config = getenv('XDG_CONFIG_HOME')) {
+            return $config . '/' . $configuration_file;
+        }
+
+        if ($home = getenv('HOME')) {
+            return getenv('HOME') . '/.config/' . $configuration_file;
+        }
+
+        return null;
     }
 
     /**

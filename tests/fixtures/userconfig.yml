@@ -1,0 +1,5 @@
+drupal:
+  root: "drupal"
+
+wordpress:
+  root: "wordpress"
