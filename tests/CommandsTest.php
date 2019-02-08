@@ -14,6 +14,8 @@ use Symfony\Component\Yaml\Yaml;
  * Class DrupalCommandsTest.
  *
  * @package OpenEuropa\TaskRunner\Tests\Commands
+ *
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class CommandsTest extends AbstractTest
 {
@@ -334,6 +336,37 @@ EOF;
 
         $this->assertContains('/tests/sandbox', $runner->getConfig()->get('runner.working_dir'));
         $this->assertContains('/tests/sandbox', $runner->getConfig()->get('working_dir'));
+    }
+
+    /**
+     * Test the user config.
+     */
+    public function testUserConfigFile()
+    {
+        $fixtureName = 'userconfig.yml';
+
+        // Create a runner.
+        $input = new StringInput('list --working-dir=' . $this->getSandboxRoot());
+        $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
+        $runner->run();
+
+        // Extract a value from the default configuration.
+        $drupalRoot = $runner->getConfig()->get('drupal.root');
+
+        // Add the environment setting.
+        putenv('OPENEUROPA_TASKRUNNER_CONFIG=' . __DIR__ . '/fixtures/userconfig.yml');
+
+        // Create a new runner.
+        $input = new StringInput('list --working-dir=' . $this->getSandboxRoot());
+        $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
+        $runner->run();
+
+        // Get the content of the fixture.
+        $content = $this->getFixtureContent($fixtureName);
+
+        $this->assertEquals($content['wordpress'], $runner->getConfig()->get('wordpress'));
+        $this->assertEquals($content['drupal']['root'], $runner->getConfig()->get('drupal.root'));
+        $this->assertNotEquals($drupalRoot, $runner->getConfig()->get('drupal.root'));
     }
 
     /**
