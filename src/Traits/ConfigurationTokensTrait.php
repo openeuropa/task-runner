@@ -2,6 +2,9 @@
 
 namespace OpenEuropa\TaskRunner\Traits;
 
+use RecursiveArrayIterator;
+use RecursiveIteratorIterator;
+
 /**
  * Class ConfigurationTokensTrait
  *
@@ -39,7 +42,11 @@ trait ConfigurationTokensTrait
         $config = $this->getConfig();
 
         return array_map(function ($key) use ($config) {
-            return $config->get($key);
+            $value = $config->get($key);
+            if (is_array($value)) {
+                return implode(',', iterator_to_array(new RecursiveIteratorIterator(new RecursiveArrayIterator($value))));
+            }
+            return $value;
         }, $this->extractRawTokens($text));
     }
 }

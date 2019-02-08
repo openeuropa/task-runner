@@ -20,3 +20,10 @@
     concat: "${drupal.root}/${drupal.site.profile}"
   expected:
     concat: "build/standard"
+
+- source:
+    comma-delimited: "${drupal.account}"
+    nested-comma-delimited: "${drupal.drush}"
+  expected:
+    comma-delimited: "admin,admin,admin@example.org"
+    nested-comma-delimited: "http://127.0.0.1:8888"

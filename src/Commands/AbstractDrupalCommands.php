@@ -13,8 +13,6 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class DrupalCommands.
- *
- * @package OpenEuropa\TaskRunner\Commands
  */
 abstract class AbstractDrupalCommands extends AbstractCommands implements FilesystemAwareInterface
 {
