@@ -37,6 +37,9 @@ drupal:
     config_dir: ~
     existing_config: false
     settings_override_file: "settings.override.php"
+    # Setting this to "false" will run "site-install" without the "--db-url" parameter.
+    # This is useful if the database settings are already set in your settings.php file.
+    generate_db_url: true
 
   # Administrator account information.
   account:

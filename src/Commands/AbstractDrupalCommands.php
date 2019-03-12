@@ -186,6 +186,8 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
             ->sitesSubdir($options['sites-subdir'])
             ->siteProfile($options['site-profile']);
 
+        $task->setGenerateDbUrl($this->getConfig()->get('drupal.site.generate_db_url'));
+
         if (!empty($options['existing-config'])) {
             $task->setExistingConfig($options['existing-config']);
         }

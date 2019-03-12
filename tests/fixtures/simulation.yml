@@ -346,3 +346,13 @@
   - "./vendor/bin/drush -y"
   not_contains:
   - "--existing-config"
+
+- command: "drupal:site-install"
+  configuration:
+    drupal:
+      site:
+        generate_db_url: false
+  composer: ''
+  contains: []
+  not_contains:
+  - "--db-url='mysql://127.0.0.1:3306'"
