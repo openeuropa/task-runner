@@ -30,6 +30,7 @@ class Drush extends Exec
     protected $databaseName = '';
     protected $sitesSubdir = '';
     protected $existingConfig = false;
+    protected $generateDbUrl = true;
 
     /**
      * Build Drush site install command.
@@ -38,16 +39,6 @@ class Drush extends Exec
      */
     public function siteInstall()
     {
-        $dbArray = [
-            'scheme' => $this->databaseScheme,
-            'user' => $this->databaseUser,
-            'pass' => $this->databasePassword,
-            'host' => $this->databaseHost,
-            'port' => $this->databasePort,
-            'path' => $this->databaseName,
-        ];
-        $dbUrl = http_build_url($dbArray, $dbArray);
-
         $this->option('-y')
             ->rawArg("--root=$(pwd)/".$this->root)
             ->options([
@@ -58,8 +49,21 @@ class Drush extends Exec
                 'account-name' => $this->accountName,
                 'account-pass' => $this->accountPassword,
                 'sites-subdir' => $this->sitesSubdir,
-                'db-url' => $dbUrl,
             ], '=');
+
+        if ($this->generateDbUrl) {
+            $dbArray = [
+                'scheme' => $this->databaseScheme,
+                'user' => $this->databaseUser,
+                'pass' => $this->databasePassword,
+                'host' => $this->databaseHost,
+                'port' => $this->databasePort,
+                'path' => $this->databaseName,
+            ];
+            $dbUrl = http_build_url($dbArray, $dbArray);
+
+            $this->option('db-url', $dbUrl, '=');
+        }
 
         if (!empty($this->existingConfig)) {
             $this->option('existing-config');
@@ -268,6 +272,18 @@ class Drush extends Exec
     public function setExistingConfig($existingConfig)
     {
         $this->existingConfig = $existingConfig;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $generateDbUrl
+     *
+     * @return Drush
+     */
+    public function setGenerateDbUrl($generateDbUrl)
+    {
+        $this->generateDbUrl = $generateDbUrl;
 
         return $this;
     }
