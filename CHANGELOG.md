@@ -1,5 +1,21 @@
 # Change Log
 
+## [1.0.0-beta5](https://github.com/openeuropa/task-runner/tree/1.0.0-beta5) (2019-03-13)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta4...1.0.0-beta5)
+
+**Closed issues:**
+
+- Ensure consolidation/annotated-command has the right version [\#95](https://github.com/openeuropa/task-runner/issues/95)
+- Allow users to define a custom Task Runner configuration available in their home directory [\#62](https://github.com/openeuropa/task-runner/issues/62)
+
+**Merged pull requests:**
+
+- OPENEUROPA-1697: Add drupal.site.generate\_db\_url parameter [\#99](https://github.com/openeuropa/task-runner/pull/99) ([ademarco](https://github.com/ademarco))
+- Issue \#95: Upgrade minimum version of Robo so it works with Drush 8.2.0 properly [\#96](https://github.com/openeuropa/task-runner/pull/96) ([drupol](https://github.com/drupol))
+- OPENEUROPA-1569: Task-Runner: Add support in task-runner "process" task arrays \(imploded to string with comma delimiter\). [\#93](https://github.com/openeuropa/task-runner/pull/93) ([sergepavle](https://github.com/sergepavle))
+- OPENEUROPA-1535: Fix various coding style inconsistencies. [\#92](https://github.com/openeuropa/task-runner/pull/92) ([drupol](https://github.com/drupol))
+- OPENEUROPA-1371: Allow users to define a custom Task Runner configuration in their home directory. [\#63](https://github.com/openeuropa/task-runner/pull/63) ([drupol](https://github.com/drupol))
+
 ## [1.0.0-beta4](https://github.com/openeuropa/task-runner/tree/1.0.0-beta4) (2019-01-07)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta3...1.0.0-beta4)
 
@@ -9,6 +25,7 @@
 
 **Merged pull requests:**
 
+- Update CHANGELOG.md for 1.0.0-beta4 release. [\#91](https://github.com/openeuropa/task-runner/pull/91) ([ademarco](https://github.com/ademarco))
 - Issue \#89: Make sure it works with Drupal 7 and 8. [\#90](https://github.com/openeuropa/task-runner/pull/90) ([drupol](https://github.com/drupol))
 - OPENEUROPA-1322: Use the proper Docker way of overriding docker-composer.yml file. [\#88](https://github.com/openeuropa/task-runner/pull/88) ([drupol](https://github.com/drupol))
 
