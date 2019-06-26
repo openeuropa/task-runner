@@ -194,13 +194,13 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
 
         // Define collection of tasks.
         $collection = [
-            $this->sitePreInstall(),
+            $this->sitePreInstall($options),
         ];
         if (!$options['skip-permissions-setup']) {
             $collection[] = $this->permissionsSetup($options);
         }
         $collection[] = $task->siteInstall();
-        $collection[] = $this->sitePostInstall();
+        $collection[] = $this->sitePostInstall($options);
 
         return $this->collectionBuilder()->addTaskList($collection);
     }
@@ -222,11 +222,20 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      *
      * @command drupal:site-post-install
      *
+     * @option root
+     *   The Drupal root. All occurrences of "!root" in the post-install
+     *   string-only commands will be substituted with this value.
+     *
      * @return \Robo\Contract\TaskInterface
      */
-    public function sitePostInstall()
+    public function sitePostInstall(array $options = [
+        'root' => InputOption::VALUE_REQUIRED,
+    ])
     {
         $tasks = $this->getConfig()->get('drupal.post_install', []);
+        $this->processPrePostInstallCommands($tasks, [
+            '!root' => $options['root'],
+        ]);
 
         return $this->taskCollectionFactory($tasks);
     }
@@ -248,11 +257,20 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      *
      * @command drupal:site-pre-install
      *
+     * @option root
+     *   The Drupal root. All occurrences of "!root" in the pre-install
+     *   string-only commands will be substituted with this value.
+     *
      * @return \Robo\Contract\TaskInterface
      */
-    public function sitePreInstall()
+    public function sitePreInstall(array $options = [
+        'root' => InputOption::VALUE_REQUIRED,
+    ])
     {
         $tasks = $this->getConfig()->get('drupal.pre_install', []);
+        $this->processPrePostInstallCommands($tasks, [
+            '!root' => $options['root'],
+        ]);
 
         return $this->taskCollectionFactory($tasks);
     }
@@ -401,5 +419,22 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         }
 
         return $this->collectionBuilder()->addTaskList($collection);
+    }
+
+    /**
+     * Process pre and post install string-only commands by replacing given tokens.
+     *
+     * @param array $commands
+     *   List of commands.
+     * @param array $tokens
+     *   Replacement key-value tokens.
+     */
+    protected function processPrePostInstallCommands(array &$commands, array $tokens)
+    {
+        foreach ($commands as $key => $value) {
+            if (is_string($value)) {
+                $commands[$key] = str_replace(array_keys($tokens), array_values($tokens), $value);
+            }
+        }
     }
 }
