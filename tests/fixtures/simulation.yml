@@ -356,3 +356,21 @@
   contains: []
   not_contains:
   - "--db-url='mysql://127.0.0.1:3306'"
+
+- command: 'drupal:site-install --root=foo'
+  configuration:
+    drupal:
+      post_install:
+        - "./vendor/bin/drush --root=!root"
+  composer: ''
+  contains:
+    - "./vendor/bin/drush --root=foo"
+
+- command: 'drupal:site-install --root=foo'
+  configuration:
+    drupal:
+      pre_install:
+        - "./vendor/bin/drush --root=!root"
+  composer: ''
+  contains:
+    - "./vendor/bin/drush --root=foo"
