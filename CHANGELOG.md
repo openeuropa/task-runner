@@ -1,5 +1,17 @@
 # Change Log
 
+## [1.0.0-beta6](https://github.com/openeuropa/task-runner/tree/1.0.0-beta6) (2019-06-27)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta5...1.0.0-beta6)
+
+**Closed issues:**
+
+- Update README - Add note to enable patching [\#94](https://github.com/openeuropa/task-runner/issues/94)
+
+**Merged pull requests:**
+
+- OPENEUROPA-2030: Allow to pass Drupal root as a token to pre and post commands [\#102](https://github.com/openeuropa/task-runner/pull/102) ([ademarco](https://github.com/ademarco))
+- OPENEUROPA-1897: Use ci image. [\#101](https://github.com/openeuropa/task-runner/pull/101) ([imanoleguskiza](https://github.com/imanoleguskiza))
+
 ## [1.0.0-beta5](https://github.com/openeuropa/task-runner/tree/1.0.0-beta5) (2019-03-13)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta4...1.0.0-beta5)
 
@@ -10,6 +22,7 @@
 
 **Merged pull requests:**
 
+- Create the release 1.0.0-beta5 [\#100](https://github.com/openeuropa/task-runner/pull/100) ([voidtek](https://github.com/voidtek))
 - OPENEUROPA-1697: Add drupal.site.generate\_db\_url parameter [\#99](https://github.com/openeuropa/task-runner/pull/99) ([ademarco](https://github.com/ademarco))
 - Issue \#95: Upgrade minimum version of Robo so it works with Drush 8.2.0 properly [\#96](https://github.com/openeuropa/task-runner/pull/96) ([drupol](https://github.com/drupol))
 - OPENEUROPA-1569: Task-Runner: Add support in task-runner "process" task arrays \(imploded to string with comma delimiter\). [\#93](https://github.com/openeuropa/task-runner/pull/93) ([sergepavle](https://github.com/sergepavle))
