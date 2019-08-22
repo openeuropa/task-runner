@@ -316,8 +316,69 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
     }
 
     /**
-     * Setup Drupal settings overrides.
+     * Setup Drupal services overrides.
      *
+     * This command will:
+     *
+     * - Copy "default.settings.php" to "settings.php", which will be overridden if existing
+     * - Append to "settings.php" an include operation for a "settings.override.php" file
+     * - Write settings specified at "drupal.settings" in "settings.override.php"
+     *
+     * Default settings can be customized in your local runner.yml.dist/runner.yml
+     * as shown below:
+     *
+     * > drupal:
+     * >   settings:
+     * >     config_directories:
+     * >       sync: '../config/sync'
+     * >       prod: '../config/prod'
+     *
+     * The settings override file name can be changed in the Task Runner
+     * configuration by setting the "drupal.site.settings_override_file" property.
+     *
+     * @command drupal:services-setup
+     *
+     * @option root                     Drupal root.
+     * @option sites-subdir             Drupal site subdirectory.
+     * @option service-parameters       Drupal site settings override filename.
+     * @option force                    Drupal force generation of a new settings.php.
+     * @option skip-permissions-setup   Drupal skip permissions setup.
+     *
+     * @param array $options
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     */
+    public function servicesSetup(array $options = [
+        'root' => InputOption::VALUE_REQUIRED,
+        'sites-subdir' => InputOption::VALUE_REQUIRED,
+        'service-parameters' => InputOption::VALUE_REQUIRED,
+        'force' => false,
+        'skip-permissions-setup' => false,
+    ])
+    {
+        $services_runner_file = $this->getConfig()->get('drupal.service_parameters');
+        $services_options_file = $options['service-parameters'];
+        $services_source_file = empty($services_options_file)? $services_runner_file : $services_options_file;
+
+        if (!file_exists($services_source_file)) {
+            throw new \Exception(sprintf('Services file %s not found.', $services_source_file));
+        }
+
+        $services_destination_file = $options['root'] . '/sites/' . $options['sites-subdir'] . '/services.yml';
+
+        $collection = [];
+        $collection[] = $this->taskFilesystemStack()->copy($services_options_file, $services_destination_file, (bool) $options['force']);
+
+        if (!$options['skip-permissions-setup']) {
+            $collection[] = $this->permissionsSetup($options);
+        }
+
+        return $this->collectionBuilder()->addTaskList($collection);
+    }
+
+    /**
+     * Setup Drupal settings overrides.
+     **
      * This command will:
      *
      * - Copy "default.settings.php" to "settings.php", which will be overridden if existing

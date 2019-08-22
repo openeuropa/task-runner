@@ -30,6 +30,11 @@ command:
     drush-setup:
       options:
         config-dir: ${drupal.root}/drush
+    services-setup:
+      options:
+        service-parameters: ${drupal.service_parameters}
+        sites-subdir: ${drupal.site.sites_subdir}
+        force: ${drupal.site.force}
     settings-setup:
       options:
         sites-subdir: ${drupal.site.sites_subdir}
