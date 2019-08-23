@@ -316,31 +316,19 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
     }
 
     /**
-     * Setup Drupal services overrides.
+     * Setup Drupal services file.
      *
-     * This command will:
+     * This command will copy the content of the file given in service-parameters to "services.yml" file in
+     *  the site directory.
      *
-     * - Copy "default.settings.php" to "settings.php", which will be overridden if existing
-     * - Append to "settings.php" an include operation for a "settings.override.php" file
-     * - Write settings specified at "drupal.settings" in "settings.override.php"
-     *
-     * Default settings can be customized in your local runner.yml.dist/runner.yml
-     * as shown below:
-     *
-     * > drupal:
-     * >   settings:
-     * >     config_directories:
-     * >       sync: '../config/sync'
-     * >       prod: '../config/prod'
-     *
-     * The settings override file name can be changed in the Task Runner
-     * configuration by setting the "drupal.site.settings_override_file" property.
+     * The services file name can be set in the Task Runner
+     * configuration by setting the "drupal.service_parameters" property.
      *
      * @command drupal:services-setup
      *
+     * @option service-parameters       Drupal services filename.
      * @option root                     Drupal root.
      * @option sites-subdir             Drupal site subdirectory.
-     * @option service-parameters       Drupal site settings override filename.
      * @option force                    Drupal force generation of a new settings.php.
      * @option skip-permissions-setup   Drupal skip permissions setup.
      *
@@ -349,9 +337,9 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      * @return \Robo\Collection\CollectionBuilder
      */
     public function servicesSetup(array $options = [
+        'service-parameters' => InputOption::VALUE_REQUIRED,
         'root' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
-        'service-parameters' => InputOption::VALUE_REQUIRED,
         'force' => false,
         'skip-permissions-setup' => false,
     ])

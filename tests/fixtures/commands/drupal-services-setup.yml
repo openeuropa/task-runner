@@ -1,0 +1,25 @@
+- config:
+    drupal:
+      site:
+        sites_subdir: 'site1'
+      service_parameters: "default.services.yml"
+  data:
+    services:
+      content: >
+        parameters:
+          http.response.debug_cacheability_headers: false
+  expected:
+    - contains: "parameters:"
+    - contains: "http.response.debug_cacheability_headers: false"
+
+- config:
+    drupal: []
+  data:
+    service-parameter: "default.services.yml"
+    services:
+      content: >
+        parameters:
+          http.response.debug_cacheability_headers: true
+  expected:
+    - contains: "parameters:"
+    - contains: "http.response.debug_cacheability_headers: true"
