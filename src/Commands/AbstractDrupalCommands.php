@@ -334,6 +334,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      * @param array $options
      *
      * @return \Robo\Collection\CollectionBuilder
+     * @throws \Exception
      */
     public function servicesSetup(array $options = [
         'service-parameters' => InputOption::VALUE_REQUIRED,
@@ -352,8 +353,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
 
         $services_destination_file = $options['root'] . '/sites/' . $options['sites-subdir'] . '/services.yml';
 
-        $collection = [];
-        $collection[] = $this->taskFilesystemStack()->copy($services_options_file, $services_destination_file, (bool) $options['force']);
+        $collection = [$this->taskFilesystemStack()->copy($services_source_file, $services_destination_file, (bool) $options['force'])];
 
         return $this->collectionBuilder()->addTaskList($collection);
     }

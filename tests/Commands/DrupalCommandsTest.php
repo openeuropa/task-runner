@@ -98,7 +98,9 @@ class DrupalCommandsTest extends AbstractTest
         $command = 'drupal:services-setup' . $service_parameter . ' --root=' . $this->getSandboxRoot() . ' --working-dir=' . $this->getSandboxRoot();
         $input = new StringInput($command);
         $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
-        $runner->run();
+        $exit_code = $runner->run();
+
+        $this->assertEquals(0, $exit_code, 'Command run returned an error.');
 
         $sites_subdir = isset($config['drupal']['site']['sites_subdir']) ? $config['drupal']['site']['sites_subdir'] : 'default';
         $services_destination_dir = $this->getSandboxRoot() . '/sites/' . $sites_subdir;
