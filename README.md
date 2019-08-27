@@ -125,6 +125,7 @@ The Task Runner comes with the following built-in commands:
 | `drupal:site-install`        | Install a target Drupal site using default configuration values and/or CLI options |
 | `drupal:site-pre-install`    | Run Drupal pre-install commands as listed under the `drupal.pre_install` property |
 | `drupal:site-post-install`   | Run Drupal post-install commands as listed under the `drupal.post_install` property |
+| `drupal:services-setup`      | Create services file in site directory by copying given file (as parameter or in `drupal.service_parameters`) |
 | `drupal:settings-setup`      | Setup default Drupal settings file by appending values specified at `drupal.settings` |
 | `drupal:drush-setup`         | Setup Drush 8 and 9 configuration files |
 | `release:create-archive`     | Create and archive a release for the current project |

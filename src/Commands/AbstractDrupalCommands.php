@@ -329,8 +329,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      * @option service-parameters       Drupal services filename.
      * @option root                     Drupal root.
      * @option sites-subdir             Drupal site subdirectory.
-     * @option force                    Drupal force generation of a new settings.php.
-     * @option skip-permissions-setup   Drupal skip permissions setup.
+     * @option force                    Drupal force generation of a new services.yml.
      *
      * @param array $options
      *
@@ -341,7 +340,6 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         'root' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
         'force' => false,
-        'skip-permissions-setup' => false,
     ])
     {
         $services_runner_file = $this->getConfig()->get('drupal.service_parameters');
@@ -356,10 +354,6 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
 
         $collection = [];
         $collection[] = $this->taskFilesystemStack()->copy($services_options_file, $services_destination_file, (bool) $options['force']);
-
-        if (!$options['skip-permissions-setup']) {
-            $collection[] = $this->permissionsSetup($options);
-        }
 
         return $this->collectionBuilder()->addTaskList($collection);
     }

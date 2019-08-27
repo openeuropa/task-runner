@@ -260,6 +260,12 @@
     - "WriteConfiguration('web/sites/default/drushrc.php'"
     - "File\\Write('./drush/drush.yml')"
 
+- command: 'drupal:services-setup --service-parameters=runner.yml'
+  configuration: []
+  composer: ''
+  contains:
+    - "Filesystem\\FilesystemStack()\n    ->copy('runner.yml', 'build/sites/default/services.yml'"
+
 - command: 'drupal:settings-setup'
   configuration: []
   composer: ''
