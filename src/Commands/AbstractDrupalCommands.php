@@ -318,15 +318,11 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
     /**
      * Setup Drupal services file.
      *
-     * This command will copy the content of the file given in service-parameters to "services.yml" file in
-     *  the site directory.
-     *
-     * The services file name can be set in the Task Runner
-     * configuration by setting the "drupal.service_parameters" property.
+     * This command will add the configuration under service_parameters present in
+     * runner.yml into "services.yml" file in the site directory.
      *
      * @command drupal:services-setup
      *
-     * @option service-parameters       Drupal services filename.
      * @option root                     Drupal root.
      * @option sites-subdir             Drupal site subdirectory.
      * @option force                    Drupal force generation of a new services.yml.
@@ -334,26 +330,24 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      * @param array $options
      *
      * @return \Robo\Collection\CollectionBuilder
-     * @throws \Exception
      */
     public function servicesSetup(array $options = [
-        'service-parameters' => InputOption::VALUE_REQUIRED,
         'root' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
         'force' => false,
     ])
     {
-        $services_runner_file = $this->getConfig()->get('drupal.service_parameters');
-        $services_options_file = $options['service-parameters'];
-        $services_source_file = empty($services_options_file)? $services_runner_file : $services_options_file;
+        // Read given parameters.
+        $service_parameters['parameters'] = $this->getConfig()->get('drupal.service_parameters');
+        $yaml = Yaml::dump($service_parameters);
 
-        if (!file_exists($services_source_file)) {
-            throw new \Exception(sprintf('Services file %s not found.', $services_source_file));
-        }
-
+        // Set the destination file.
         $services_destination_file = $options['root'] . '/sites/' . $options['sites-subdir'] . '/services.yml';
 
-        $collection = [$this->taskFilesystemStack()->copy($services_source_file, $services_destination_file, (bool) $options['force'])];
+        $collection = [];
+        if (true === (bool) $options['force'] || !file_exists($services_destination_file)) {
+            $collection[] = $this->taskWriteToFile($services_destination_file)->append(false)->text($yaml);
+        }
 
         return $this->collectionBuilder()->addTaskList($collection);
     }

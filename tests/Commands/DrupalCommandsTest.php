@@ -72,30 +72,16 @@ class DrupalCommandsTest extends AbstractTest
      * Test the services file setup.
      *
      * @param array $config
-     * @param array $data
      * @param array $expected
      *
      * @dataProvider servicesSetupDataProvider
      */
-    public function testServicesSetup(array $config, array $data, array $expected)
+    public function testServicesSetup(array $config, array $expected)
     {
         $configFile = $this->getSandboxFilepath('runner.yml');
         file_put_contents($configFile, Yaml::dump($config));
 
-        // Prepare data for assertions depending if service filename is given in
-        // command or in runner Yaml file.
-        if (!empty($data['service-parameter'])) {
-            $services_source_file = $this->getSandboxFilepath($data['service-parameter']);
-            $service_parameter = ' --service-parameters=' . $data['service-parameter'];
-        } else {
-            $services_source_file = $this->getSandboxFilepath($config['drupal']['service_parameters']);
-            $service_parameter = '';
-        }
-
-        touch($services_source_file);
-        file_put_contents($services_source_file, $data['services']['content']);
-
-        $command = 'drupal:services-setup' . $service_parameter . ' --root=' . $this->getSandboxRoot() . ' --working-dir=' . $this->getSandboxRoot();
+        $command = 'drupal:services-setup --root=' . $this->getSandboxRoot() . ' --working-dir=' . $this->getSandboxRoot();
         $input = new StringInput($command);
         $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
         $exit_code = $runner->run();
