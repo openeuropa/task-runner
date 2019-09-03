@@ -1,38 +1,12 @@
-- config:
+- config: |
     my_settings:
-      cors:
-        on: false
+      foo: bar
     drupal:
       service_parameters:
-        cors_config:
-          enabled: ${my_settings.cors.on}
+        settings:
+          foo: ${my_settings.foo}
   expected:
-    - contains: "parameters:"
-    - contains: "cors_config:"
-    - contains: "enabled: ''"
-
-- config:
-    my_settings:
-      cors:
-        on: true
-    drupal:
-      service_parameters:
-        cors_config:
-          enabled: ${my_settings.cors.on}
-  expected:
-    - contains: "parameters:"
-    - contains: "cors_config:"
-    - contains: "enabled: '1'"
-
-- config:
-    my_settings:
-      cors:
-        on: ok
-    drupal:
-      service_parameters:
-        cors_config:
-          enabled: ${my_settings.cors.on}
-  expected:
-    - contains: "parameters:"
-    - contains: "cors_config:"
-    - contains: "enabled: ok"
+    - contains: |
+        parameters:
+          settings:
+            foo: bar

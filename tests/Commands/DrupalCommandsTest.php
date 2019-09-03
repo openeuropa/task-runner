@@ -71,15 +71,15 @@ class DrupalCommandsTest extends AbstractTest
     /**
      * Test the services file setup.
      *
-     * @param array $config
+     * @param string $config
      * @param array $expected
      *
      * @dataProvider servicesSetupDataProvider
      */
-    public function testServicesSetup(array $config, array $expected)
+    public function testServicesSetup($config, array $expected)
     {
         $configFile = $this->getSandboxFilepath('runner.yml');
-        file_put_contents($configFile, Yaml::dump($config));
+        file_put_contents($configFile, $config);
 
         $command = 'drupal:services-setup --root=' . $this->getSandboxRoot() . ' --working-dir=' . $this->getSandboxRoot();
         $input = new StringInput($command);

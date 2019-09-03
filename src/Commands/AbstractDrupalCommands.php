@@ -9,6 +9,7 @@ use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
 use OpenEuropa\TaskRunner\Traits as TaskRunnerTraits;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -323,9 +324,9 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      *
      * @command drupal:services-setup
      *
-     * @option root                     Drupal root.
-     * @option sites-subdir             Drupal site subdirectory.
-     * @option force                    Drupal force generation of a new services.yml.
+     * @option root         Drupal root.
+     * @option sites-subdir Drupal site subdirectory.
+     * @option force        Drupal force generation of a new services.yml.
      *
      * @param array $options
      *
@@ -339,7 +340,8 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
     {
         // Read given parameters.
         $service_parameters['parameters'] = $this->getConfig()->get('drupal.service_parameters');
-        $yaml = Yaml::dump($service_parameters);
+        $dumper = new Dumper(2);
+        $yaml = $dumper->dump($service_parameters, PHP_INT_MAX, 0, Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE);
 
         // Set the destination file.
         $services_destination_file = $options['root'] . '/sites/' . $options['sites-subdir'] . '/services.yml';
