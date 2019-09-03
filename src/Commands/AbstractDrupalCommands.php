@@ -341,8 +341,9 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      * @option root                     Drupal root.
      * @option sites-subdir             Drupal site subdirectory.
      * @option settings-override-file   Drupal site settings override filename.
-     * @option force                    Drupal force generation of a new settings.php.
-     * @option skip-permissions-setup   Drupal skip permissions setup.
+     * @option force                    Force generation of a new settings.php.
+     * @option skip-permissions-setup   Skip permissions setup.
+     * @option dev                      Development settings setup.
      *
      * @param array $options
      *
@@ -354,6 +355,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         'settings-override-file' => InputOption::VALUE_REQUIRED,
         'force' => false,
         'skip-permissions-setup' => false,
+        'dev' => false
     ])
     {
         $settings_default_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/default.settings.php';
