@@ -1,12 +1,38 @@
-- config: |
-    my_settings:
-      foo: bar
-    drupal:
-      service_parameters:
-        settings:
-          foo: ${my_settings.foo}
+- config:
+    runner: |
+      my_settings:
+        foo: bar
+      drupal:
+        service_parameters:
+          settings:
+            foo: ${my_settings.foo}
   expected:
     - contains: |
         parameters:
           settings:
             foo: bar
+- config:
+    force: true
+    runner: |
+        my_settings:
+          foo: bar
+        drupal:
+          service_parameters:
+            settings:
+              foo: ${my_settings.foo}
+  expected:
+    - contains: |
+        parameters:
+          settings:
+            foo: bar
+- config:
+    force: false
+    runner: |
+        my_settings:
+          foo: bar
+        drupal:
+          service_parameters:
+            settings:
+              foo: ${my_settings.foo}
+  expected:
+      - contains: "parameters: false"

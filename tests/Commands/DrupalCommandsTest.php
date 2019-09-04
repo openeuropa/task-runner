@@ -71,29 +71,42 @@ class DrupalCommandsTest extends AbstractTest
     /**
      * Test the services file setup.
      *
-     * @param string $config
+     * @param array $configs
      * @param array $expected
      *
      * @dataProvider servicesSetupDataProvider
      */
-    public function testServicesSetup($config, array $expected)
+    public function testServicesSetup(array $configs, array $expected)
     {
+        $config = $configs['runner'];
         $configFile = $this->getSandboxFilepath('runner.yml');
         file_put_contents($configFile, $config);
 
-        $command = 'drupal:services-setup --root=' . $this->getSandboxRoot() . ' --working-dir=' . $this->getSandboxRoot();
-        $input = new StringInput($command);
-        $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
-        $exit_code = $runner->run();
-
-        $this->assertEquals(0, $exit_code, 'Command run returned an error.');
-
+        // Process information for destination file services.yml.
         $sites_subdir = isset($config['drupal']['site']['sites_subdir']) ? $config['drupal']['site']['sites_subdir'] : 'default';
         $services_destination_dir = $this->getSandboxRoot() . '/sites/' . $sites_subdir;
         $services_destination_file = $services_destination_dir . '/services.yml';
 
+        // Process information for force option.
+        $force = '';
+        if (isset($configs['force'])) {
+            mkdir($services_destination_dir, 0777, true);
+            file_put_contents($services_destination_file, 'parameters: false');
+            if ($configs['force']) {
+                $force = ' --force';
+            }
+        }
+
+        // Run the command.
+        $command = 'drupal:services-setup --root=' . $this->getSandboxRoot() . ' --working-dir=' . $this->getSandboxRoot() . $force;
+        $input = new StringInput($command);
+        $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
+        $exit_code = $runner->run();
+        $this->assertEquals(0, $exit_code, 'Command run returned an error.');
+
+        // Process given assertions.
+        $content = file_get_contents($services_destination_file);
         foreach ($expected as $row) {
-            $content = file_get_contents($services_destination_file);
             $this->assertContains($row['contains'], $content);
         }
     }
