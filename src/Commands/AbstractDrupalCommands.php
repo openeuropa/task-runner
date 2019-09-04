@@ -341,7 +341,14 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         // Read given parameters.
         $service_parameters['parameters'] = $this->getConfig()->get('drupal.service_parameters');
         $dumper = new Dumper(2);
-        $yaml = $dumper->dump($service_parameters, PHP_INT_MAX, 0, Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE);
+        // Set flag to be compatible with symfony/yaml versions 2.x.x. (see https://github.com/symfony/yaml/blob/2.8/Dumper.php#L53)
+        if (property_exists(Yaml::class, 'DUMP_EXCEPTION_ON_INVALID_TYPE')) {
+            $flag = Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE;
+        } else {
+            $flag = true;
+        }
+
+        $yaml = $dumper->dump($service_parameters, PHP_INT_MAX, 0, $flag);
 
         // Set the destination file.
         $services_destination_file = $options['root'] . '/sites/' . $options['sites-subdir'] . '/services.yml';
