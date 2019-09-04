@@ -29,4 +29,13 @@ if (file_exists(DRUPAL_ROOT . '/' . \$conf_path . '/$settings_override_filename'
 }
 EOF;
     }
+
+    /**
+     * @return string
+     */
+    protected function getSettingsLocalSetupAddendum()
+    {
+        // There are no default local settings in Drupal 7, return empty.
+        return '';
+    }
 }

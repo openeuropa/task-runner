@@ -370,6 +370,14 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
 
         $collection = [];
 
+        if ((bool) $options['dev']) {
+            $local_settings_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.local.php';
+            if (true === (bool) $options['force'] || !file_exists($local_settings_path)) {
+                $custom_config .= $this->getDrupal()->getSettingsLocalSetupAddendum($settings_override_filename);
+                $local_settings_default_path = $options['root'] . '/sites/example.settings.local.php';
+                $collection[] = $this->taskFilesystemStack()->copy($local_settings_default_path, $local_settings_path, true);
+            }
+        }
         if (true === (bool) $options['force'] || !file_exists($settings_path)) {
             $collection[] = $this->taskWriteToFile($settings_default_path)->append()->lines([$custom_config]);
             $collection[] = $this->taskFilesystemStack()->copy($settings_default_path, $settings_path, true);
