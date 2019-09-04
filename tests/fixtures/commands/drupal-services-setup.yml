@@ -36,3 +36,11 @@
               foo: ${my_settings.foo}
   expected:
       - contains: "parameters: false"
+- config:
+    runner: |
+      my_settings:
+        foo: bar
+      drupal: []
+  expected:
+    - contains: |
+        parameters: {  }

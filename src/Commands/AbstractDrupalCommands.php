@@ -339,7 +339,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
     ])
     {
         // Read given parameters.
-        $service_parameters['parameters'] = $this->getConfig()->get('drupal.service_parameters');
+        $service_parameters['parameters'] = $this->getConfig()->get('drupal.service_parameters', []);
         $dumper = new Dumper(2);
         $yaml = $dumper->dump($service_parameters, PHP_INT_MAX, 0, Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE);
 
