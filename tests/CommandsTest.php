@@ -265,16 +265,13 @@ EOF;
     }
 
     /**
-     * @param array $config
+     * @param array $configs
      * @param array $expected
      *
-     * @dataProvider settingsSetupForceDataProvider
+     * @dataProvider settingsSetupParametersDataProvider
      */
-    public function testSettingsSetupForce(array $config, array $expected)
+    public function testSettingsSetupParameters(array $configs, array $expected)
     {
-        $configFile = $this->getSandboxFilepath('runner.yml');
-        file_put_contents($configFile, Yaml::dump($config));
-
         $sites_subdir = isset($config['drupal']['site']['sites_subdir']) ? $config['drupal']['site']['sites_subdir'] : 'default';
         mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0777, true);
         file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
@@ -282,7 +279,7 @@ EOF;
 
         $input = new StringInput('drupal:settings-setup --working-dir=' . $this->getSandboxRoot());
 
-        if (true === $config['drupal']['site']['force']) {
+        if (isset($configs['parameters']['force']) && true === $configs['parameters']['force']) {
             $input = new StringInput('drupal:settings-setup --working-dir=' . $this->getSandboxRoot() . ' --force');
         }
         $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
@@ -404,9 +401,9 @@ EOF;
     /**
      * @return array
      */
-    public function settingsSetupForceDataProvider()
+    public function settingsSetupParametersDataProvider()
     {
-        return $this->getFixtureContent('commands/drupal-settings-setup-force.yml');
+        return $this->getFixtureContent('commands/drupal-settings-setup-parameters.yml');
     }
 
     /**
