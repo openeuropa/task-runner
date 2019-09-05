@@ -275,8 +275,13 @@ EOF;
         $sites_subdir = isset($config['drupal']['site']['sites_subdir']) ? $config['drupal']['site']['sites_subdir'] : 'default';
         mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0777, true);
         file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
-        file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/settings.php', '# Already existing file.');
         file_put_contents($this->getSandboxRoot() . '/build/sites/example.settings.local.php', '// Local development override configuration.');
+
+        if (!empty($configs['files'])) {
+            foreach ($configs['files'] as $file) {
+                file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/' . $file['name'], $file['content']);
+            }
+        }
 
         $input = 'drupal:settings-setup --working-dir=' . $this->getSandboxRoot();
         if (isset($configs['parameters']['force']) && $configs['parameters']['force']) {

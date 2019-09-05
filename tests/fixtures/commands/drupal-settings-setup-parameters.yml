@@ -1,4 +1,7 @@
 - configuration:
+    files:
+      - name: 'settings.php'
+        content: '# Already existing file.'
     parameters:
       force: false
   expected:
@@ -10,6 +13,9 @@
     - no_file: "build/sites/default/settings.local.php"
 
 - configuration:
+    files:
+      - name: 'settings.php'
+        content: '# Already existing file.'
     parameters:
       force: true
   expected:
@@ -21,6 +27,9 @@
     - no_file: "build/sites/default/settings.local.php"
 
 - configuration:
+    files:
+      - name: 'settings.php'
+        content: '# Already existing file.'
     parameters:
       force: false
       dev: true
@@ -32,6 +41,9 @@
         - "include $app_root . '/' . $site_path . '/settings.local.php';"
 
 - configuration:
+    files:
+      - name: 'settings.php'
+        content: '# Already existing file.'
     parameters:
       force: true
       dev: true
@@ -43,3 +55,28 @@
       not_contains: "# Already existing file."
     - file: "build/sites/default/settings.local.php"
       contains: "// Local development override configuration."
+
+- configuration:
+    files:
+      - name: 'settings.local.php'
+        content: '// Initial config.'
+    parameters:
+      force: false
+  expected:
+    - file: "build/sites/default/settings.php"
+      not_contains: "include $app_root . '/' . $site_path . '/settings.local.php';"
+      contains: "include $app_root . '/' . $site_path . '/settings.override.php';"
+    - file: "build/sites/default/settings.local.php"
+      contains: "// Initial config."
+
+- configuration:
+    files:
+      - name: 'settings.local.php'
+        content: '// Initial config.'
+    parameters:
+      force: true
+  expected:
+    - file: "build/sites/default/settings.php"
+      contains: "include $app_root . '/' . $site_path . '/settings.override.php';"
+      not_contains: "include $app_root . '/' . $site_path . '/settings.local.php';"
+    - no_file: "build/sites/default/settings.local.php"

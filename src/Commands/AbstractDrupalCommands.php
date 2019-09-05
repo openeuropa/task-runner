@@ -386,7 +386,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
                         $collection[] = $this->taskFilesystemStack()->copy($examples_settings_path, $local_settings_path, true);
                     }
                 }
-            } else {
+            } else if ((bool) $options['force']) {
                 $collection[] = $this->taskFilesystemStack()->remove($local_settings_path);
             }
         }
