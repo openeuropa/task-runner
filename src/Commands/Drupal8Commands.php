@@ -35,6 +35,7 @@ EOF;
     protected function getSettingsLocalSetupAddendum()
     {
         return <<< EOF
+
 /**
  * Load local development override configuration, if available.
  */

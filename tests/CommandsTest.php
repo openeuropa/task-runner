@@ -276,44 +276,28 @@ EOF;
         mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0777, true);
         file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
         file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/settings.php', '# Already existing file.');
+        file_put_contents($this->getSandboxRoot() . '/build/sites/example.settings.local.php', '// Local development override configuration.');
 
-        $input = new StringInput('drupal:settings-setup --working-dir=' . $this->getSandboxRoot());
-
-        if (isset($configs['parameters']['force']) && true === $configs['parameters']['force']) {
-            $input = new StringInput('drupal:settings-setup --working-dir=' . $this->getSandboxRoot() . ' --force');
+        $input = 'drupal:settings-setup --working-dir=' . $this->getSandboxRoot();
+        if (isset($configs['parameters']['force']) && $configs['parameters']['force']) {
+            $input .= ' --force';
         }
-        $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
-        $runner->run();
+        if (isset($configs['parameters']['dev']) && $configs['parameters']['dev']) {
+            $input .= ' --dev';
+        }
+        $runner = new TaskRunner(new StringInput($input), new BufferedOutput(), $this->getClassLoader());
+        $exit_code = $runner->run();
+        $this->assertEquals(0, $exit_code, 'Command run returned an error.');
 
         foreach ($expected as $row) {
-            $content = file_get_contents($this->getSandboxFilepath($row['file']));
-            $this->assertContainsNotContains($content, $row);
+            if (isset($row['file'])) {
+                $content = file_get_contents($this->getSandboxFilepath($row['file']));
+                $this->assertContainsNotContains($content, $row);
+            }
+            if (isset($row['no_file'])) {
+                $this->assertFileNotExists($row['no_file']);
+            }
         }
-
-        // Generate a random function name.
-        $fct = $this->generateRandomString(20);
-
-        // Generate a dummy PHP code.
-        $config_override_dummy_script = <<< EOF
-<?php 
-function $fct() {}
-EOF;
-
-        $config_override_filename = isset($config['drupal']['site']['settings_override_file']) ?
-        $config['drupal']['site']['settings_override_file'] :
-        'settings.override.php';
-
-        // Add the dummy PHP code to the config override file.
-        file_put_contents(
-            $this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/' . $config_override_filename,
-            $config_override_dummy_script
-        );
-
-        // Include the config override file.
-        include_once $this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/' . $config_override_filename;
-
-        // Test if the dummy PHP code has been properly included.
-        $this->assertTrue(\function_exists($fct));
     }
 
     /**
@@ -424,13 +408,19 @@ EOF;
 
     /**
      * @param string $content
-     * @param array  $expected
+     * @param array  $expectations
      */
-    protected function assertContainsNotContains($content, array $expected)
+    protected function assertContainsNotContains($content, array $expectations)
     {
-        $this->assertContains($expected['contains'], $content);
+        if (!empty($expectations['contains'])) {
+            foreach ((array) $expectations['contains'] as $expected) {
+                $this->assertContains($expected, $content);
+            }
+        }
         if (!empty($expected['not_contains'])) {
-            $this->assertNotContains($expected['not_contains'], $content);
+            foreach ((array) $expectations['not_contains'] as $expected) {
+                $this->assertNotContains($expected, $content);
+            }
         }
     }
 }
