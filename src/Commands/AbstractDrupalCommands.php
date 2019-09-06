@@ -354,6 +354,8 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      * @param array $options
      *
      * @return \Robo\Collection\CollectionBuilder
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function settingsSetup(array $options = [
         'root' => InputOption::VALUE_REQUIRED,
@@ -367,17 +369,16 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         $settings_default_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/default.settings.php';
         $settings_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.php';
         $settings_override_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/' . $options['settings-override-file'];
-        $local_settings_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.local.php';
+        $local_settings_path = $this->getDrupal()->getLocalSettingsPath($options);
 
         // Save the filename of the override file in a single variable to use it
         // in the heredoc variable $custom_config hereunder.
         $settings_override_filename = $options['settings-override-file'];
-
         $custom_config = $this->getDrupal()->getSettingsSetupAddendum($settings_override_filename);
 
         $collection = [];
 
-        if ($this->getDrupalVersion() === 8) {
+        if ($local_settings_path) {
             if ((bool) $options['dev']) {
                 if ((bool) $options['force'] || !file_exists($local_settings_path)) {
                     $custom_config .= $this->getDrupal()->getSettingsLocalSetupAddendum($settings_override_filename);

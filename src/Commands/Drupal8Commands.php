@@ -44,4 +44,14 @@ if (file_exists(\$app_root . '/' . \$site_path . '/settings.local.php')) {
 }
 EOF;
     }
+
+    /**
+     * @param array $options
+     *
+     * @return string|false The default path for local settings or false if it doesn't exist.
+     */
+    protected function getLocalSettingsPath(array $options)
+    {
+        return $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.local.php';
+    }
 }

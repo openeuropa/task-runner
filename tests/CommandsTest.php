@@ -294,15 +294,7 @@ EOF;
         $exit_code = $runner->run();
         $this->assertEquals(0, $exit_code, 'Command run returned an error.');
 
-        foreach ($expected as $row) {
-            if (isset($row['file'])) {
-                $content = file_get_contents($this->getSandboxFilepath($row['file']));
-                $this->assertContainsNotContains($content, $row);
-            }
-            if (isset($row['no_file'])) {
-                $this->assertFileNotExists($row['no_file']);
-            }
-        }
+        $this->processSettingsAssertions($expected);
     }
 
     /**
@@ -425,6 +417,22 @@ EOF;
         if (!empty($expected['not_contains'])) {
             foreach ((array) $expectations['not_contains'] as $expected) {
                 $this->assertNotContains($expected, $content);
+            }
+        }
+    }
+
+    /**
+     * @param array $expected
+     */
+    protected function processSettingsAssertions(array $expected)
+    {
+        foreach ($expected as $row) {
+            if (isset($row['file'])) {
+                $content = file_get_contents($this->getSandboxFilepath($row['file']));
+                $this->assertContainsNotContains($content, $row);
+            }
+            if (isset($row['no_file'])) {
+                $this->assertFileNotExists($row['no_file']);
             }
         }
     }

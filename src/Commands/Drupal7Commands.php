@@ -38,4 +38,14 @@ EOF;
         // There are no default local settings in Drupal 7, return empty.
         return '';
     }
+
+    /**
+     * @param array $options
+     *
+     * @return string|false The default path for local settings or false if it doesn't exist.
+     */
+    protected function getLocalSettingsPath(array $options)
+    {
+        return '';
+    }
 }
