@@ -265,19 +265,12 @@
   composer: ''
   contains:
     - "WriteConfiguration('build/sites/default/settings.override.php'"
-    - "->remove('build/sites/default/settings.local.php')"
 
 - command: 'drupal:settings-setup --root=web'
   configuration: []
   composer: ''
   contains:
     - "WriteConfiguration('web/sites/default/settings.override.php'"
-
-- command: 'drupal:settings-setup --dev'
-  configuration: []
-  composer: ''
-  contains:
-    - "->copy('build/sites/example.settings.local.php', 'build/sites/default/settings.local.php'"
 
 - command: 'drupal:site-setup'
   configuration:
