@@ -87,14 +87,11 @@ class DrupalCommandsTest extends AbstractTest
         $services_destination_dir = $this->getSandboxRoot() . '/sites/' . $sites_subdir;
         $services_destination_file = $services_destination_dir . '/services.yml';
 
-        // Process information for force option.
-        $force = '';
-        if (isset($configs['force'])) {
+        $force = isset($configs['force'])? ' --force' : '';
+
+        if (isset($configs['services_file_content'])) {
             mkdir($services_destination_dir, 0777, true);
-            file_put_contents($services_destination_file, 'parameters: false');
-            if ($configs['force']) {
-                $force = ' --force';
-            }
+            file_put_contents($services_destination_file, $configs['services_file_content']);
         }
 
         // Run the command.

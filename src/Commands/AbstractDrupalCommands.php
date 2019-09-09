@@ -308,7 +308,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
     ])
     {
         $config = $this->getConfig();
-        $yaml = Yaml::dump($config->get('drupal.drush'));
+        $yaml = $this->dumpYaml($config->get('drupal.drush'));
 
         return $this->collectionBuilder()->addTaskList([
             $this->taskWriteConfiguration($options['root'].'/sites/default/drushrc.php', $config)->setConfigKey('drupal.drush'),
@@ -340,14 +340,13 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
     {
         // Read given parameters.
         $service_parameters['parameters'] = $this->getConfig()->get('drupal.service_parameters', []);
-        $dumper = new Dumper(2);
-        $yaml = $dumper->dump($service_parameters, PHP_INT_MAX, 0, Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE);
+        $yaml = $this->dumpYaml($service_parameters);
 
         // Set the destination file.
         $services_destination_file = $options['root'] . '/sites/' . $options['sites-subdir'] . '/services.yml';
 
         $collection = [];
-        if (true === (bool) $options['force'] || !file_exists($services_destination_file)) {
+        if ($options['force'] || !file_exists($services_destination_file)) {
             $collection[] = $this->taskWriteToFile($services_destination_file)->append(false)->text($yaml);
         }
 
@@ -475,5 +474,17 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
                 $commands[$key] = str_replace(array_keys($tokens), array_values($tokens), $value);
             }
         }
+    }
+
+    /**
+     * Dump Yaml into file using same format as in Drupal.
+     *
+     * @param $yaml
+     * @return string
+     */
+    protected function dumpYaml($yaml)
+    {
+        $dumper = new Dumper(2);
+        return $dumper->dump($yaml, PHP_INT_MAX, 0, Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE);
     }
 }

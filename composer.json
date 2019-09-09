@@ -11,15 +11,12 @@
         "gitonomy/gitlib": "^1.0",
         "nuvoleweb/robo-config": "^0.2.1",
         "jakeasmith/http_build_url": "^1.0.1",
-        "symfony/yaml": ">3.1.0"
+        "symfony/yaml": "^3.4||4"
     },
     "require-dev": {
         "openeuropa/code-review": "~1.0.0-beta3",
         "phpunit/phpunit": "~5.5||~6.0"
     },
-    "_readme": [
-        "We need require a version of 'symfony/yaml' higher then '3.1' since versions before 3.1.0 don't have dumper 'DUMP' constants available and 3.1.0 breaks permissions setup in tests."
-    ],
     "autoload": {
         "psr-4": {
             "OpenEuropa\\TaskRunner\\": "./src/"

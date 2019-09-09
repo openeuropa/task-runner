@@ -13,6 +13,7 @@
             foo: bar
 - config:
     force: true
+    services_file_content: "parameters: false"
     runner: |
         my_settings:
           foo: bar
@@ -26,7 +27,7 @@
           settings:
             foo: bar
 - config:
-    force: false
+    services_file_content: "parameters: false"
     runner: |
         my_settings:
           foo: bar
