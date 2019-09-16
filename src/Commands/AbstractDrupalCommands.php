@@ -31,14 +31,6 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
     }
 
     /**
-     * @return int
-     */
-    public function getDrupalVersion()
-    {
-        return $this->getConfig()->get('drupal.core');
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getConfigurationFile()
