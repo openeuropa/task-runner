@@ -31,8 +31,9 @@ class ChangelogCommands extends AbstractCommands implements ComposerAwareInterfa
      *
      * @command changelog:generate
      *
-     * @option token GitHub personal access token, to generate one visit https://github.com/settings/tokens/new
-     * @option tag   Upcoming tag you wish to generate a new changelog entry for.
+     * @option token          GitHub personal access token, to generate one visit https://github.com/settings/tokens/new
+     * @option tag            Upcoming tag you wish to generate a new changelog entry for.
+     * @option release-branch Limit pull requests to a specific branch.
      *
      * @aliases changelog:g,cg
      *
@@ -43,12 +44,16 @@ class ChangelogCommands extends AbstractCommands implements ComposerAwareInterfa
     public function generateChangelog(array $options = [
         'token' => InputOption::VALUE_REQUIRED,
         'tag' => InputOption::VALUE_OPTIONAL,
+        'release-branch' => InputOption::VALUE_OPTIONAL,
     ])
     {
         $projectName = $this->getComposer()->getName();
         $exec = "{$projectName} -t {$options['token']}";
         if (!empty($options['tag'])) {
             $exec .= " --future-release={$options['tag']}";
+        }
+        if (!empty($options['release-branch'])) {
+            $exec .= " --release-branch={$options['release-branch']}";
         }
 
         $task = $this->taskDockerRun('muccg/github-changelog-generator')
