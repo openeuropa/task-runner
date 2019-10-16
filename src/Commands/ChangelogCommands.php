@@ -33,7 +33,7 @@ class ChangelogCommands extends AbstractCommands implements ComposerAwareInterfa
      *
      * @option token          GitHub personal access token, to generate one visit https://github.com/settings/tokens/new
      * @option tag            Upcoming tag you wish to generate a new changelog entry for.
-     * @option release-branch Limit pull requests to a specific branch.
+     * @option release-branch Limit list of changes that went into a specific release branch.
      *
      * @aliases changelog:g,cg
      *
