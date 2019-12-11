@@ -356,7 +356,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         'skip-permissions-setup' => false,
     ])
     {
-        $settings_default_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/default.settings.php';
+        $settings_default_path = $options['root'] . '/sites/default/default.settings.php';
         $settings_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.php';
         $settings_override_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/' . $options['settings-override-file'];
 
