@@ -8,9 +8,10 @@
     "prefer-stable": true,
     "require": {
         "consolidation/robo": "^1.4",
+        "cweagans/composer-patches": "^1.6",
         "gitonomy/gitlib": "^1.0",
-        "nuvoleweb/robo-config": "^0.2.1",
         "jakeasmith/http_build_url": "^1.0.1",
+        "nuvoleweb/robo-config": "^0.2.1",
         "symfony/yaml": "^3.4||4"
     },
     "require-dev": {
