@@ -361,7 +361,6 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         $settings_default_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/default.settings.php';
         $settings_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.php';
         $settings_override_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/' . $options['settings-override-file'];
-        $local_settings_path = $this->getDrupal()->getLocalSettingsPath($options);
 
         // Save the filename of the override file in a single variable to use it
         // in the heredoc variable $custom_config hereunder.
@@ -369,20 +368,6 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         $custom_config = $this->getDrupal()->getSettingsSetupAddendum($settings_override_filename);
 
         $collection = [];
-
-        if ($local_settings_path) {
-            if ((bool) $options['dev']) {
-                if ((bool) $options['force'] || !file_exists($local_settings_path)) {
-                    $custom_config .= $this->getDrupal()->getSettingsLocalSetupAddendum($settings_override_filename);
-                    $examples_settings_path = $options['root'] . '/sites/example.settings.local.php';
-                    if (file_exists($examples_settings_path)) {
-                        $collection[] = $this->taskFilesystemStack()->copy($examples_settings_path, $local_settings_path, true);
-                    }
-                }
-            } else if ((bool) $options['force']) {
-                $collection[] = $this->taskFilesystemStack()->remove($local_settings_path);
-            }
-        }
 
         if ((bool) $options['force'] || !file_exists($settings_path)) {
             $collection[] = $this->taskWriteToFile($settings_default_path)->append()->lines([$custom_config]);
@@ -393,6 +378,19 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
             $settings_override_path,
             $this->getConfig()
         )->setConfigKey('drupal.settings');
+
+        // If ran in dev mode copy local settings file to 'settings.local.php'.
+        // Such file will be conditionally included in 'settings-override-file'.
+        if ($options['dev']) {
+            $examples_settings_path = $options['root'] . '/sites/' . $this->getConfig()->get('drupal.site.settings_local_file');
+            if (file_exists($examples_settings_path)) {
+                $local_settings_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.local.php';
+                $collection[] = $this->taskFilesystemStack()->copy($examples_settings_path, $local_settings_path, $options['force']);
+            }
+            $collection[] = $this->taskWriteToFile($settings_override_path)
+                ->append()
+                ->text($this->getDrupal()->getSettingsLocalSetupAddendum());
+        }
 
         if (!$options['skip-permissions-setup']) {
             $collection[] = $this->permissionsSetup($options);

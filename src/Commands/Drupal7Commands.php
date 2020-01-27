@@ -35,17 +35,14 @@ EOF;
      */
     protected function getSettingsLocalSetupAddendum()
     {
-        // There are no default local settings in Drupal 7, return empty.
-        return '';
-    }
+        return <<< EOF
 
-    /**
-     * @param array $options
-     *
-     * @return string|false The default path for local settings or false if it doesn't exist.
-     */
-    protected function getLocalSettingsPath(array $options)
-    {
-        return '';
+/**
+ * Load local development override configuration, if available.
+ */
+if (file_exists(DRUPAL_ROOT . '/' . \$conf_path . '/settings.local.php')) {
+  include DRUPAL_ROOT . '/' . \$conf_path . '/settings.local.php';
+}
+EOF;
     }
 }
