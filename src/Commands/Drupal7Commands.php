@@ -29,20 +29,4 @@ if (file_exists(DRUPAL_ROOT . '/' . \$conf_path . '/$settings_override_filename'
 }
 EOF;
     }
-
-    /**
-     * @return string
-     */
-    protected function getSettingsLocalSetupAddendum()
-    {
-        return <<< EOF
-
-/**
- * Load local development override configuration, if available.
- */
-if (file_exists(DRUPAL_ROOT . '/' . \$conf_path . '/settings.local.php')) {
-  include DRUPAL_ROOT . '/' . \$conf_path . '/settings.local.php';
-}
-EOF;
-    }
 }

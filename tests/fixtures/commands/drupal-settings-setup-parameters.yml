@@ -56,7 +56,7 @@
   expected:
     - file: "build/sites/default/settings.override.php"
       contains:
-        - "include $app_root . '/' . $site_path . '/settings.local.php';"
+        - "include __DIR__ . '/settings.local.php';"
       not_contains: "# Already existing file."
     - file: "build/sites/default/settings.local.php"
       contains: "// Local development override configuration."
@@ -86,7 +86,7 @@
   expected:
     - file: "build/sites/default/settings.override.php"
       contains:
-        - "include $app_root . '/' . $site_path . '/settings.local.php';"
+        - "include __DIR__ . '/settings.local.php';"
       not_contains: "# Already existing file."
     - file: "build/sites/default/settings.local.php"
       contains: "// Local development override configuration."
