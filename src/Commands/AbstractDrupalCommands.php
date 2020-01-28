@@ -382,10 +382,10 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         // If ran in dev mode copy local settings file to 'settings.local.php'.
         // Such file will be conditionally included in 'settings-override-file'.
         if ($options['dev']) {
-            $examples_settings_path = $this->getConfig()->get('drupal.site.settings_local_file');
-            if (file_exists($examples_settings_path)) {
+            $local_settings_file = $this->getConfig()->get('drupal.site.settings_local_file');
+            if (file_exists($local_settings_file)) {
                 $local_settings_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.local.php';
-                $collection[] = $this->taskFilesystemStack()->copy($examples_settings_path, $local_settings_path, $options['force']);
+                $collection[] = $this->taskFilesystemStack()->copy($local_settings_file, $local_settings_path, $options['force']);
             }
             $collection[] = $this->taskWriteToFile($settings_override_path)
                 ->append()
