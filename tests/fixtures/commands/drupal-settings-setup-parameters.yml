@@ -51,6 +51,27 @@
       - name: 'settings.local.php'
         content: '# Already existing file.'
     parameters:
+      force: false
+      dev: true
+    drupal:
+      site:
+        sites_subdir: 'foo'
+  expected:
+    - file: "build/sites/foo/settings.php"
+      contains: "# Already existing file."
+      not_contains:
+        - "include $app_root . '/' . $site_path . '/settings.override.php';"
+        - "include $app_root . '/' . $site_path . '/settings.local.php';"
+    - file: "build/sites/foo/settings.local.php"
+      contains: "# Already existing file."
+
+- configuration:
+    files:
+      - name: 'settings.php'
+        content: '# Already existing file.'
+      - name: 'settings.local.php'
+        content: '# Already existing file.'
+    parameters:
       force: true
       dev: true
   expected:

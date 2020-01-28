@@ -273,8 +273,11 @@ EOF;
     public function testSettingsSetupParameters(array $configs, array $expected)
     {
         $sites_subdir = isset($configs['drupal']['site']['sites_subdir']) ? $configs['drupal']['site']['sites_subdir'] : 'default';
-        mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0777, true);
-        file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
+        mkdir($this->getSandboxRoot() . '/build/sites/default', 0755, true);
+        if ($sites_subdir !== 'default') {
+            mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0755, true);
+        }
+        file_put_contents($this->getSandboxRoot() . '/build/sites/default/default.settings.php', '');
         file_put_contents($this->getSandboxRoot() . '/build/sites/example.settings.local.php', '// Local development override configuration.');
 
         if (!empty($configs['files'])) {
@@ -283,7 +286,7 @@ EOF;
             }
         }
 
-        $input = 'drupal:settings-setup --working-dir=' . $this->getSandboxRoot();
+        $input = 'drupal:settings-setup --working-dir=' . $this->getSandboxRoot() . ' --sites-subdir=' . $sites_subdir;
         if (isset($configs['parameters']['force']) && $configs['parameters']['force']) {
             $input .= ' --force';
         }
