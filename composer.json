@@ -7,7 +7,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "~7.2.0 || ~7.3.0",
+        "php": ">=7.2",
         "consolidation/robo": "^1.4",
         "gitonomy/gitlib": "^1.0",
         "jakeasmith/http_build_url": "^1.0.1",
