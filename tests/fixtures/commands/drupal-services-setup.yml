@@ -1,0 +1,47 @@
+- config:
+    runner: |
+      my_settings:
+        foo: bar
+      drupal:
+        service_parameters:
+          settings:
+            foo: ${my_settings.foo}
+  expected:
+    - contains: |
+        parameters:
+          settings:
+            foo: bar
+- config:
+    force: true
+    services_file_content: "parameters: false"
+    runner: |
+        my_settings:
+          foo: bar
+        drupal:
+          service_parameters:
+            settings:
+              foo: ${my_settings.foo}
+  expected:
+    - contains: |
+        parameters:
+          settings:
+            foo: bar
+- config:
+    services_file_content: "parameters: false"
+    runner: |
+        my_settings:
+          foo: bar
+        drupal:
+          service_parameters:
+            settings:
+              foo: ${my_settings.foo}
+  expected:
+      - contains: "parameters: false"
+- config:
+    runner: |
+      my_settings:
+        foo: bar
+      drupal: []
+  expected:
+    - contains: |
+        parameters: {  }

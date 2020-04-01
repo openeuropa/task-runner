@@ -260,6 +260,16 @@
     - "WriteConfiguration('web/sites/default/drushrc.php'"
     - "File\\Write('./drush/drush.yml')"
 
+- command: 'drupal:services-setup'
+  configuration:
+    drupal:
+      service_parameters:
+        cors.config: false
+
+  composer: ''
+  contains:
+    - "File\\Write('build/sites/default/services.yml'"
+
 - command: 'drupal:settings-setup'
   configuration: []
   composer: ''

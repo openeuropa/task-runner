@@ -69,10 +69,58 @@ class DrupalCommandsTest extends AbstractTest
     }
 
     /**
+     * Test the services file setup.
+     *
+     * @param array $configs
+     * @param array $expected
+     *
+     * @dataProvider servicesSetupDataProvider
+     */
+    public function testServicesSetup(array $configs, array $expected)
+    {
+        $config = $configs['runner'];
+        $configFile = $this->getSandboxFilepath('runner.yml');
+        file_put_contents($configFile, $config);
+
+        // Process information for destination file services.yml.
+        $sites_subdir = isset($config['drupal']['site']['sites_subdir']) ? $config['drupal']['site']['sites_subdir'] : 'default';
+        $services_destination_dir = $this->getSandboxRoot() . '/sites/' . $sites_subdir;
+        $services_destination_file = $services_destination_dir . '/services.yml';
+
+        $force = isset($configs['force'])? ' --force' : '';
+
+        if (isset($configs['services_file_content'])) {
+            mkdir($services_destination_dir, 0777, true);
+            file_put_contents($services_destination_file, $configs['services_file_content']);
+        }
+
+        // Run the command.
+        $command = 'drupal:services-setup --root=' . $this->getSandboxRoot() . ' --working-dir=' . $this->getSandboxRoot() . $force;
+        $input = new StringInput($command);
+        $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
+        $exit_code = $runner->run();
+        $this->assertEquals(0, $exit_code, 'Command run returned an error.');
+
+        // Process given assertions.
+        $content = file_get_contents($services_destination_file);
+        foreach ($expected as $row) {
+            $this->assertContains($row['contains'], $content);
+        }
+    }
+
+    /**
      * @return array
      */
     public function drupalSettingsDataProvider()
     {
         return $this->getFixtureContent('commands/drupal-site-install.yml');
+    }
+
+    /**
+     * @return array
+     */
+    public function servicesSetupDataProvider()
+    {
+        return $this->getFixtureContent('commands/drupal-services-setup.yml');
     }
 }

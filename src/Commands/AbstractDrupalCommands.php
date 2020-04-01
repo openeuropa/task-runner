@@ -9,6 +9,7 @@ use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
 use OpenEuropa\TaskRunner\Traits as TaskRunnerTraits;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -307,7 +308,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
     ])
     {
         $config = $this->getConfig();
-        $yaml = Yaml::dump($config->get('drupal.drush'));
+        $yaml = $this->dumpYaml($config->get('drupal.drush'));
 
         return $this->collectionBuilder()->addTaskList([
             $this->taskWriteConfiguration($options['root'].'/sites/default/drushrc.php', $config)->setConfigKey('drupal.drush'),
@@ -316,8 +317,45 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
     }
 
     /**
-     * Setup Drupal settings overrides.
+     * Setup Drupal services file.
      *
+     * This command will add the configuration under service_parameters present in
+     * runner.yml into "services.yml" file in the site directory.
+     *
+     * @command drupal:services-setup
+     *
+     * @option root         Drupal root.
+     * @option sites-subdir Drupal site subdirectory.
+     * @option force        Drupal force generation of a new services.yml.
+     *
+     * @param array $options
+     *
+     * @return \Robo\Collection\CollectionBuilder
+     */
+    public function servicesSetup(array $options = [
+        'root' => InputOption::VALUE_REQUIRED,
+        'sites-subdir' => InputOption::VALUE_REQUIRED,
+        'force' => false,
+    ])
+    {
+        // Read given parameters.
+        $service_parameters['parameters'] = $this->getConfig()->get('drupal.service_parameters', []);
+        $yaml = $this->dumpYaml($service_parameters);
+
+        // Set the destination file.
+        $services_destination_file = $options['root'] . '/sites/' . $options['sites-subdir'] . '/services.yml';
+
+        $collection = [];
+        if ($options['force'] || !file_exists($services_destination_file)) {
+            $collection[] = $this->taskWriteToFile($services_destination_file)->append(false)->text($yaml);
+        }
+
+        return $this->collectionBuilder()->addTaskList($collection);
+    }
+
+    /**
+     * Setup Drupal settings overrides.
+     **
      * This command will:
      *
      * - Copy "default.settings.php" to "settings.php", which will be overridden if existing
@@ -436,5 +474,17 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
                 $commands[$key] = str_replace(array_keys($tokens), array_values($tokens), $value);
             }
         }
+    }
+
+    /**
+     * Dump Yaml into file using same format as in Drupal.
+     *
+     * @param $yaml
+     * @return string
+     */
+    protected function dumpYaml($yaml)
+    {
+        $dumper = new Dumper(2);
+        return $dumper->dump($yaml, PHP_INT_MAX, 0, Yaml::DUMP_EXCEPTION_ON_INVALID_TYPE);
     }
 }
