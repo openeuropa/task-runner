@@ -97,7 +97,6 @@ class TaskRunner
 
         // Create and initialize runner.
         $this->runner = new RoboRunner();
-        $this->runner->setRelativePluginNamespace('TaskRunner');
         $this->runner->setContainer($this->container);
     }
 
@@ -106,8 +105,12 @@ class TaskRunner
      */
     public function run()
     {
+        // Discover early the commands to allow the dynamic commands overrides.
+        $commandClasses = $this->discoverCommandClasses('TaskRunner');
+        $commandClasses = array_merge($this->defaultCommandClasses, $commandClasses);
+
         // Register command classes.
-        $this->runner->registerCommandClasses($this->application, $this->defaultCommandClasses);
+        $this->runner->registerCommandClasses($this->application, $commandClasses);
 
         // Register commands defined in runner.yml file.
         $this->registerDynamicCommands($this->application);
@@ -248,5 +251,19 @@ class TaskRunner
             $command = $commandFactory->createCommand($commandInfo, $commandClass)->setName($name);
             $application->add($command);
         }
+    }
+
+    /**
+     * @param string $relativeNamespace
+     *
+     * @return string[]
+     */
+    protected function discoverCommandClasses($relativeNamespace)
+    {
+        /** @var \Robo\ClassDiscovery\RelativeNamespaceDiscovery $discovery */
+        $discovery = Robo::service('relativeNamespaceDiscovery');
+        $discovery->setRelativeNamespace($relativeNamespace . '\Commands')
+            ->setSearchPattern('/.*Commands?\.php$/');
+        return $discovery->getClasses();
     }
 }
