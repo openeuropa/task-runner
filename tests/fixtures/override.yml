@@ -1,0 +1,12 @@
+- command: drupal:site-install
+  runnerConfig:
+    commands:
+      drupal:site-install:
+        - echo "Hello world!"
+  expected: []
+
+#- command: drupal:si
+#  runnerConfig:
+#    commands:
+#      drupal:site-install:
+#        - echo "Hello world!"

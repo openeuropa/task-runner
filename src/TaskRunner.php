@@ -71,7 +71,6 @@ class TaskRunner
     private $defaultCommandClasses = [
         ChangelogCommands::class,
         DrupalCommands::class,
-        DynamicCommands::class,
         ReleaseCommands::class,
     ];
 
@@ -105,8 +104,8 @@ class TaskRunner
      */
     public function run()
     {
-        // Discover early the commands to allow the dynamic commands overrides.
-        $commandClasses = $this->discoverCommandClasses('TaskRunner');
+        // Discover early the commands to allow dynamic command overrides.
+        $commandClasses = $this->discoverCommandClasses();
         $commandClasses = array_merge($this->defaultCommandClasses, $commandClasses);
 
         // Register command classes.
@@ -242,27 +241,46 @@ class TaskRunner
      */
     private function registerDynamicCommands(Application $application)
     {
-        foreach ($this->getConfig()->get('commands', []) as $name => $tasks) {
-            /** @var \Consolidation\AnnotatedCommand\AnnotatedCommandFactory $commandFactory */
-            $commandFileName = DynamicCommands::class."Commands";
-            $commandClass = $this->container->get($commandFileName);
-            $commandFactory = $this->container->get('commandFactory');
-            $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
-            $command = $commandFactory->createCommand($commandInfo, $commandClass)->setName($name);
+        if (!$commands = $this->getConfig()->get('commands'))
+        {
+            return;
+        }
+
+        /** @var \Consolidation\AnnotatedCommand\AnnotatedCommandFactory $commandFactory */
+        $commandFactory = $this->container->get('commandFactory');
+        $commandFileName = DynamicCommands::class."Commands";
+        $this->runner->registerCommandClass($this->application, DynamicCommands::class);
+        $commandClass = $this->container->get($commandFileName);
+        $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
+
+        foreach ($commands as $name => $tasks) {
+            $aliases = [];
+            // This command has been already registered as an annotated command.
+            if ($application->has($name)) {
+                $registeredCommand = $application->get($name);
+                $aliases = $registeredCommand->getAliases();
+                // The dynamic command overrides an alias rather than a
+                // registered command main name. Get the command main name.
+                if (in_array($name, $aliases, TRUE)) {
+                    $name = $registeredCommand->getName();
+                }
+            }
+
+            $command = $commandFactory->createCommand($commandInfo, $commandClass)
+                ->setName($name)
+                ->setAliases($aliases);
             $application->add($command);
         }
     }
 
     /**
-     * @param string $relativeNamespace
-     *
      * @return string[]
      */
-    protected function discoverCommandClasses($relativeNamespace)
+    protected function discoverCommandClasses()
     {
         /** @var \Robo\ClassDiscovery\RelativeNamespaceDiscovery $discovery */
         $discovery = Robo::service('relativeNamespaceDiscovery');
-        $discovery->setRelativeNamespace($relativeNamespace . '\Commands')
+        $discovery->setRelativeNamespace('TaskRunner\Commands')
             ->setSearchPattern('/.*Commands?\.php$/');
         return $discovery->getClasses();
     }

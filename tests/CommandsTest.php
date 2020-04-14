@@ -50,7 +50,7 @@ class CommandsTest extends AbstractTest
      *
      * @dataProvider simulationDataProvider
      */
-    public function testSimulation($command, array $config, $composer, array $expected, array $absent = [])
+    public function _testSimulation($command, array $config, $composer, array $expected, array $absent = [])
     {
         $configFile = $this->getSandboxFilepath('runner.yml');
         $composerFile = $this->getSandboxFilepath('composer.json');
@@ -82,7 +82,7 @@ class CommandsTest extends AbstractTest
      *
      * @dataProvider setupDataProvider
      */
-    public function testSetupCommands($command, $source, $destination, array $config, $content, $expected)
+    public function _testSetupCommands($command, $source, $destination, array $config, $content, $expected)
     {
         $source = $this->getSandboxFilepath($source);
         $destination = $this->getSandboxFilepath($destination);
@@ -109,7 +109,7 @@ class CommandsTest extends AbstractTest
      *
      * @dataProvider changelogDataProvider
      */
-    public function testChangelogCommands(array $options, $expected)
+    public function _testChangelogCommands(array $options, $expected)
     {
         $runner = new TaskRunner(new StringInput(''), new NullOutput(), $this->getClassLoader());
         /** @var ChangelogCommands $commands */
@@ -120,7 +120,7 @@ class CommandsTest extends AbstractTest
     /**
      * Test custom commands.
      */
-    public function testCustomCommands()
+    public function _testCustomCommands()
     {
         $input = new StringInput("list");
         $output = new BufferedOutput();
@@ -146,7 +146,7 @@ class CommandsTest extends AbstractTest
      *
      * @dataProvider drushSetupDataProvider
      */
-    public function testDrushSetup(array $config, array $expected)
+    public function _testDrushSetup(array $config, array $expected)
     {
         $configFile = $this->getSandboxFilepath('runner.yml');
 
@@ -168,7 +168,7 @@ class CommandsTest extends AbstractTest
      *
      * @dataProvider drupal7SettingsSetupDataProvider
      */
-    public function testDrupal7SettingsSetup(array $config, array $expected)
+    public function _testDrupal7SettingsSetup(array $config, array $expected)
     {
         $configFile = $this->getSandboxFilepath('runner.yml');
 
@@ -219,7 +219,7 @@ EOF;
      *
      * @dataProvider drupal8SettingsSetupDataProvider
      */
-    public function testDrupal8SettingsSetup(array $config, array $expected)
+    public function _testDrupal8SettingsSetup(array $config, array $expected)
     {
         $configFile = $this->getSandboxFilepath('runner.yml');
 
@@ -270,7 +270,7 @@ EOF;
      *
      * @dataProvider settingsSetupForceDataProvider
      */
-    public function testSettingsSetupForce(array $config, array $expected)
+    public function _testSettingsSetupForce(array $config, array $expected)
     {
         $configFile = $this->getSandboxFilepath('runner.yml');
         file_put_contents($configFile, Yaml::dump($config));
@@ -322,7 +322,7 @@ EOF;
     /**
      * Test current working directory as a replaceable token.
      */
-    public function testWorkingDirectoryToken()
+    public function _testWorkingDirectoryToken()
     {
         $configFile = $this->getSandboxFilepath('runner.yml');
         $config = [
@@ -341,7 +341,7 @@ EOF;
     /**
      * Test the user config.
      */
-    public function testUserConfigFile()
+    public function _testUserConfigFile()
     {
         $fixtureName = 'userconfig.yml';
 
@@ -367,6 +367,32 @@ EOF;
         $this->assertEquals($content['wordpress'], $runner->getConfig()->get('wordpress'));
         $this->assertEquals($content['drupal']['root'], $runner->getConfig()->get('drupal.root'));
         $this->assertNotEquals($drupalRoot, $runner->getConfig()->get('drupal.root'));
+    }
+
+    /**
+     * @dataProvider overrideCommandDataProvider
+     *
+     * @param $command
+     * @param array $runnerConfig
+     * @param array $expected
+     */
+    public function testOverrideCommand($command, array $runnerConfig, array $expected)
+    {
+        $runnerConfigFile = $this->getSandboxFilepath('runner.yml');
+        file_put_contents($runnerConfigFile, Yaml::dump($runnerConfig));
+
+        $input = new StringInput("{$command} --working-dir=".$this->getSandboxRoot());
+        $output = new BufferedOutput();
+        $runner = new TaskRunner($input, $output, $this->getClassLoader());
+
+        $runner->run();
+        $text = $output->fetch();
+
+        $this->assertContains("Hello", $text);
+//        print_r($text);
+        foreach ($expected as $row) {
+            $this->assertContains($row, $text);
+        }
     }
 
     /**
@@ -423,6 +449,14 @@ EOF;
     public function changelogDataProvider()
     {
         return $this->getFixtureContent('changelog.yml');
+    }
+
+    /**
+     * @return array
+     */
+    public function overrideCommandDataProvider()
+    {
+        return $this->getFixtureContent('override.yml');
     }
 
     /**
