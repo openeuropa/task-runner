@@ -241,8 +241,7 @@ class TaskRunner
      */
     private function registerDynamicCommands(Application $application)
     {
-        if (!$commands = $this->getConfig()->get('commands'))
-        {
+        if (!$commands = $this->getConfig()->get('commands')) {
             return;
         }
 
@@ -260,7 +259,7 @@ class TaskRunner
                 $aliases = $registeredCommand->getAliases();
                 // The dynamic command overrides an alias rather than a
                 // registered command main name. Get the command main name.
-                if (in_array($name, $aliases, TRUE)) {
+                if (in_array($name, $aliases, true)) {
                     $name = $registeredCommand->getName();
                 }
             }
