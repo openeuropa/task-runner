@@ -248,6 +248,7 @@ class TaskRunner
             $commandClass = $this->container->get($commandFileName);
             $commandFactory = $this->container->get('commandFactory');
             $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
+            $commandInfo->addAnnotation('tasks', $tasks);
             $command = $commandFactory->createCommand($commandInfo, $commandClass)->setName($name);
             $application->add($command);
         }

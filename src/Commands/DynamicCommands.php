@@ -3,6 +3,7 @@
 namespace OpenEuropa\TaskRunner\Commands;
 
 use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
+use Robo\Robo;
 
 /**
  * Class DynamicCommands
@@ -18,8 +19,10 @@ class DynamicCommands extends AbstractCommands
      */
     public function runTasks()
     {
-        $command = $this->input()->getArgument('command');
-        $tasks = $this->getConfig()->get("commands.{$command}");
+        $commandName = $this->input()->getArgument('command');
+        /** @var \Consolidation\AnnotatedCommand\AnnotatedCommand $command */
+        $command = Robo::application()->get($commandName);
+        $tasks = $command->getAnnotationData()['tasks'];
 
         return $this->taskCollectionFactory($tasks);
     }
