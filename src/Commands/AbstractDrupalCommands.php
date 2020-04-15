@@ -80,7 +80,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         $input = $commandData->input();
 
         // Validate if permissions will be set up.
-        if (!$input->getOption('skip-permissions-setup')) {
+        if (!$input->hasOption('skip-permissions-setup') || !$input->getOption('skip-permissions-setup')) {
             return;
         }
 
