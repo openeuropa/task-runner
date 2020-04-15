@@ -105,8 +105,8 @@ class TaskRunner
      */
     public function run()
     {
-        // Discover early the commands to allow the dynamic commands overrides.
-        $commandClasses = $this->discoverCommandClasses('TaskRunner');
+        // Discover early the commands to allow dynamic command overrides.
+        $commandClasses = $this->discoverCommandClasses();
         $commandClasses = array_merge($this->defaultCommandClasses, $commandClasses);
 
         // Register command classes.
@@ -254,15 +254,13 @@ class TaskRunner
     }
 
     /**
-     * @param string $relativeNamespace
-     *
      * @return string[]
      */
-    protected function discoverCommandClasses($relativeNamespace)
+    protected function discoverCommandClasses()
     {
         /** @var \Robo\ClassDiscovery\RelativeNamespaceDiscovery $discovery */
         $discovery = Robo::service('relativeNamespaceDiscovery');
-        $discovery->setRelativeNamespace($relativeNamespace . '\Commands')
+        $discovery->setRelativeNamespace('TaskRunner\Commands')
             ->setSearchPattern('/.*Commands?\.php$/');
         return $discovery->getClasses();
     }
