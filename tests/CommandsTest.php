@@ -370,6 +370,29 @@ EOF;
     }
 
     /**
+     * @dataProvider overrideCommandDataProvider
+     *
+     * @param $command
+     * @param array $runnerConfig
+     * @param array $expected
+     */
+    public function testOverrideCommand($command, array $runnerConfig, array $expected)
+    {
+        $runnerConfigFile = $this->getSandboxFilepath('runner.yml');
+        file_put_contents($runnerConfigFile, Yaml::dump($runnerConfig));
+
+        $input = new StringInput("{$command} --working-dir=".$this->getSandboxRoot());
+        $output = new BufferedOutput();
+        $runner = new TaskRunner($input, $output, $this->getClassLoader());
+        $runner->run();
+        $text = $output->fetch();
+
+        foreach ($expected as $row) {
+            $this->assertContains($row, $text);
+        }
+    }
+
+    /**
      * @return array
      */
     public function simulationDataProvider()
@@ -423,6 +446,14 @@ EOF;
     public function changelogDataProvider()
     {
         return $this->getFixtureContent('changelog.yml');
+    }
+
+    /**
+     * @return array
+     */
+    public function overrideCommandDataProvider()
+    {
+        return $this->getFixtureContent('override.yml');
     }
 
     /**
