@@ -242,11 +242,17 @@ class TaskRunner
      */
     private function registerDynamicCommands(Application $application)
     {
-        foreach ($this->getConfig()->get('commands', []) as $name => $tasks) {
-            /** @var \Consolidation\AnnotatedCommand\AnnotatedCommandFactory $commandFactory */
-            $commandFileName = DynamicCommands::class."Commands";
-            $commandClass = $this->container->get($commandFileName);
-            $commandFactory = $this->container->get('commandFactory');
+        if (!$commands = $this->getConfig()->get('commands'))
+        {
+            return;
+        }
+
+        /** @var \Consolidation\AnnotatedCommand\AnnotatedCommandFactory $commandFactory */
+        $commandFactory = $this->container->get('commandFactory');
+        $commandFileName = DynamicCommands::class."Commands";
+        $commandClass = $this->container->get($commandFileName);
+
+        foreach ($commands as $name => $tasks) {
             $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
             $commandInfo->addAnnotation('tasks', $tasks);
             $command = $commandFactory->createCommand($commandInfo, $commandClass)->setName($name);
