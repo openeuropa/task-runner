@@ -71,7 +71,6 @@ class TaskRunner
     private $defaultCommandClasses = [
         ChangelogCommands::class,
         DrupalCommands::class,
-        DynamicCommands::class,
         ReleaseCommands::class,
     ];
 
@@ -250,6 +249,7 @@ class TaskRunner
         /** @var \Consolidation\AnnotatedCommand\AnnotatedCommandFactory $commandFactory */
         $commandFactory = $this->container->get('commandFactory');
         $commandFileName = DynamicCommands::class."Commands";
+        $this->runner->registerCommandClass($this->application, DynamicCommands::class);
         $commandClass = $this->container->get($commandFileName);
 
         foreach ($commands as $name => $tasks) {
