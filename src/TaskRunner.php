@@ -253,9 +253,23 @@ class TaskRunner
         $commandClass = $this->container->get($commandFileName);
 
         foreach ($commands as $name => $tasks) {
+            $aliases = [];
+            // This command has been already registered as an annotated command.
+            if ($application->has($name)) {
+                $registeredCommand = $application->get($name);
+                $aliases = $registeredCommand->getAliases();
+                // The dynamic command overrides an alias rather than a
+                // registered command main name. Get the command main name.
+                if (in_array($name, $aliases, TRUE)) {
+                    $name = $registeredCommand->getName();
+                }
+            }
+
             $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
             $commandInfo->addAnnotation('tasks', $tasks);
-            $command = $commandFactory->createCommand($commandInfo, $commandClass)->setName($name);
+            $command = $commandFactory->createCommand($commandInfo, $commandClass)
+                ->setName($name)
+                ->setAliases($aliases);
             $application->add($command);
         }
     }
