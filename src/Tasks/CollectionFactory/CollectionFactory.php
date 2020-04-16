@@ -95,7 +95,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     protected function taskFactory($task)
     {
         if (is_string($task)) {
-            return $this->taskExec($task);
+            return $this->taskExec($task)->interactive($this->isTtySupported());
         }
 
         $this->secureOption($task, 'force', false);
@@ -196,5 +196,15 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     protected function secureOption(array &$task, $name, $default)
     {
         $task[$name] = isset($task[$name]) ? $task[$name] : $default;
+    }
+
+    /**
+     * Checks if the TTY mode is supported
+     *
+     * @return bool
+     */
+    protected function isTtySupported()
+    {
+        return PHP_OS !== 'WINNT' && (bool) @proc_open('echo 1 >/dev/null', [['file', '/dev/tty', 'r'], ['file', '/dev/tty', 'w'], ['file', '/dev/tty', 'w']], $pipes);
     }
 }
