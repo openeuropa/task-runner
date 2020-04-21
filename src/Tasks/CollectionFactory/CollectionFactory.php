@@ -150,7 +150,14 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 ]);
 
             case "run":
-                return $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')->arg($task['command']);
+                $taskExec = $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')->arg($task['command']);
+                if (!empty($task['arguments'])) {
+                    $taskExec->args($task['arguments']);
+                }
+                if (!empty($task['options'])) {
+                    $taskExec->options($task['options'], '=');
+                }
+                return $taskExec;
 
             case "process-php":
                 $this->secureOption($task, 'override', false);

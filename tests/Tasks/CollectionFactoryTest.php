@@ -4,7 +4,6 @@ namespace OpenEuropa\TaskRunner\Tests\Tasks;
 
 use OpenEuropa\TaskRunner\Tasks\CollectionFactory\loadTasks;
 use OpenEuropa\TaskRunner\Tests\AbstractTaskTest;
-use Robo\Config\Config;
 
 /**
  * Class CollectionFactoryTest
@@ -72,6 +71,31 @@ class CollectionFactoryTest extends AbstractTaskTest
 
         $this->taskCollectionFactory($tasks)->run();
         $this->assertEquals(trim($expected), trim(file_get_contents($destinationFile)));
+    }
+
+    /**
+     * Tests the 'run' task.
+     */
+    public function testRunTask()
+    {
+
+        $filePath = $this->getSandboxFilepath('test-file.txt');
+        $tasks = [
+          [
+              'task' => 'run',
+              'command' => 'custom:test',
+              'options' => [
+                  'filepath' => $filePath,
+                  'content' => __METHOD__,
+              ],
+          ],
+        ];
+
+        $collectionFactory = $this->taskCollectionFactory($tasks);
+        $collectionFactory->getConfig()->set('runner.bin_dir', realpath(__DIR__ . '/../../bin'));
+        $collectionFactory->run();
+
+        $this->assertSame(__METHOD__, file_get_contents($filePath));
     }
 
     /**
