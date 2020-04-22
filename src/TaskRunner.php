@@ -97,8 +97,8 @@ class TaskRunner
         $this->application->setAutoExit(false);
         $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config, $classLoader);
 
-        // Allows 3rd party to modify the configuration.
-        $this->alterConfig();
+        // Allow 3rd party to modify the configuration.
+        $this->alterConfiguration();
 
         // Create and initialize runner.
         $this->runner = new RoboRunner();
@@ -159,7 +159,7 @@ class TaskRunner
     /**
      * Allows 3rd party to alter the configuration.
      */
-    private function alterConfig()
+    private function alterConfiguration()
     {
         /** @var EventDispatcherInterface $dispatcher */
         $dispatcher = $this->container->get('eventDispatcher');
@@ -180,7 +180,7 @@ class TaskRunner
      *   The local configuration file path, or null if it doesn't exist.
      *
      * @todo Move this to an event subscriber.
-     * @see TaskRunner::alterConfig()
+     * @see TaskRunner::alterConfiguration()
      */
     private function getLocalConfigurationFilepath($configuration_file = 'openeuropa/taskrunner/runner.yml')
     {
