@@ -11,6 +11,7 @@ use OpenEuropa\TaskRunner\Commands\ReleaseCommands;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
 use OpenEuropa\TaskRunner\Contract\TimeAwareInterface;
+use OpenEuropa\TaskRunner\Event\ConfigEvent;
 use OpenEuropa\TaskRunner\Services\Composer;
 use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use League\Container\ContainerAwareTrait;
@@ -24,6 +25,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -95,6 +97,9 @@ class TaskRunner
         $this->application->setAutoExit(false);
         $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config, $classLoader);
 
+        // Allows 3rd party to modify the configuration.
+        $this->alterConfig();
+
         // Create and initialize runner.
         $this->runner = new RoboRunner();
         $this->runner->setRelativePluginNamespace('TaskRunner');
@@ -152,6 +157,20 @@ class TaskRunner
     }
 
     /**
+     * Allows 3rd party to alter the configuration.
+     */
+    private function alterConfig()
+    {
+        /** @var EventDispatcherInterface $dispatcher */
+        $dispatcher = $this->container->get('eventDispatcher');
+        $event = new ConfigEvent($this->config);
+        // @todo Remove Symfony 3.4 BC when Drupal 8.9.x is EOL.
+        $dispatcher->dispatch(get_class($event), $event);
+        // Keep the container in sync.
+        $this->container->share('config', $this->config);
+    }
+
+    /**
      * Get the local configuration filepath.
      *
      * @param string $configuration_file
@@ -159,6 +178,9 @@ class TaskRunner
      *
      * @return string|null
      *   The local configuration file path, or null if it doesn't exist.
+     *
+     * @todo Move this to an event subscriber.
+     * @see TaskRunner::alterConfig()
      */
     private function getLocalConfigurationFilepath($configuration_file = 'openeuropa/taskrunner/runner.yml')
     {

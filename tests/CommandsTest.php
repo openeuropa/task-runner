@@ -2,12 +2,15 @@
 
 namespace OpenEuropa\TaskRunner\Tests\Commands;
 
+use My\Custom\TestConfigSubscriber;
 use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use OpenEuropa\TaskRunner\TaskRunner;
 use OpenEuropa\TaskRunner\Tests\AbstractTest;
+use Robo\Robo;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -367,6 +370,19 @@ EOF;
         $this->assertEquals($content['wordpress'], $runner->getConfig()->get('wordpress'));
         $this->assertEquals($content['drupal']['root'], $runner->getConfig()->get('drupal.root'));
         $this->assertNotEquals($drupalRoot, $runner->getConfig()->get('drupal.root'));
+
+        /** @var EventDispatcherInterface $dispatcher */
+        $dispatcher = Robo::getContainer()->get('eventDispatcher');
+        $dispatcher->addSubscriber(new TestConfigSubscriber());
+
+        // Create a new runner.
+        $input = new StringInput('list --working-dir=' . $this->getSandboxRoot());
+        $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
+        $runner->run();
+
+        $this->assertSame(['root' => 'joomla'], $runner->getConfig()->get('joomla'));
+        $this->assertSame(['root' => 'wordpress'], $runner->getConfig()->get('wordpress'));
+        $this->assertSame('docroot', $runner->getConfig()->get('drupal.root'));
     }
 
     /**

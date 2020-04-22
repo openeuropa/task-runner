@@ -1,0 +1,5 @@
+joomla:
+  root: joomla
+
+drupal:
+  root: docroot
