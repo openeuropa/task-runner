@@ -3,15 +3,20 @@
 namespace OpenEuropa\TaskRunner;
 
 use Composer\Autoload\ClassLoader;
+use Consolidation\AnnotatedCommand\Parser\Internal\DocblockTag;
+use Consolidation\AnnotatedCommand\Parser\Internal\TagFactory;
 use Gitonomy\Git\Repository;
 use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use OpenEuropa\TaskRunner\Commands\DrupalCommands;
 use OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use OpenEuropa\TaskRunner\Commands\ReleaseCommands;
+use OpenEuropa\TaskRunner\Commands\RunnerCommands;
+use OpenEuropa\TaskRunner\ConfigModifiers\FileFromEnvironmentConfigModifier;
+use OpenEuropa\TaskRunner\ConfigModifiers\LocalFileConfigModifier;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
+use OpenEuropa\TaskRunner\Contract\ConfigModifierInterface;
 use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
 use OpenEuropa\TaskRunner\Contract\TimeAwareInterface;
-use OpenEuropa\TaskRunner\Event\ConfigEvent;
 use OpenEuropa\TaskRunner\Services\Composer;
 use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use League\Container\ContainerAwareTrait;
@@ -25,7 +30,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -99,7 +103,7 @@ class TaskRunner
         $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config, $classLoader);
 
         // Allow 3rd party to modify the configuration.
-        $this->alterConfiguration();
+        $this->modifyConfiguration();
 
         // Create and initialize runner.
         $this->runner = new RoboRunner();
@@ -150,54 +154,87 @@ class TaskRunner
         Robo::loadConfiguration([
             __DIR__.'/../config/runner.yml',
             'runner.yml.dist',
-            'runner.yml',
-            $this->getLocalConfigurationFilepath(),
         ], $config);
 
         return $config;
     }
 
     /**
-     * Allows 3rd party to alter the configuration.
+     * Allows 3rd party to modify the configuration.
      */
-    private function alterConfiguration()
+    private function modifyConfiguration()
     {
-        /** @var EventDispatcherInterface $dispatcher */
-        $dispatcher = $this->container->get('eventDispatcher');
-        $event = new ConfigEvent($this->config);
-        // @todo Remove Symfony 3.4 BC when Drupal 8.9.x is EOL.
-        $dispatcher->dispatch(get_class($event), $event);
+        /** @var \Robo\ClassDiscovery\RelativeNamespaceDiscovery $discovery */
+        $discovery = Robo::service('relativeNamespaceDiscovery');
+        $discovery->setRelativeNamespace('TaskRunner\ConfigModifiers')
+            ->setSearchPattern('/.*ConfigModifier\.php$/');
+
+        // Add default config modifier classes. Setting very low priorities so
+        // that we are sure that these modifiers are running at the very end.
+        // However, in some very specific circumstances, third-party modifiers
+        // are abie to set priorities lowers than these and, as an effect, they
+        // are able to override the default config modifiers,
+        $classes = [
+            FileFromEnvironmentConfigModifier::class => -1300,
+            LocalFileConfigModifier::class => -1000,
+        ];
+
+        // Discover 3rd party modifiers.
+        foreach ($discovery->getClasses() as $class) {
+            if (is_subclass_of($class, ConfigModifierInterface::class)) {
+                $classes[$class] = $this->getConfigModifierPriority($class);
+            }
+        }
+
+        // High priority modifiers run first.
+        arsort($classes, SORT_NUMERIC);
+
+        foreach (array_keys($classes) as $class) {
+            $class::modify($this->config);
+        }
+
         // Keep the container in sync.
         $this->container->share('config', $this->config);
     }
 
     /**
-     * Get the local configuration filepath.
-     *
-     * @param string $configuration_file
-     *   The default filepath.
-     *
-     * @return string|null
-     *   The local configuration file path, or null if it doesn't exist.
-     *
-     * @todo Move this to an event subscriber.
-     * @see TaskRunner::alterConfiguration()
+     * @param string $class
+     * @return float
+     * @throws \ReflectionException
      */
-    private function getLocalConfigurationFilepath($configuration_file = 'openeuropa/taskrunner/runner.yml')
+    private function getConfigModifierPriority($class)
     {
-        if ($config = getenv('OPENEUROPA_TASKRUNNER_CONFIG')) {
-            return $config;
-        }
+        $priority = 0.0;
+        $reflectionClass = new \ReflectionClass($class);
+        if ($docBlock = $reflectionClass->getDocComment()) {
+            // Remove the leading /** and the trailing */
+            $docBlock = preg_replace('#^\s*/\*+\s*#', '', $docBlock);
+            $docBlock = preg_replace('#\s*\*+/\s*#', '', $docBlock);
 
-        if ($config = getenv('XDG_CONFIG_HOME')) {
-            return $config . '/' . $configuration_file;
-        }
+            // Nothing left? Exit.
+            if (empty($docBlock)) {
+                return $priority;
+            }
 
-        if ($home = getenv('HOME')) {
-            return getenv('HOME') . '/.config/' . $configuration_file;
-        }
+            $tagFactory = new TagFactory();
+            foreach (explode("\n", $docBlock) as $row) {
+                // Remove trailing whitespace and leading space + '*'s
+                $row = rtrim($row);
+                $row = preg_replace('#^[ \t]*\**#', '', $row);
+                $tagFactory->parseLine($row);
+            }
 
-        return null;
+            $priority = array_reduce($tagFactory->getTags(), function ($priority, DocblockTag $tag) {
+                if ($tag->getTag() === 'priority') {
+                    $value = $tag->getContent();
+                    if (is_numeric($value)) {
+                        $priority = (float) $value;
+                    }
+                }
+                return $priority;
+            }, $priority);
+        }
+        return $priority;
     }
 
     /**

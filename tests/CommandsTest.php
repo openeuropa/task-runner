@@ -346,43 +346,27 @@ EOF;
      */
     public function testUserConfigFile()
     {
-        $fixtureName = 'userconfig.yml';
-
-        // Create a runner.
-        $input = new StringInput('list --working-dir=' . $this->getSandboxRoot());
-        $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
-        $runner->run();
-
-        // Extract a value from the default configuration.
-        $drupalRoot = $runner->getConfig()->get('drupal.root');
-
         // Add the environment setting.
         putenv('OPENEUROPA_TASKRUNNER_CONFIG=' . __DIR__ . '/fixtures/userconfig.yml');
 
         // Create a new runner.
         $input = new StringInput('list --working-dir=' . $this->getSandboxRoot());
         $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
-        $runner->run();
 
-        // Get the content of the fixture.
-        $content = $this->getFixtureContent($fixtureName);
+        // Set as `build` by config/runner.yml.
+        // Overwritten as `drupal` by tests/fixtures/userconfig.yml.
+        $this->assertEquals('drupal', $runner->getConfig()->get('drupal.root'));
 
-        $this->assertEquals($content['wordpress'], $runner->getConfig()->get('wordpress'));
-        $this->assertEquals($content['drupal']['root'], $runner->getConfig()->get('drupal.root'));
-        $this->assertNotEquals($drupalRoot, $runner->getConfig()->get('drupal.root'));
-
-        /** @var EventDispatcherInterface $dispatcher */
-        $dispatcher = Robo::getContainer()->get('eventDispatcher');
-        $dispatcher->addSubscriber(new TestConfigSubscriber());
-
-        // Create a new runner.
-        $input = new StringInput('list --working-dir=' . $this->getSandboxRoot());
-        $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
-        $runner->run();
-
-        $this->assertSame(['root' => 'joomla'], $runner->getConfig()->get('joomla'));
+        // Set as `['root' => 'drupal']` by TestConfigModifier::modify().
+        // Overwritten as `['root' => 'wordpress']` by userconfig.yml.
         $this->assertSame(['root' => 'wordpress'], $runner->getConfig()->get('wordpress'));
-        $this->assertSame('docroot', $runner->getConfig()->get('drupal.root'));
+
+        // Set as `['root' => 'joomla']` by tests/fixtures/third_party.yml.
+        $this->assertSame(['root' => 'joomla'], $runner->getConfig()->get('joomla'));
+
+        // Set as `overwritten by edge case` by tests/fixtures/userconfig.yml.
+        // Overwritten as `overwritten` by EdgeCaseConfigModifier::modify().
+        $this->assertSame('overwritten', $runner->getConfig()->get('whatever'));
     }
 
     /**
