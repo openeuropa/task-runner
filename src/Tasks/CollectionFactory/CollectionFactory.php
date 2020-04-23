@@ -95,6 +95,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     protected function taskFactory($task)
     {
         if (is_string($task)) {
+            @trigger_error('Defining a task as a plain text is deprecated in openeuropa/task-runner:1.0.0 and is removed from openeuropa/task-runner:2.0.0. Use the "exec" task and pass arguments and options.', E_USER_DEPRECATED);
             return $this->taskExec($task);
         }
 
@@ -180,6 +181,16 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                     ->setConfigKey($task['config']);
 
                 return $this->collectionBuilder()->addTaskList($tasks);
+
+            case 'exec':
+                $taskExec = $this->taskExec($task['command']);
+                if (!empty($task['arguments'])) {
+                    $taskExec->args($task['arguments']);
+                }
+                if (!empty($task['options'])) {
+                    $taskExec->options($task['options']);
+                }
+                return $taskExec;
 
             default:
                 throw new TaskException($this, "Task '{$task['task']}' not supported.");
