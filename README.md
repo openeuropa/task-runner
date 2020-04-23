@@ -94,6 +94,38 @@ Task Runner commands can be customized in two ways:
       this file to declare default options which are expected to work with your
       application under regular circumstances. This file should be committed in
       the project.
+    * Third parties might implement config modifiers to act on config as it has
+      been built at this stage. A config modifier is a class implementing the
+      `\OpenEuropa\TaskRunner\Contract\ConfigModifierInterface`. Such a class
+      should be placed under the `TaskRunner\ConfigModifiers` relative
+      namespace. For instance when `Some\Namespace` points to the `src/`
+      directory, then the config modifier class should be placed in the
+      `src/TaskRunner/ConfigModifiers` directory and will have the namespace set
+      to `Some\Namespace\TaskRunner\ConfigModifiers`. The class name should end
+      with the `ConfigModifier` suffix. Use the `::modify()` method to alter the
+      configuration. A `@priority` annotation tag can be defined in the class
+      docblock in order to determine the order of config modifiers. If missed,
+      the "0 priority" is assumed. This mechanism allows also to insert custom
+      YAML config files in the flow, see the following example:
+      ```
+      namespace Some\Namespace\TaskRunner\ConfigModifiers;
+
+      use Consolidation\Config\ConfigInterface;
+      use OpenEuropa\TaskRunner\Contract\ConfigModifierInterface;
+      use Robo\Robo;
+
+      /**
+       * @priority 100
+       */
+      class AddCustomFileConfigModifier implements ConfigModifierInterface
+      {
+          public static function modify(ConfigInterface $config)
+          {
+              // Interleave custom.yml between runner.yml.dist and runner.yml.
+              Robo::loadConfiguration(['custom.yml'], $config);
+          }
+      }
+      ```
     * `runner.yml` - project specific user overrides. This file is also located
       in the root folder of the project that depends on the Task Runner. This
       file can be used to override options with values that are specific to the

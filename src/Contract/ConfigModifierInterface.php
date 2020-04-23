@@ -8,7 +8,7 @@ use \Consolidation\Config\ConfigInterface;
  * Provides an interface allowing alterations of task runner configuration.
  *
  * Classes implementing this interface:
- * - Should have TaskRunner\ConfigModifiers` as relative namespace. For
+ * - Should have `TaskRunner\ConfigModifiers` as relative namespace. For
  *   instance when `Some\Namespace` points to the `src/` directory, then the
  *   class should be placed in `src/TaskRunner/ConfigModifiers` and will have
  *   `Some\Namespace\TaskRunner\ConfigModifiers` as namespace.
