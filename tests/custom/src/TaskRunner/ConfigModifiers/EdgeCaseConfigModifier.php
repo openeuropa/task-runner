@@ -7,8 +7,8 @@ use OpenEuropa\TaskRunner\Contract\ConfigModifierInterface;
 use Robo\Robo;
 
 /**
- * We set here a very low priority to run even the default modifiers. This is
- * here just as proof that also the default modifiers can be overridden.
+ * We set here a very low priority to run even after the default modifiers. This
+ * is here just as proof that the default modifiers can be also overridden.
  *
  * @priority -2000
  */

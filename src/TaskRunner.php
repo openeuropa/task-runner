@@ -169,11 +169,11 @@ class TaskRunner
         $discovery->setRelativeNamespace('TaskRunner\ConfigModifiers')
             ->setSearchPattern('/.*ConfigModifier\.php$/');
 
-        // Add default config modifier classes. Setting very low priorities so
+        // Add default config modifier classes. Setting a very low priorities so
         // that we are sure that these modifiers are running at the very end.
-        // However, in some very specific circumstances, third-party modifiers
-        // are abie to set priorities lowers than these and, as an effect, they
-        // are able to override the default config modifiers,
+        // However, in some very specific circumstances, third-party config
+        // modifiers are abie to set priorities lower than these and, as an
+        // effect, they can override even these default config modifiers.
         $classes = [
             FileFromEnvironmentConfigModifier::class => -1300,
             LocalFileConfigModifier::class => -1000,
