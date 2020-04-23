@@ -94,35 +94,41 @@ Task Runner commands can be customized in two ways:
       this file to declare default options which are expected to work with your
       application under regular circumstances. This file should be committed in
       the project.
-    * Third parties might implement config modifiers to act on config as it has
-      been built at this stage. A config modifier is a class implementing the
-      `\OpenEuropa\TaskRunner\Contract\ConfigModifierInterface`. Such a class
-      should be placed under the `TaskRunner\ConfigModifiers` relative
-      namespace. For instance when `Some\Namespace` points to the `src/`
-      directory, then the config modifier class should be placed in the
-      `src/TaskRunner/ConfigModifiers` directory and will have the namespace set
-      to `Some\Namespace\TaskRunner\ConfigModifiers`. The class name should end
-      with the `ConfigModifier` suffix. Use the `::modify()` method to alter the
-      configuration. A `@priority` annotation tag can be defined in the class
-      docblock in order to determine the order of config modifiers. If missed,
-      the "0 priority" is assumed. This mechanism allows also to insert custom
-      YAML config files in the flow, see the following example:
+    * Third parties might implement config providers to modify the config,
+      passed as an array, by adding, overriding or removing array elements. A
+      config provider is a class implementing the `ConfigProviderInterface`.
+      Such a class should be placed under the `TaskRunner\ConfigProviders`
+      relative namespace. For instance when `Some\Namespace` points to `src/`
+      directory, then the config provider class should be placed under the
+      `src/TaskRunner/ConfigProviders` directory and will have the namespace set
+      to `Some\Namespace\TaskRunner\ConfigProviders`. The class name should end
+      with the `ConfigProvider` suffix. Use the `::provide()` method to alter
+      the configuration. A `@priority` annotation tag can be defined in the
+      class docblock in order to determine the order in which the config
+      providers are running. If missed, the "0 priority" is assumed. This
+      mechanism allows also to insert custom YAML config files in the flow, see
+      the following example:
       ```
-      namespace Some\Namespace\TaskRunner\ConfigModifiers;
+      namespace Some\Namespace\TaskRunner\ConfigProviders;
 
       use Consolidation\Config\ConfigInterface;
-      use OpenEuropa\TaskRunner\Contract\ConfigModifierInterface;
-      use Robo\Robo;
+      use OpenEuropa\TaskRunner\Contract\ConfigProviderInterface;
+      use OpenEuropa\TaskRunner\Traits\ConfigFromFilesTrait;
 
       /**
        * @priority 100
        */
-      class AddCustomFileConfigModifier implements ConfigModifierInterface
+      class AddCustomFileConfigProvider implements ConfigProviderInterface
       {
-          public static function modify(ConfigInterface $config)
+          use ConfigFromFilesTrait;
+          public static function provide(array &$config)
           {
               // Interleave custom.yml between runner.yml.dist and runner.yml.
               Robo::loadConfiguration(['custom.yml'], $config);
+              static::importFromFiles($config, [
+                  'custom.yml',
+                  'custom2.yml',
+              ]);
           }
       }
       ```

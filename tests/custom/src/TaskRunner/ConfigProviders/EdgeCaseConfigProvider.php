@@ -1,0 +1,22 @@
+<?php
+
+namespace My\Custom\TaskRunner\ConfigProviders;
+
+use OpenEuropa\TaskRunner\Contract\ConfigProviderInterface;
+
+/**
+ * We set here a very low priority to run even after the default providers. This
+ * is here just as proof that the default providers can be also overridden.
+ *
+ * @priority -2000
+ */
+class EdgeCaseConfigProvider implements ConfigProviderInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    public static function provide(array &$config)
+    {
+        $config['whatever'] = 'overwritten';
+    }
+}

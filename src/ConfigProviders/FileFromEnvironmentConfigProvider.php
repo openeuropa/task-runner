@@ -1,25 +1,26 @@
 <?php
 
-namespace OpenEuropa\TaskRunner\ConfigModifiers;
+namespace OpenEuropa\TaskRunner\ConfigProviders;
 
-use Consolidation\Config\ConfigInterface;
-use OpenEuropa\TaskRunner\Contract\ConfigModifierInterface;
-use Robo\Robo;
+use OpenEuropa\TaskRunner\Contract\ConfigProviderInterface;
+use OpenEuropa\TaskRunner\Traits\ConfigFromFilesTrait;
 
-class FileFromEnvironmentConfigModifier implements ConfigModifierInterface
+class FileFromEnvironmentConfigProvider implements ConfigProviderInterface
 {
+    use ConfigFromFilesTrait;
+
     /**
      * {@inheritdoc}
      */
-    public static function modify(ConfigInterface $config)
+    public static function provide(array &$config)
     {
         if ($yamlFile = static::getLocalConfigurationFilepath()) {
-            Robo::loadConfiguration([$yamlFile], $config);
+            static::importFromFiles($config, [$yamlFile]);
         }
     }
 
     /**
-     * Gets the configuration filepath from environment variable.
+     * Gets the configuration filepath from environment variables.
      *
      * @param string $configuration_file
      *   The default filepath.

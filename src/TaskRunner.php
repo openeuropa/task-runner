@@ -5,16 +5,18 @@ namespace OpenEuropa\TaskRunner;
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\Parser\Internal\DocblockTag;
 use Consolidation\AnnotatedCommand\Parser\Internal\TagFactory;
+use Consolidation\Config\Loader\ConfigProcessor;
 use Gitonomy\Git\Repository;
 use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use OpenEuropa\TaskRunner\Commands\DrupalCommands;
 use OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use OpenEuropa\TaskRunner\Commands\ReleaseCommands;
 use OpenEuropa\TaskRunner\Commands\RunnerCommands;
-use OpenEuropa\TaskRunner\ConfigModifiers\FileFromEnvironmentConfigModifier;
-use OpenEuropa\TaskRunner\ConfigModifiers\LocalFileConfigModifier;
+use OpenEuropa\TaskRunner\ConfigProviders\DefaultConfigProvider;
+use OpenEuropa\TaskRunner\ConfigProviders\FileFromEnvironmentConfigProvider;
+use OpenEuropa\TaskRunner\ConfigProviders\LocalFileConfigProvider;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
-use OpenEuropa\TaskRunner\Contract\ConfigModifierInterface;
+use OpenEuropa\TaskRunner\Contract\ConfigProviderInterface;
 use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
 use OpenEuropa\TaskRunner\Contract\TimeAwareInterface;
 use OpenEuropa\TaskRunner\Services\Composer;
@@ -97,13 +99,12 @@ class TaskRunner
         $this->workingDir = $this->getWorkingDir($this->input);
         chdir($this->workingDir);
 
-        $this->config = $this->createConfiguration();
+        $this->config = new Config();
         $this->application = $this->createApplication();
         $this->application->setAutoExit(false);
         $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config, $classLoader);
 
-        // Allow 3rd party to modify the configuration.
-        $this->modifyConfiguration();
+        $this->createConfiguration();
 
         // Create and initialize runner.
         $this->runner = new RoboRunner();
@@ -144,55 +145,44 @@ class TaskRunner
 
     /**
      * Create default configuration.
-     *
-     * @return Config
      */
     private function createConfiguration()
     {
-        $config = new Config();
-        $config->set('runner.working_dir', realpath($this->workingDir));
-        Robo::loadConfiguration([
-            __DIR__.'/../config/runner.yml',
-            'runner.yml.dist',
-        ], $config);
-
-        return $config;
-    }
-
-    /**
-     * Allows 3rd party to modify the configuration.
-     */
-    private function modifyConfiguration()
-    {
         /** @var \Robo\ClassDiscovery\RelativeNamespaceDiscovery $discovery */
         $discovery = Robo::service('relativeNamespaceDiscovery');
-        $discovery->setRelativeNamespace('TaskRunner\ConfigModifiers')
-            ->setSearchPattern('/.*ConfigModifier\.php$/');
+        $discovery->setRelativeNamespace('TaskRunner\ConfigProviders')
+            ->setSearchPattern('/.*ConfigProvider\.php$/');
 
-        // Add default config modifier classes. Setting a very low priorities so
-        // that we are sure that these modifiers are running at the very end.
-        // However, in some very specific circumstances, third-party config
-        // modifiers are abie to set priorities lower than these and, as an
-        // effect, they can override even these default config modifiers.
+        // Add default config provider classes. Setting extreme priorities so
+        // that we are sure that the default config provider runs first and the
+        // other two are running at the very end. However, in some very specific
+        // circumstances, third-party config providers are abie to set
+        // priorities, either higher or lower than these, and, as an effect,
+        // they can override even these default config providers.
         $classes = [
-            FileFromEnvironmentConfigModifier::class => -1300,
-            LocalFileConfigModifier::class => -1000,
+            DefaultConfigProvider::class => 1500,
+            LocalFileConfigProvider::class => -1000,
+            FileFromEnvironmentConfigProvider::class => -1500,
         ];
 
-        // Discover 3rd party modifiers.
+        // Discover 3rd party config providers.
         foreach ($discovery->getClasses() as $class) {
-            if (is_subclass_of($class, ConfigModifierInterface::class)) {
-                $classes[$class] = $this->getConfigModifierPriority($class);
+            if (is_subclass_of($class, ConfigProviderInterface::class)) {
+                $classes[$class] = $this->getConfigProviderPriority($class);
             }
         }
 
         // High priority modifiers run first.
         arsort($classes, SORT_NUMERIC);
 
+        $configArray = [];
         foreach (array_keys($classes) as $class) {
-            $class::modify($this->config);
+            $class::provide($configArray);
         }
 
+        // Resolve variables and import into config.
+        $processor = (new ConfigProcessor())->add($configArray);
+        $this->config->import($processor->export());
         // Keep the container in sync.
         $this->container->share('config', $this->config);
     }
@@ -202,7 +192,7 @@ class TaskRunner
      * @return float
      * @throws \ReflectionException
      */
-    private function getConfigModifierPriority($class)
+    private function getConfigProviderPriority($class)
     {
         $priority = 0.0;
         $reflectionClass = new \ReflectionClass($class);

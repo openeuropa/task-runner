@@ -346,6 +346,10 @@ EOF;
      */
     public function testUserConfigFile()
     {
+        // Create a local config file.
+        $runnerYaml = $this->getSandboxRoot().'/runner.yml';
+        file_put_contents($runnerYaml, Yaml::dump(['foo' => 'baz']));
+
         // Add the environment setting.
         putenv('OPENEUROPA_TASKRUNNER_CONFIG=' . __DIR__ . '/fixtures/userconfig.yml');
 
@@ -357,7 +361,7 @@ EOF;
         // Overwritten as `drupal` by tests/fixtures/userconfig.yml.
         $this->assertEquals('drupal', $runner->getConfig()->get('drupal.root'));
 
-        // Set as `['root' => 'drupal']` by TestConfigModifier::modify().
+        // Set as `['root' => 'drupal']` by TestConfigProvider::modify().
         // Overwritten as `['root' => 'wordpress']` by userconfig.yml.
         $this->assertSame(['root' => 'wordpress'], $runner->getConfig()->get('wordpress'));
 
@@ -365,8 +369,15 @@ EOF;
         $this->assertSame(['root' => 'joomla'], $runner->getConfig()->get('joomla'));
 
         // Set as `overwritten by edge case` by tests/fixtures/userconfig.yml.
-        // Overwritten as `overwritten` by EdgeCaseConfigModifier::modify().
+        // Overwritten as `overwritten` by EdgeCaseConfigProvider::modify().
         $this->assertSame('overwritten', $runner->getConfig()->get('whatever'));
+
+        // The 'qux' value is computed by using the ${foo} variable. We test
+        // that the replacements are done at the very end, when all the config
+        // providers had the chance to resolve the variables. ${foo} equals
+        // 'bar', in the tests/fixtures/third_party.yml file but is overwritten
+        // at the end, in tests/sandbox/runner.yml with 'baz'.
+        $this->assertSame('is-baz', $runner->getConfig()->get('qux'));
     }
 
     /**
