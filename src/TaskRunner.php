@@ -75,6 +75,7 @@ class TaskRunner
         DrupalCommands::class,
         DynamicCommands::class,
         ReleaseCommands::class,
+        RunnerCommands::class,
     ];
 
     /**
