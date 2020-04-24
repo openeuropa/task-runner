@@ -2,15 +2,12 @@
 
 namespace OpenEuropa\TaskRunner\Tests\Commands;
 
-use My\Custom\TestConfigSubscriber;
 use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use OpenEuropa\TaskRunner\TaskRunner;
 use OpenEuropa\TaskRunner\Tests\AbstractTest;
-use Robo\Robo;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -357,26 +354,26 @@ EOF;
         $input = new StringInput('list --working-dir=' . $this->getSandboxRoot());
         $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
 
-        // Set as `build` by config/runner.yml.
-        // Overwritten as `drupal` by tests/fixtures/userconfig.yml.
+        // Set as `build` by `config/runner.yml`.
+        // Overwritten as `drupal` by `tests/fixtures/userconfig.yml`.
         $this->assertEquals('drupal', $runner->getConfig()->get('drupal.root'));
 
-        // Set as `['root' => 'drupal']` by TestConfigProvider::modify().
-        // Overwritten as `['root' => 'wordpress']` by userconfig.yml.
+        // Set as `['root' => 'drupal']` by `TestConfigProvider::provide()`.
+        // Overwritten as `['root' => 'wordpress']` by `userconfig.yml`.
         $this->assertSame(['root' => 'wordpress'], $runner->getConfig()->get('wordpress'));
 
-        // Set as `['root' => 'joomla']` by tests/fixtures/third_party.yml.
+        // Set as `['root' => 'joomla']` by `tests/fixtures/third_party.yml`.
         $this->assertSame(['root' => 'joomla'], $runner->getConfig()->get('joomla'));
 
-        // Set as `overwritten by edge case` by tests/fixtures/userconfig.yml.
-        // Overwritten as `overwritten` by EdgeCaseConfigProvider::modify().
+        // Set as `overwritten by edge case` by `tests/fixtures/userconfig.yml`.
+        // Overwritten as `overwritten` by `EdgeCaseConfigProvider::provide()`.
         $this->assertSame('overwritten', $runner->getConfig()->get('whatever'));
 
-        // The 'qux' value is computed by using the ${foo} variable. We test
+        // The `qux` value is computed by using the `${foo}` token. We test
         // that the replacements are done at the very end, when all the config
-        // providers had the chance to resolve the variables. ${foo} equals
-        // 'bar', in the tests/fixtures/third_party.yml file but is overwritten
-        // at the end, in tests/sandbox/runner.yml with 'baz'.
+        // providers had the chance to resolve the tokens. `${foo}` equals
+        // `bar`, in the `tests/fixtures/third_party.yml` file but is
+        // overwritten at the end, in `tests/sandbox/runner.yml` with `baz`.
         $this->assertSame('is-baz', $runner->getConfig()->get('qux'));
     }
 
