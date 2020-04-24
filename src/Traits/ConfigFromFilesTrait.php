@@ -4,20 +4,22 @@ namespace OpenEuropa\TaskRunner\Traits;
 
 use Consolidation\Config\Loader\YamlConfigLoader;
 use Dflydev\DotAccessData\Util;
+use Robo\Config\Config;
 
 trait ConfigFromFilesTrait
 {
     /**
-     * Loads configs as arrays from $files and merge them in $config.
+     * Loads configs from $files and merge them in $config.
      *
-     * @param array $config
+     * @param \Robo\Config\Config $config
      * @param array $files
      */
-    private static function importFromFiles(array &$config, array $files)
+    private static function importFromFiles(Config $config, array $files)
     {
         $loader = new YamlConfigLoader();
         foreach ($files as $file) {
-            $config = Util::mergeAssocArray($config, $loader->load($file)->export());
+            $configArray = Util::mergeAssocArray($config->export(), $loader->load($file)->export());
+            $config->replace($configArray);
         }
     }
 }

@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\ConfigProviders;
 
 use OpenEuropa\TaskRunner\Contract\ConfigProviderInterface;
 use OpenEuropa\TaskRunner\Traits\ConfigFromFilesTrait;
+use Robo\Config\Config;
 
 class FileFromEnvironmentConfigProvider implements ConfigProviderInterface
 {
@@ -12,7 +15,7 @@ class FileFromEnvironmentConfigProvider implements ConfigProviderInterface
     /**
      * {@inheritdoc}
      */
-    public static function provide(array &$config)
+    public static function provide(Config $config): void
     {
         if ($yamlFile = static::getLocalConfigurationFilepath()) {
             static::importFromFiles($config, [$yamlFile]);
@@ -28,7 +31,7 @@ class FileFromEnvironmentConfigProvider implements ConfigProviderInterface
      * @return string|null
      *   The local configuration file path, or null if it doesn't exist.
      */
-    private static function getLocalConfigurationFilepath($configuration_file = 'openeuropa/taskrunner/runner.yml')
+    private static function getLocalConfigurationFilepath(string $configuration_file = 'openeuropa/taskrunner/runner.yml'): ?string
     {
         if ($config = getenv('OPENEUROPA_TASKRUNNER_CONFIG')) {
             return $config;

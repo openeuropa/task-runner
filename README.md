@@ -94,8 +94,7 @@ Task Runner commands can be customized in two ways:
       this file to declare default options which are expected to work with your
       application under regular circumstances. This file should be committed in
       the project.
-    * Third parties might implement config providers to modify the config,
-      passed as an array, by adding, overriding or removing array elements. A
+    * Third parties might implement config providers to modify the config. A
       config provider is a class implementing the `ConfigProviderInterface`.
       Such a class should be placed under the `TaskRunner\ConfigProviders`
       relative namespace. For instance when `Some\Namespace` points to `src/`
@@ -103,17 +102,17 @@ Task Runner commands can be customized in two ways:
       `src/TaskRunner/ConfigProviders` directory and will have the namespace set
       to `Some\Namespace\TaskRunner\ConfigProviders`. The class name should end
       with the `ConfigProvider` suffix. Use the `::provide()` method to alter
-      the configuration. A `@priority` annotation tag can be defined in the
-      class docblock in order to determine the order in which the config
+      the configuration object. A `@priority` annotation tag can be defined in
+      the class docblock in order to determine the order in which the config
       providers are running. If missed, the "0 priority" is assumed. This
       mechanism allows also to insert custom YAML config files in the flow, see
       the following example:
       ```
       namespace Some\Namespace\TaskRunner\ConfigProviders;
 
-      use Consolidation\Config\ConfigInterface;
       use OpenEuropa\TaskRunner\Contract\ConfigProviderInterface;
       use OpenEuropa\TaskRunner\Traits\ConfigFromFilesTrait;
+      use Robo\Config\Config;
 
       /**
        * @priority 100
@@ -121,10 +120,9 @@ Task Runner commands can be customized in two ways:
       class AddCustomFileConfigProvider implements ConfigProviderInterface
       {
           use ConfigFromFilesTrait;
-          public static function provide(array &$config)
+          public static function provide(Config $config): void
           {
               // Interleave custom.yml between runner.yml.dist and runner.yml.
-              Robo::loadConfiguration(['custom.yml'], $config);
               static::importFromFiles($config, [
                   'custom.yml',
                   'custom2.yml',

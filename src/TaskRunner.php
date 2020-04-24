@@ -144,10 +144,13 @@ class TaskRunner
     }
 
     /**
-     * Create default configuration.
+     * Create configuration.
      */
     private function createConfiguration()
     {
+        $config = new Config();
+        $config->set('runner.working_dir', realpath($this->workingDir));
+
         /** @var \Robo\ClassDiscovery\RelativeNamespaceDiscovery $discovery */
         $discovery = Robo::service('relativeNamespaceDiscovery');
         $discovery->setRelativeNamespace('TaskRunner\ConfigProviders')
@@ -175,17 +178,12 @@ class TaskRunner
         // High priority modifiers run first.
         arsort($classes, SORT_NUMERIC);
 
-        $configArray = [
-            'runner' => [
-                'working_dir' => realpath($this->workingDir),
-            ],
-        ];
         foreach (array_keys($classes) as $class) {
-            $class::provide($configArray);
+            $class::provide($config);
         }
 
         // Resolve variables and import into config.
-        $processor = (new ConfigProcessor())->add($configArray);
+        $processor = (new ConfigProcessor())->add($config->export());
         $this->config->import($processor->export());
         // Keep the container in sync.
         $this->container->share('config', $this->config);

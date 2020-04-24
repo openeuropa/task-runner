@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Contract;
+
+use Robo\Config\Config;
 
 /**
  * Interface for configuration providers.
@@ -19,10 +23,13 @@ interface ConfigProviderInterface
     /**
      * Adds or overrides configuration.
      *
-     * Implementations should alter the `$config` array, passed by reference, by
-     * adding, overriding or removing array elements. Variables are allowed.
+     * Implementations should alter the `$config` object, passed to the method.
+     * A convenient way to provide additional config or override the existing
+     * one is to use the `ConfigFromFilesTrait::importFromFiles()` method and
+     * load overrides form custom config .yml files. But the $config object can
+     * be manipulated also directly using its methods, e.g. $config->().
      *
-     * @param array $config
+     * @param \Robo\Config\Config $config
      */
-    public static function provide(array &$config);
+    public static function provide(Config $config): void;
 }
