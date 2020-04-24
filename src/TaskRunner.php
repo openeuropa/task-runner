@@ -175,7 +175,11 @@ class TaskRunner
         // High priority modifiers run first.
         arsort($classes, SORT_NUMERIC);
 
-        $configArray = [];
+        $configArray = [
+            'runner' => [
+                'working_dir' => realpath($this->workingDir),
+            ],
+        ];
         foreach (array_keys($classes) as $class) {
             $class::provide($configArray);
         }
