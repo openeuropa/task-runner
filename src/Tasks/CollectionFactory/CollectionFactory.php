@@ -190,6 +190,9 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 if (!empty($task['options'])) {
                     $taskExec->options($task['options']);
                 }
+                if (!empty($task['dir'])) {
+                    $taskExec->dir($task['dir']);
+                }
                 return $taskExec;
 
             default:
