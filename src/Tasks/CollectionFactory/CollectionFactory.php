@@ -95,8 +95,8 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     protected function taskFactory($task)
     {
         if (is_string($task)) {
-            @trigger_error('Defining a task as a plain text is deprecated in openeuropa/task-runner:1.0.0 and is removed from openeuropa/task-runner:2.0.0. Use the "exec" task and pass arguments and options.', E_USER_DEPRECATED);
-            return $this->taskExec($task);
+            @trigger_error('Defining a task as a plain text is depracted. Use the "exec" task and pass arguments and options.', E_USER_DEPRECATED);
+            return $this->taskExec($task)->interactive($this->isTtySupported());
         }
 
         $this->secureOption($task, 'force', false);
@@ -183,7 +183,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 return $this->collectionBuilder()->addTaskList($tasks);
 
             case 'exec':
-                $taskExec = $this->taskExec($task['command']);
+                $taskExec = $this->taskExec($task['command'])->interactive($this->isTtySupported());
                 if (!empty($task['arguments'])) {
                     $taskExec->args($task['arguments']);
                 }
@@ -210,5 +210,15 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     protected function secureOption(array &$task, $name, $default)
     {
         $task[$name] = isset($task[$name]) ? $task[$name] : $default;
+    }
+
+    /**
+     * Checks if the TTY mode is supported
+     *
+     * @return bool
+     */
+    protected function isTtySupported()
+    {
+        return PHP_OS !== 'WINNT' && (bool) @proc_open('echo 1 >/dev/null', [['file', '/dev/tty', 'r'], ['file', '/dev/tty', 'w'], ['file', '/dev/tty', 'w']], $pipes);
     }
 }
