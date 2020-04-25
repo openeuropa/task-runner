@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Commands;
 
+use Robo\Exception\AbortTasksException;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -9,13 +12,28 @@ use Symfony\Component\Yaml\Yaml;
  */
 class RunnerCommands extends AbstractCommands
 {
+
     /**
-     * Displays the current configuration
+     * Displays the current configuration with YAML representation.
+     *
+     * If no argument is passed the whole configuration is outputted. To display
+     * a specific configuration, pass the key as argument (e.g. `drupal.root`).
      *
      * @command config
+     *
+     * @param string|null $key
+     * @return string
+     * @throws \Robo\Exception\AbortTasksException
+     *
+     * @todo Implement a `--format` option to allow formatted output.
      */
-    public function config()
+    public function config(?string $key = null): string
     {
-        return Yaml::dump($this->getConfig()->export(), 10, 2);
+        if (!$key) {
+            $config = $this->getConfig()->export();
+        } elseif (!$config = $this->getConfig()->get($key)) {
+            throw new AbortTasksException("Invalid '$key' key.");
+        }
+        return trim(Yaml::dump($config, 10, 2));
     }
 }
