@@ -31,8 +31,11 @@ class RunnerCommands extends AbstractCommands
     {
         if (!$key) {
             $config = $this->getConfig()->export();
-        } elseif (!$config = $this->getConfig()->get($key)) {
-            throw new AbortTasksException("Invalid '$key' key.");
+        } else {
+            if (!$this->getConfig()->has($key)) {
+                throw new AbortTasksException("Invalid '$key' key.");
+            }
+            $config = $this->getConfig()->get($key);
         }
         return trim(Yaml::dump($config, 10, 2));
     }
