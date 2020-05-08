@@ -124,7 +124,7 @@
   contains:
     - "exec('foo/bar -t abc --future-release=1.2.3')"
 
-- command: 'changelog:generate --token 123 --tag 1.2.3'
+- command: 'changelog:generate --release-branch foo'
   configuration:
     github:
       token: "abc"
@@ -133,7 +133,18 @@
       "name": "foo/bar"
     }
   contains:
-    - "exec('foo/bar -t 123 --future-release=1.2.3')"
+    - "exec('foo/bar -t abc --release-branch=foo')"
+
+- command: 'changelog:generate --token 123 --tag 1.2.3 --release-branch foo'
+  configuration:
+    github:
+      token: "abc"
+  composer: >
+    {
+      "name": "foo/bar"
+    }
+  contains:
+    - "exec('foo/bar -t 123 --future-release=1.2.3 --release-branch=foo')"
 
 - command: 'drupal:site-post-install'
   configuration:
