@@ -76,7 +76,7 @@ docker-compose exec web ./vendor/bin/grumphp run
 To run the phpunit tests:
 
 ```bash
-docker-compose exec web ./vendor/bin/phpunit
+docker-compose exec --user=$(id -u):$(id -g) web ./vendor/bin/phpunit
 ```
 
 ## Configuration
