@@ -78,7 +78,6 @@ class CollectionFactoryTest extends AbstractTaskTest
      */
     public function testRunTask()
     {
-
         $filePath = $this->getSandboxFilepath('test-file.txt');
         $tasks = [
           [
