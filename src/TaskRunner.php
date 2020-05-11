@@ -100,7 +100,20 @@ class TaskRunner
     }
 
     /**
+     * Executes the command that has been provided on the command line input.
+     *
+     * A command consists of multiple tasks and is defined either as a Command
+     * class in the `vendor\TaskRunner\Commands` subnamespace, or a dynamic
+     * command defined in "runner.yml".
+     *
+     * Robo is not architected in a way that makes it easily extensible. It has
+     * no events that we can hook into to allow it to discover our two custom
+     * types of commands. We work around this by registering our own commands on
+     * the container in the same way as is done by Robo, and then delegating to
+     * `\Robo\Runner::run()`.
+     *
      * @return int
+     *   The exit code returned by the command.
      */
     public function run()
     {
@@ -111,10 +124,12 @@ class TaskRunner
         // Register command classes.
         $this->runner->registerCommandClasses($this->application, $commandClasses);
 
-        // Register commands defined in runner.yml file.
+        // Register commands defined in runner.yml file. These are registered
+        // after the command classes so that dynamic commands can override
+        // commands defined in classes.
         $this->registerDynamicCommands($this->application);
 
-        // Run command.
+        // Run the command entered by the user in the CLI.
         return $this->runner->run($this->input, $this->output, $this->application);
     }
 
@@ -237,7 +252,15 @@ class TaskRunner
     }
 
     /**
+     * Registers dynamic commands in the container so Robo can find them.
+     *
+     * The standard class defined commands have already been registered at this
+     * point. If a dynamic command has the same identifier or alias as a class
+     * defined command it will replace it. This allows users to override
+     * existing commands in their runner.yml file.
+     *
      * @param \Robo\Application $application
+     *   The Robo Symfony application.
      */
     private function registerDynamicCommands(Application $application)
     {
@@ -247,6 +270,11 @@ class TaskRunner
 
         /** @var \Consolidation\AnnotatedCommand\AnnotatedCommandFactory $commandFactory */
         $commandFactory = $this->container->get('commandFactory');
+
+        // Robo registers command classes in the container using the qualified
+        // namespace with "Commands" appended to it. This results in identifiers
+        // like "OpenEuropa\TaskRunner\Commands\DrupalCommandsCommands".
+        // @see \Robo\Runner::instantiateCommandClass()
         $commandFileName = DynamicCommands::class."Commands";
         $this->runner->registerCommandClass($this->application, DynamicCommands::class);
         $commandClass = $this->container->get($commandFileName);
@@ -274,6 +302,12 @@ class TaskRunner
     }
 
     /**
+     * Discovers task runner commands that are provided by various packages.
+     *
+     * This traverses the namespace tree and returns all classes that are
+     * located in the source tree in the folder "TaskRunner/Commands/" and have
+     * a filename that ends with "*Command.php" or "*Commands.php".
+     *
      * @return string[]
      */
     protected function discoverCommandClasses()

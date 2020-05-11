@@ -370,11 +370,18 @@ EOF;
     }
 
     /**
+     * Tests that existing commands can be overridden in the runner config.
+     *
      * @dataProvider overrideCommandDataProvider
      *
-     * @param $command
+     * @param string $command
+     *   A command that will be executed by the task runner.
      * @param array $runnerConfig
+     *   An array of task runner configuration data, equivalent to what would be
+     *   written in a "runner.yml" file. This contains the overridden commands.
      * @param array $expected
+     *   An array of strings which are expected to be output to the terminal
+     *   during execution of the command.
      */
     public function testOverrideCommand($command, array $runnerConfig, array $expected)
     {
@@ -385,6 +392,7 @@ EOF;
         $output = new BufferedOutput();
         $runner = new TaskRunner($input, $output, $this->getClassLoader());
         $runner->run();
+        // Check that the output is as expected.
         $text = $output->fetch();
 
         foreach ($expected as $row) {
@@ -449,9 +457,20 @@ EOF;
     }
 
     /**
+     * Provides test cases for ::testOverrideCommand().
+     *
      * @return array
+     *   An array of test cases, each one an array with the following keys:
+     *   - 'command': A string representing a command that will be executed by
+     *     the task runner.
+     *   - 'runnerConfig': An array of task runner configuration data,
+     *     equivalent to what would be written in a "runner.yml" file.
+     *   - 'expected': An array of strings which are expected to be output to
+     *     the terminal during execution of the command.
+     *
+     * @see \OpenEuropa\TaskRunner\Tests\Commands\CommandsTest::testOverrideCommand()
      */
-    public function overrideCommandDataProvider()
+    public function overrideCommandDataProvider(): array
     {
         return $this->getFixtureContent('override.yml');
     }

@@ -6,9 +6,11 @@ use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
 use Robo\Robo;
 
 /**
- * Class DynamicCommands
+ * Command class for dynamic commands.
  *
- * @package OpenEuropa\TaskRunner\Commands
+ * Dynamic commands are defined in YAML and have no dedicated command class.
+ * A command is comprised of an array of tasks with their configuration.
+ * See the section in the README on dynamic commands for more information.
  */
 class DynamicCommands extends AbstractCommands
 {

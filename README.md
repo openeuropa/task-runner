@@ -131,12 +131,12 @@ The Task Runner comes with the following built-in commands:
 
 Run `./vendor/bin/run help [command-name]` for more information about each command's capabilities.
 
-## Expose custom commands as YAML configuration
+## Expose "dynamic" commands as YAML configuration
 
 The Task Runner allows you to expose new commands by just listing its [tasks](http://robo.li/getting-started/#tasks)
 under the `commands:` property in `runner.yml.dist`/`runner.yml`.
 
-For example, the following YAML portion will expose two commands, `drupal:site-setup` and `setup:behat`:
+For example, the following YAML portion will expose two dynamic commands, `drupal:site-setup` and `setup:behat`:
 
 ```yaml
 commands:
