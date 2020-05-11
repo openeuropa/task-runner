@@ -80,14 +80,14 @@ class CollectionFactoryTest extends AbstractTaskTest
     {
         $filePath = $this->getSandboxFilepath('test-file.txt');
         $tasks = [
-          [
-              'task' => 'run',
-              'command' => 'custom:test',
-              'options' => [
-                  'filepath' => $filePath,
-                  'content' => __METHOD__,
-              ],
-          ],
+            [
+                'task' => 'run',
+                'command' => 'custom:test',
+                'options' => [
+                    'filepath' => $filePath,
+                    'content' => __METHOD__,
+                ],
+            ],
         ];
 
         $collectionFactory = $this->taskCollectionFactory($tasks);
