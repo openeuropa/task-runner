@@ -391,10 +391,13 @@ EOF;
         $input = new StringInput("{$command} --working-dir=".$this->getSandboxRoot());
         $output = new BufferedOutput();
         $runner = new TaskRunner($input, $output, $this->getClassLoader());
-        $runner->run();
+        $exit_code = $runner->run();
+
+        // Check that the command succeeded, i.e. has exit code 0.
+        $this->assertEquals(0, $exit_code);
+
         // Check that the output is as expected.
         $text = $output->fetch();
-
         foreach ($expected as $row) {
             $this->assertContains($row, $text);
         }
