@@ -104,7 +104,7 @@ Task Runner commands can be customized in two ways:
       with the `ConfigProvider` suffix. Use the `::provide()` method to alter
       the configuration object. A `@priority` annotation tag can be defined in
       the class docblock in order to determine the order in which the config
-      providers are running. If missed, the "0 priority" is assumed. This
+      providers are running. If omitted, `@priority 0` is assumed. This
       mechanism allows also to insert custom YAML config files in the flow, see
       the following example:
       ```
@@ -122,7 +122,10 @@ Task Runner commands can be customized in two ways:
           use ConfigFromFilesTrait;
           public static function provide(Config $config): void
           {
-              // Interleave custom.yml between runner.yml.dist and runner.yml.
+              // Load the configuration from custom.yml and custom2.yml and
+              // apply it to the configuration object. This will override config
+              // from runner.yml.dist (which has priority 1500) but get
+              // overridden by the config from runner.yml (priority -1000).
               static::importFromFiles($config, [
                   'custom.yml',
                   'custom2.yml',

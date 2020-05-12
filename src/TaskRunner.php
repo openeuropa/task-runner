@@ -144,7 +144,7 @@ class TaskRunner
     }
 
     /**
-     * Create configuration.
+     * Discovers and parses the configuration files, and merges them into the Config object.
      */
     private function createConfiguration()
     {

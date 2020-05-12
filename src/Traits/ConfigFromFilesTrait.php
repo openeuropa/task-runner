@@ -6,13 +6,18 @@ use Consolidation\Config\Loader\YamlConfigLoader;
 use Dflydev\DotAccessData\Util;
 use Robo\Config\Config;
 
+/**
+ * Reusable code for loading configuration stored in files.
+ */
 trait ConfigFromFilesTrait
 {
     /**
-     * Loads configs from $files and merge them in $config.
+     * Loads configuration from YAML files and merges it in the given config object.
      *
      * @param \Robo\Config\Config $config
+     *   The configuration object to update.
      * @param array $files
+     *   An array of paths to configuration files in YAML format.
      */
     private static function importFromFiles(Config $config, array $files)
     {
