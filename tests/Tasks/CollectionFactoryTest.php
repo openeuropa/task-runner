@@ -79,20 +79,19 @@ class CollectionFactoryTest extends AbstractTaskTest
     public function testRunTask()
     {
         $filePath = $this->getSandboxFilepath('test-file.txt');
-        $tasks = [
-            [
-                'task' => 'run',
-                'command' => 'custom:test',
-                'options' => [
-                    'filepath' => $filePath,
-                    'content' => __METHOD__,
-                ],
+
+        $tasks = [];
+        $tasks[] = [
+            'task' => 'run',
+            'command' => 'custom:test',
+            'arguments' => [
+                __METHOD__,
+            ],
+            'options' => [
+                'filepath' => $filePath,
             ],
         ];
-
-        $collectionFactory = $this->taskCollectionFactory($tasks);
-        $collectionFactory->getConfig()->set('runner.bin_dir', realpath(__DIR__ . '/../../bin'));
-        $collectionFactory->run();
+        $this->taskCollectionFactory($tasks)->run();
 
         $this->assertSame(__METHOD__, file_get_contents($filePath));
     }
