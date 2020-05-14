@@ -6,7 +6,7 @@ use OpenEuropa\TaskRunner\Commands\AbstractCommands;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class TestCommands.
+ * Commands for testing CollectionFactory tasks.
  */
 class TestCommands extends AbstractCommands
 {
