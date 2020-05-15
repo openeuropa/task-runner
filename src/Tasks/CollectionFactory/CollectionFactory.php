@@ -95,7 +95,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     protected function taskFactory($task)
     {
         if (is_string($task)) {
-            @trigger_error('Defining a task as a plain text is depracted. Use the "exec" task and pass arguments and options.', E_USER_DEPRECATED);
+            @trigger_error('Defining a task as a plain text is deprecated. Use the "exec" task and pass arguments and options.', E_USER_DEPRECATED);
             return $this->taskExec($task)->interactive($this->isTtySupported());
         }
 
