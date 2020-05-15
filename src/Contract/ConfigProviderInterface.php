@@ -20,6 +20,11 @@ use Robo\Config\Config;
 interface ConfigProviderInterface
 {
     /**
+     * @var string
+     */
+    const DEFAULT_CONFIG_LOCATION = 'openeuropa/taskrunner/runner.yml';
+
+    /**
      * Adds or overrides configuration.
      *
      * Implementations should alter the `$config` object, passed to the method.

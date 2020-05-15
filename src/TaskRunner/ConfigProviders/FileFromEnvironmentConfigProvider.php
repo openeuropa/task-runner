@@ -45,24 +45,21 @@ class FileFromEnvironmentConfigProvider implements ConfigProviderInterface
     /**
      * Gets the configuration filepath from environment variables.
      *
-     * @param string $configuration_file
-     *   The default filepath.
-     *
      * @return string|null
      *   The local configuration file path, or null if it doesn't exist.
      */
-    private static function getLocalConfigurationFilepath(string $configuration_file = 'openeuropa/taskrunner/runner.yml'): ?string
+    private static function getLocalConfigurationFilepath(): ?string
     {
         if ($config = getenv('OPENEUROPA_TASKRUNNER_CONFIG')) {
             return $config;
         }
 
         if ($config = getenv('XDG_CONFIG_HOME')) {
-            return $config . '/' . $configuration_file;
+            return $config . '/' . static::DEFAULT_CONFIG_LOCATION;
         }
 
         if ($home = getenv('HOME')) {
-            return getenv('HOME') . '/.config/' . $configuration_file;
+            return getenv('HOME') . '/.config/' . static::DEFAULT_CONFIG_LOCATION;
         }
 
         return null;
