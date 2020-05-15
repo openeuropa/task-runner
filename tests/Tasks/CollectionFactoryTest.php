@@ -75,21 +75,15 @@ class CollectionFactoryTest extends AbstractTaskTest
 
     /**
      * Tests the exec task and old style exec task deprecation.
-     *
-     * @expectedDeprecation Defining a task as a plain text is deprecated. Use the "exec" task and pass arguments and options.
-     * @group legacy
      */
     public function testExecTask(): void
     {
         $tasks = [
-            // This form is deprecated.
-            'touch -t 198006062359.59 '.$this->getSandboxFilepath('deprecated.txt'),
-            // Valid usage.
             [
                 'task' => 'exec',
                 'command' => 'touch',
                 'arguments' => [
-                    'current.txt',
+                    'file.txt',
                 ],
                 'options' => [
                     // 1980-06-06 23:59:59.
@@ -100,12 +94,8 @@ class CollectionFactoryTest extends AbstractTaskTest
         ];
         $this->taskCollectionFactory($tasks)->run();
 
-        $this->assertFileExists($this->getSandboxFilepath('deprecated.txt'));
-        $mtime = gmdate('Y-m-d H:i:s', filemtime($this->getSandboxFilepath('deprecated.txt')));
-        $this->assertSame('1980-06-06 23:59:59', $mtime);
-
-        $this->assertFileExists($this->getSandboxFilepath('current.txt'));
-        $mtime = gmdate('Y-m-d H:i:s', filemtime($this->getSandboxFilepath('current.txt')));
+        $this->assertFileExists($this->getSandboxFilepath('file.txt'));
+        $mtime = gmdate('Y-m-d H:i:s', filemtime($this->getSandboxFilepath('file.txt')));
         $this->assertSame('1980-06-06 23:59:59', $mtime);
     }
 
