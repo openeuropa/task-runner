@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenEuropa\TaskRunner\Contract;
 
+use OpenEuropa\TaskRunner\Traits\ConfigFromFilesTrait;
 use Robo\Config\Config;
 
 /**
@@ -15,8 +16,6 @@ use Robo\Config\Config;
  *   class should be placed in `src/TaskRunner/ConfigProviders` and will have
  *   `Some\Namespace\TaskRunner\ConfigProviders` as namespace.
  * - The class name should end with the `ConfigProvider` suffix.
- *
- * @package OpenEuropa\TaskRunner\Contract
  */
 interface ConfigProviderInterface
 {
@@ -30,6 +29,8 @@ interface ConfigProviderInterface
      * be manipulated also directly using its methods, e.g. $config->().
      *
      * @param \Robo\Config\Config $config
+     *
+     * @see ConfigFromFilesTrait::importFromFiles()
      */
     public static function provide(Config $config): void;
 }
