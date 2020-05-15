@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OpenEuropa\TaskRunner\ConfigProviders;
+namespace OpenEuropa\TaskRunner\TaskRunner\ConfigProviders;
 
 use OpenEuropa\TaskRunner\Contract\ConfigProviderInterface;
 use OpenEuropa\TaskRunner\Traits\ConfigFromFilesTrait;
@@ -11,12 +11,22 @@ use Robo\Config\Config;
 /**
  * Provides configuration for the local environment.
  *
- * This will look in the following locations in order, and will apply the configuration of the first found file. Any
- * subsequent matches will be ignored.
+ * This will look in the following locations, and will apply the configuration
+ * of the first found file. Any subsequent matches will be ignored.
  *
- * 1. The location specified in the OPENEUROPA_TASKRUNNER_CONFIG environment variable.
- * 2. The config location following the freedesktop.org specification: $XDG_CONFIG_HOME/openeuropa/taskrunner/runner.yml
- * 3. The configuration in the user's home folder: $HOME/.config/openeuropa/taskrunner/runner.yml
+ * 1. Location specified in the OPENEUROPA_TASKRUNNER_CONFIG environment variable.
+ * 2. Location following the freedesktop.org specification:
+ *    ${XDG_CONFIG_HOME}/openeuropa/taskrunner/runner.yml
+ * 3. The configuration in the user's home folder:
+ *    {$HOME}/.config/openeuropa/taskrunner/runner.yml
+ *
+ * The config provider priority is very low to make sure this config provider
+ * runs at the very end, being able override configurations from all other
+ * providers in the chain. However, in some very special circumstances,
+ * third-party config providers are still abie to set priorities lower than
+ * this, making possible to override even config provided by this plugin.
+ *
+ * @priority -1500
  */
 class FileFromEnvironmentConfigProvider implements ConfigProviderInterface
 {

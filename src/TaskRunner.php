@@ -12,9 +12,6 @@ use OpenEuropa\TaskRunner\Commands\DrupalCommands;
 use OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use OpenEuropa\TaskRunner\Commands\ReleaseCommands;
 use OpenEuropa\TaskRunner\Commands\RunnerCommands;
-use OpenEuropa\TaskRunner\ConfigProviders\DefaultConfigProvider;
-use OpenEuropa\TaskRunner\ConfigProviders\FileFromEnvironmentConfigProvider;
-use OpenEuropa\TaskRunner\ConfigProviders\LocalFileConfigProvider;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use OpenEuropa\TaskRunner\Contract\ConfigProviderInterface;
 use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
@@ -144,31 +141,38 @@ class TaskRunner
     }
 
     /**
-     * Discovers and parses the configuration files, and merges them into the Config object.
+     * Parses the configuration files, and merges them into the Config object.
      */
     private function createConfiguration()
     {
         $config = new Config();
         $config->set('runner.working_dir', realpath($this->workingDir));
 
+        foreach ($this->getConfigProviders() as $class) {
+            $class::provide($config);
+        }
+
+        // Resolve variables and import into config.
+        $processor = (new ConfigProcessor())->add($config->export());
+        $this->config->import($processor->export());
+        // Keep the container in sync.
+        $this->container->share('config', $this->config);
+    }
+
+    /**
+     * Discovers all config provider classes.
+     *
+     * @return array
+     * @throws \ReflectionException
+     */
+    private function getConfigProviders(): array
+    {
         /** @var \Robo\ClassDiscovery\RelativeNamespaceDiscovery $discovery */
         $discovery = Robo::service('relativeNamespaceDiscovery');
         $discovery->setRelativeNamespace('TaskRunner\ConfigProviders')
             ->setSearchPattern('/.*ConfigProvider\.php$/');
 
-        // Add default config provider classes. Setting extreme priorities so
-        // that we are sure that the default config provider runs first and the
-        // other two are running at the very end. However, in some very specific
-        // circumstances, third-party config providers are abie to set
-        // priorities, either higher or lower than these, and, as an effect,
-        // they can override even these default config providers.
-        $classes = [
-            DefaultConfigProvider::class => 1500,
-            LocalFileConfigProvider::class => -1000,
-            FileFromEnvironmentConfigProvider::class => -1500,
-        ];
-
-        // Discover 3rd party config providers.
+        // Discover config providers.
         foreach ($discovery->getClasses() as $class) {
             if (is_subclass_of($class, ConfigProviderInterface::class)) {
                 $classes[$class] = $this->getConfigProviderPriority($class);
@@ -178,15 +182,7 @@ class TaskRunner
         // High priority modifiers run first.
         arsort($classes, SORT_NUMERIC);
 
-        foreach (array_keys($classes) as $class) {
-            $class::provide($config);
-        }
-
-        // Resolve variables and import into config.
-        $processor = (new ConfigProcessor())->add($config->export());
-        $this->config->import($processor->export());
-        // Keep the container in sync.
-        $this->container->share('config', $this->config);
+        return array_keys($classes);
     }
 
     /**
