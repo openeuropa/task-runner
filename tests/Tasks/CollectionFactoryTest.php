@@ -92,7 +92,6 @@ class CollectionFactoryTest extends AbstractTaskTest
             ],
         ];
         $this->taskCollectionFactory($tasks)->run();
-
         $this->assertSame(__METHOD__, file_get_contents($filePath));
     }
 

@@ -150,7 +150,9 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 ]);
 
             case "run":
-                $taskExec = $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')->arg($task['command']);
+                $taskExec = $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')
+                    ->arg($task['command'])
+                    ->interactive($this->isTtySupported());
                 if (!empty($task['arguments'])) {
                     $taskExec->args($task['arguments']);
                 }
@@ -203,5 +205,15 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     protected function secureOption(array &$task, $name, $default)
     {
         $task[$name] = isset($task[$name]) ? $task[$name] : $default;
+    }
+
+    /**
+     * Checks if the TTY mode is supported
+     *
+     * @return bool
+     */
+    protected function isTtySupported()
+    {
+        return PHP_OS !== 'WINNT' && (bool) @proc_open('echo 1 >/dev/null', [['file', '/dev/tty', 'r'], ['file', '/dev/tty', 'w'], ['file', '/dev/tty', 'w']], $pipes);
     }
 }
