@@ -20,6 +20,15 @@ use Robo\Config\Config;
 interface ConfigProviderInterface
 {
     /**
+     * The relative path for an environment specific config file.
+     *
+     * If this file is found in the local environment's default configuration
+     * path (such as $XDG_CONFIG_HOME or $HOME/.config/) then it will
+     * automatically be included.
+     *
+     * Any custom config providers that read config from a hierarchical data
+     * storage are suggested to use this path.
+     *
      * @var string
      */
     const DEFAULT_CONFIG_LOCATION = 'openeuropa/taskrunner/runner.yml';

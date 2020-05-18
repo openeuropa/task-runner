@@ -149,6 +149,7 @@ class TaskRunner
         $config->set('runner.working_dir', realpath($this->workingDir));
 
         foreach ($this->getConfigProviders() as $class) {
+            /** @var \OpenEuropa\TaskRunner\Contract\ConfigProviderInterface $class */
             $class::provide($config);
         }
 
@@ -160,10 +161,13 @@ class TaskRunner
     }
 
     /**
-     * Discovers all config provider classes.
+     * Discovers all config providers.
      *
-     * @return array
+     * @return string[]
+     *   An array of fully qualified class names of available config providers.
+     *
      * @throws \ReflectionException
+     *   Thrown if a config provider doesn't have a valid annotation.
      */
     private function getConfigProviders(): array
     {
