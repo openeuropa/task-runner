@@ -103,7 +103,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
         $this->secureOption($task, 'recursive', false);
         $this->secureOption($task, 'time', time());
         $this->secureOption($task, 'atime', time());
-        $this->secureOption($task, 'mode', 0777);
+        $this->secureOption($task, 'mode', 0755);
 
         switch ($task['task']) {
             case "mkdir":
