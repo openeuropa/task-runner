@@ -170,12 +170,12 @@ The Task Runner comes with the following built-in commands:
 
 Run `./vendor/bin/run help [command-name]` for more information about each command's capabilities.
 
-## Expose custom commands as YAML configuration
+## Expose "dynamic" commands as YAML configuration
 
 The Task Runner allows you to expose new commands by just listing its [tasks](http://robo.li/getting-started/#tasks)
 under the `commands:` property in `runner.yml.dist`/`runner.yml`.
 
-For example, the following YAML portion will expose two commands, `drupal:site-setup` and `setup:behat`:
+For example, the following YAML portion will expose two dynamic commands, `drupal:site-setup` and `setup:behat`:
 
 ```yaml
 commands:
@@ -211,7 +211,7 @@ At the moment the following tasks are supported (optional argument default value
 | `process-php` | `taskAppendConfiguration()`  | `type: append`, `config`, `source`, `destination`, `override` (false) |
 | `process-php` | `taskPrependConfiguration()` | `type: prepend`, `config`, `source`, `destination`, `override` (false) |
 | `process-php` | `taskWriteConfiguration()`   | `type: write`, `config`, `source`, `destination`, `override` (false) |
-| `run`         | `taskExec()`                 | `command` (will run `./vendor/bin/run [command]`) |
+| `run`         | `taskExec()`                 | `command`, `arguments`, `options` (will run `./vendor/bin/run [command] [argument1] [argument2] ... --[option1]=[value1] --[option2]=[value2] ...`) |
 
 Tasks provided as plain-text strings will be executed as is in the current working directory.
 

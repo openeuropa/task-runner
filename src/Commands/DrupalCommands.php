@@ -12,9 +12,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class DrupalCommands.
+ * Base class for commands that interact with a Drupal installation.
  *
- * @package OpenEuropa\TaskRunner\Commands
+ * This contains shared code that can be used in commands regardless of the
+ * Drupal version they target.
  */
 class DrupalCommands extends AbstractDrupalCommands
 {

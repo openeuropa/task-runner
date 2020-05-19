@@ -74,13 +74,15 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      *
      * @param CommandData $commandData
      * @throws \Exception
+     *   Thrown when the settings file or its containing folder does not exist
+     *   or is not writeable.
      */
     public function validateSiteInstall(CommandData $commandData)
     {
         $input = $commandData->input();
 
         // Validate if permissions will be set up.
-        if (!$input->getOption('skip-permissions-setup')) {
+        if (!$input->hasOption('skip-permissions-setup') || !$input->getOption('skip-permissions-setup')) {
             return;
         }
 

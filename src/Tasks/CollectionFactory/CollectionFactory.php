@@ -82,28 +82,40 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     }
 
     /**
+     * Returns the Robo task for a given task definition.
+     *
+     * For the moment this is a hardcoded mapping of supported tasks.
+     *
      * @param array|string $task
+     *   A task definition array consisting of the task name and optionally a
+     *   number of configuration options. Can also be a string representing a
+     *   shell command.
      *
      * @return \Robo\Contract\TaskInterface
+     *   The Robo task.
      *
      * @throws \Robo\Exception\TaskException
      *
      * @SuppressWarnings(PHPMD)
      *
-     * @todo: Tuner this into a proper plugin system.
+     * @todo: Turn this into a proper plugin system.
      */
     protected function taskFactory($task)
     {
         if (is_string($task)) {
-            return $this->taskExec($task);
+            return $this->taskExec($task)->interactive($this->isTtySupported());
         }
 
+        // Set a number of options to safe defaults if they have not been given
+        // a different value in the task definition.
+        // @todo Not all of these options apply to all available tasks. Only
+        //   set defaults for this task's options.
         $this->secureOption($task, 'force', false);
         $this->secureOption($task, 'umask', 0000);
         $this->secureOption($task, 'recursive', false);
         $this->secureOption($task, 'time', time());
         $this->secureOption($task, 'atime', time());
-        $this->secureOption($task, 'mode', 0777);
+        $this->secureOption($task, 'mode', 0755);
 
         switch ($task['task']) {
             case "mkdir":
@@ -150,7 +162,16 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 ]);
 
             case "run":
-                return $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')->arg($task['command']);
+                $taskExec = $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')
+                    ->arg($task['command'])
+                    ->interactive($this->isTtySupported());
+                if (!empty($task['arguments'])) {
+                    $taskExec->args($task['arguments']);
+                }
+                if (!empty($task['options'])) {
+                    $taskExec->options($task['options'], '=');
+                }
+                return $taskExec;
 
             case "process-php":
                 $this->secureOption($task, 'override', false);
@@ -187,14 +208,29 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     }
 
     /**
-     * Secure option value.
+     * Sets the given safe default value for the option with the given name.
+     *
+     * If the option is already set it will not be overwritten.
      *
      * @param array  $task
+     *   The task array containing the task name and configuration.
      * @param string $name
+     *   The name of the option for which to provide a safe default value.
      * @param mixed  $default
+     *   The default value.
      */
     protected function secureOption(array &$task, $name, $default)
     {
         $task[$name] = isset($task[$name]) ? $task[$name] : $default;
+    }
+
+    /**
+     * Checks if the TTY mode is supported
+     *
+     * @return bool
+     */
+    protected function isTtySupported()
+    {
+        return PHP_OS !== 'WINNT' && (bool) @proc_open('echo 1 >/dev/null', [['file', '/dev/tty', 'r'], ['file', '/dev/tty', 'w'], ['file', '/dev/tty', 'w']], $pipes);
     }
 }

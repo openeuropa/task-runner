@@ -1,0 +1,46 @@
+# Override a default command by its main name.
+# Run command by its main name.
+- command: drupal:site-install
+  runnerConfig:
+    commands:
+      drupal:site-install:
+        - echo "Hello world!"
+        - echo "Hey you!"
+  expected:
+    - '[Exec] Running echo "Hello world!"'
+    - '[Exec] Running echo "Hey you!"'
+
+# Override a default command by its main name.
+# Run command by one of its aliases.
+- command: drupal:site-install
+  runnerConfig:
+    commands:
+      dsi:
+        - echo "Hello world!"
+        - echo "Hey you!"
+  expected:
+    - '[Exec] Running echo "Hello world!"'
+    - '[Exec] Running echo "Hey you!"'
+
+# Override a default command by one of its aliases.
+# Run command by other alias.
+- command: drupal:si
+  runnerConfig:
+    commands:
+      dsi:
+        - echo "Hello world!"
+        - echo "Hey you!"
+  expected:
+    - '[Exec] Running echo "Hello world!"'
+    - '[Exec] Running echo "Hey you!"'
+
+# Override a custom command.
+- command: custom:command-two
+  runnerConfig:
+    commands:
+      custom:command-two:
+        - echo "Hello world!"
+        - echo "Hey you!"
+  expected:
+    - '[Exec] Running echo "Hello world!"'
+    - '[Exec] Running echo "Hey you!"'

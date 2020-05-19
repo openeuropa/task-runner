@@ -11,7 +11,8 @@
         "consolidation/robo": "^1.4.7",
         "gitonomy/gitlib": "^1.0",
         "jakeasmith/http_build_url": "^1.0.1",
-        "nuvoleweb/robo-config": "^0.2.1"
+        "nuvoleweb/robo-config": "^0.2.1",
+        "symfony/console": "^3.4.21|^4|^5"
     },
     "require-dev": {
         "openeuropa/code-review": "~1.0.0-beta3",
