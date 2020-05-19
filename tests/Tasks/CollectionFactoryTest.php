@@ -96,6 +96,32 @@ class CollectionFactoryTest extends AbstractTaskTest
     }
 
     /**
+     * Tests the 'exec' task.
+     */
+    public function testExecTask(): void
+    {
+        $tasks = [
+            [
+                'task' => 'exec',
+                'command' => 'touch',
+                'arguments' => [
+                    'file.txt',
+                ],
+                'options' => [
+                    // 1980-06-06 23:59:59.
+                    '-t' => '198006062359.59'
+                ],
+                'dir' => $this->getSandboxRoot(),
+            ],
+        ];
+        $this->taskCollectionFactory($tasks)->run();
+
+        $this->assertFileExists($this->getSandboxFilepath('file.txt'));
+        $mtime = gmdate('Y-m-d H:i:s', filemtime($this->getSandboxFilepath('file.txt')));
+        $this->assertSame('1980-06-06 23:59:59', $mtime);
+    }
+
+    /**
      * @return array
      */
     public function processPhpTaskDataProvider()
