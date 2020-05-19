@@ -370,6 +370,40 @@ EOF;
     }
 
     /**
+     * Tests that existing commands can be overridden in the runner config.
+     *
+     * @dataProvider overrideCommandDataProvider
+     *
+     * @param string $command
+     *   A command that will be executed by the task runner.
+     * @param array $runnerConfig
+     *   An array of task runner configuration data, equivalent to what would be
+     *   written in a "runner.yml" file. This contains the overridden commands.
+     * @param array $expected
+     *   An array of strings which are expected to be output to the terminal
+     *   during execution of the command.
+     */
+    public function testOverrideCommand($command, array $runnerConfig, array $expected)
+    {
+        $runnerConfigFile = $this->getSandboxFilepath('runner.yml');
+        file_put_contents($runnerConfigFile, Yaml::dump($runnerConfig));
+
+        $input = new StringInput("{$command} --working-dir=".$this->getSandboxRoot());
+        $output = new BufferedOutput();
+        $runner = new TaskRunner($input, $output, $this->getClassLoader());
+        $exit_code = $runner->run();
+
+        // Check that the command succeeded, i.e. has exit code 0.
+        $this->assertEquals(0, $exit_code);
+
+        // Check that the output is as expected.
+        $text = $output->fetch();
+        foreach ($expected as $row) {
+            $this->assertContains($row, $text);
+        }
+    }
+
+    /**
      * @return array
      */
     public function simulationDataProvider()
@@ -423,6 +457,25 @@ EOF;
     public function changelogDataProvider()
     {
         return $this->getFixtureContent('changelog.yml');
+    }
+
+    /**
+     * Provides test cases for ::testOverrideCommand().
+     *
+     * @return array
+     *   An array of test cases, each one an array with the following keys:
+     *   - 'command': A string representing a command that will be executed by
+     *     the task runner.
+     *   - 'runnerConfig': An array of task runner configuration data,
+     *     equivalent to what would be written in a "runner.yml" file.
+     *   - 'expected': An array of strings which are expected to be output to
+     *     the terminal during execution of the command.
+     *
+     * @see \OpenEuropa\TaskRunner\Tests\Commands\CommandsTest::testOverrideCommand()
+     */
+    public function overrideCommandDataProvider(): array
+    {
+        return $this->getFixtureContent('override.yml');
     }
 
     /**

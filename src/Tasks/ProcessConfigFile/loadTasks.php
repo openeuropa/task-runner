@@ -10,8 +10,12 @@ namespace OpenEuropa\TaskRunner\Tasks\ProcessConfigFile;
 trait loadTasks
 {
     /**
-     * @param $source
-     * @param $destination
+     * Replaces placeholders with actual values.
+     *
+     * @param string $source
+     *   The path to the file to process.
+     * @param string $destination
+     *   The path where to store the processed file.
      *
      * @return \OpenEuropa\TaskRunner\Tasks\ProcessConfigFile\ProcessConfigFile
      */

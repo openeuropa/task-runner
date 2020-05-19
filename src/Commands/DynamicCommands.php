@@ -3,11 +3,14 @@
 namespace OpenEuropa\TaskRunner\Commands;
 
 use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
+use Robo\Robo;
 
 /**
- * Class DynamicCommands
+ * Command class for dynamic commands.
  *
- * @package OpenEuropa\TaskRunner\Commands
+ * Dynamic commands are defined in YAML and have no dedicated command class.
+ * A command is comprised of an array of tasks with their configuration.
+ * See the section in the README on dynamic commands for more information.
  */
 class DynamicCommands extends AbstractCommands
 {
@@ -18,8 +21,10 @@ class DynamicCommands extends AbstractCommands
      */
     public function runTasks()
     {
-        $command = $this->input()->getArgument('command');
-        $tasks = $this->getConfig()->get("commands.{$command}");
+        $commandName = $this->input()->getArgument('command');
+        /** @var \Consolidation\AnnotatedCommand\AnnotatedCommand $command */
+        $command = Robo::application()->get($commandName);
+        $tasks = $command->getAnnotationData()['tasks'];
 
         return $this->taskCollectionFactory($tasks);
     }
