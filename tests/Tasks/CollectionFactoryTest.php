@@ -74,7 +74,29 @@ class CollectionFactoryTest extends AbstractTaskTest
     }
 
     /**
-     * Tests the exec task and old style exec task deprecation.
+     * Tests the 'run' task.
+     */
+    public function testRunTask()
+    {
+        $filePath = $this->getSandboxFilepath('test-file.txt');
+
+        $tasks = [];
+        $tasks[] = [
+            'task' => 'run',
+            'command' => 'custom:test',
+            'arguments' => [
+                __METHOD__,
+            ],
+            'options' => [
+                'filepath' => $filePath,
+            ],
+        ];
+        $this->taskCollectionFactory($tasks)->run();
+        $this->assertSame(__METHOD__, file_get_contents($filePath));
+    }
+
+    /**
+     * Tests the 'exec' task.
      */
     public function testExecTask(): void
     {

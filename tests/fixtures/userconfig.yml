@@ -3,3 +3,5 @@ drupal:
 
 wordpress:
   root: "wordpress"
+
+whatever: 'this will be overwritten by the edge case provider'
