@@ -3,12 +3,17 @@
 namespace OpenEuropa\TaskRunner;
 
 use Composer\Autoload\ClassLoader;
+use Consolidation\AnnotatedCommand\Parser\Internal\DocblockTag;
+use Consolidation\AnnotatedCommand\Parser\Internal\TagFactory;
+use Consolidation\Config\Loader\ConfigProcessor;
 use Gitonomy\Git\Repository;
 use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use OpenEuropa\TaskRunner\Commands\DrupalCommands;
 use OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use OpenEuropa\TaskRunner\Commands\ReleaseCommands;
+use OpenEuropa\TaskRunner\Commands\RunnerCommands;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
+use OpenEuropa\TaskRunner\Contract\ConfigProviderInterface;
 use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
 use OpenEuropa\TaskRunner\Contract\TimeAwareInterface;
 use OpenEuropa\TaskRunner\Services\Composer;
@@ -72,6 +77,7 @@ class TaskRunner
         ChangelogCommands::class,
         DrupalCommands::class,
         ReleaseCommands::class,
+        RunnerCommands::class,
     ];
 
     /**
@@ -89,10 +95,12 @@ class TaskRunner
         $this->workingDir = $this->getWorkingDir($this->input);
         chdir($this->workingDir);
 
-        $this->config = $this->createConfiguration();
+        $this->config = new Config();
         $this->application = $this->createApplication();
         $this->application->setAutoExit(false);
         $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config, $classLoader);
+
+        $this->createConfiguration();
 
         // Create and initialize runner.
         $this->runner = new RoboRunner();
@@ -150,48 +158,92 @@ class TaskRunner
     }
 
     /**
-     * Create default configuration.
-     *
-     * @return Config
+     * Parses the configuration files, and merges them into the Config object.
      */
     private function createConfiguration()
     {
         $config = new Config();
         $config->set('runner.working_dir', realpath($this->workingDir));
-        Robo::loadConfiguration([
-            __DIR__.'/../config/runner.yml',
-            'runner.yml.dist',
-            'runner.yml',
-            $this->getLocalConfigurationFilepath(),
-        ], $config);
 
-        return $config;
+        foreach ($this->getConfigProviders() as $class) {
+            /** @var \OpenEuropa\TaskRunner\Contract\ConfigProviderInterface $class */
+            $class::provide($config);
+        }
+
+        // Resolve variables and import into config.
+        $processor = (new ConfigProcessor())->add($config->export());
+        $this->config->import($processor->export());
+        // Keep the container in sync.
+        $this->container->share('config', $this->config);
     }
 
     /**
-     * Get the local configuration filepath.
+     * Discovers all config providers.
      *
-     * @param string $configuration_file
-     *   The default filepath.
+     * @return string[]
+     *   An array of fully qualified class names of available config providers.
      *
-     * @return string|null
-     *   The local configuration file path, or null if it doesn't exist.
+     * @throws \ReflectionException
+     *   Thrown if a config provider doesn't have a valid annotation.
      */
-    private function getLocalConfigurationFilepath($configuration_file = 'openeuropa/taskrunner/runner.yml')
+    private function getConfigProviders(): array
     {
-        if ($config = getenv('OPENEUROPA_TASKRUNNER_CONFIG')) {
-            return $config;
+        /** @var \Robo\ClassDiscovery\RelativeNamespaceDiscovery $discovery */
+        $discovery = Robo::service('relativeNamespaceDiscovery');
+        $discovery->setRelativeNamespace('TaskRunner\ConfigProviders')
+            ->setSearchPattern('/.*ConfigProvider\.php$/');
+
+        // Discover config providers.
+        foreach ($discovery->getClasses() as $class) {
+            if (is_subclass_of($class, ConfigProviderInterface::class)) {
+                $classes[$class] = $this->getConfigProviderPriority($class);
+            }
         }
 
-        if ($config = getenv('XDG_CONFIG_HOME')) {
-            return $config . '/' . $configuration_file;
-        }
+        // High priority modifiers run first.
+        arsort($classes, SORT_NUMERIC);
 
-        if ($home = getenv('HOME')) {
-            return getenv('HOME') . '/.config/' . $configuration_file;
-        }
+        return array_keys($classes);
+    }
 
-        return null;
+    /**
+     * @param string $class
+     * @return float
+     * @throws \ReflectionException
+     */
+    private function getConfigProviderPriority($class)
+    {
+        $priority = 0.0;
+        $reflectionClass = new \ReflectionClass($class);
+        if ($docBlock = $reflectionClass->getDocComment()) {
+            // Remove the leading /** and the trailing */
+            $docBlock = preg_replace('#^\s*/\*+\s*#', '', $docBlock);
+            $docBlock = preg_replace('#\s*\*+/\s*#', '', $docBlock);
+
+            // Nothing left? Exit.
+            if (empty($docBlock)) {
+                return $priority;
+            }
+
+            $tagFactory = new TagFactory();
+            foreach (explode("\n", $docBlock) as $row) {
+                // Remove trailing whitespace and leading space + '*'s
+                $row = rtrim($row);
+                $row = preg_replace('#^[ \t]*\**#', '', $row);
+                $tagFactory->parseLine($row);
+            }
+
+            $priority = array_reduce($tagFactory->getTags(), function ($priority, DocblockTag $tag) {
+                if ($tag->getTag() === 'priority') {
+                    $value = $tag->getContent();
+                    if (is_numeric($value)) {
+                        $priority = (float) $value;
+                    }
+                }
+                return $priority;
+            }, $priority);
+        }
+        return $priority;
     }
 
     /**

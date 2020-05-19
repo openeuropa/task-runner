@@ -1,0 +1,7 @@
+joomla:
+  root: joomla
+
+foo: bar
+# Should be 'is-baz' as the variables should be resolved only at the end, when
+# all config providers had the chance to provide token values.
+qux: is-${foo}
