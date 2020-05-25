@@ -15,9 +15,7 @@ use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
- * Class AbstractCommands
- *
- * @package OpenEuropa\TaskRunner\Commands
+ * Base class for task runner commands.
  */
 abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterface, ConfigAwareInterface
 {

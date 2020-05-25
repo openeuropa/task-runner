@@ -16,7 +16,11 @@
     },
     "require-dev": {
         "openeuropa/code-review": "~1.0.0-beta3",
-        "phpunit/phpunit": "~6.0||~7.0"
+        "phpunit/phpunit": "~6.0||~7.0",
+        "scssphp/scssphp": "^1.1"
+    },
+    "suggest": {
+        "scssphp/scssphp": "Adds task for compiling SCSS to CSS."
     },
     "autoload": {
         "psr-4": {

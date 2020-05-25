@@ -72,6 +72,9 @@ class TaskRunner
 
     /**
      * @var array
+     * @deprecated in 1.0.0, will be removed in 2.0.0. New command classes
+     *   should be placed in the OpenEuropa\TaskRunner\TaskRunner\Commands
+     *   namespaces where they will be automatically discovered.
      */
     private $defaultCommandClasses = [
         ChangelogCommands::class,
@@ -259,7 +262,9 @@ class TaskRunner
     private function createContainer(InputInterface $input, OutputInterface $output, Application $application, Config $config, ClassLoader $classLoader)
     {
         $container = Robo::createDefaultContainer($input, $output, $application, $config, $classLoader);
-        $container->get('commandFactory')->setIncludeAllPublicMethods(false);
+        $container->get('commandFactory')
+            ->setIncludeAllPublicMethods(false)
+            ->addCommandInfoAlterer(new CommandInfoAlterer());
         $container->share('task_runner.composer', Composer::class)->withArgument($this->workingDir);
         $container->share('task_runner.time', Time::class);
         $container->share('repository', Repository::class)->withArgument($this->workingDir);
