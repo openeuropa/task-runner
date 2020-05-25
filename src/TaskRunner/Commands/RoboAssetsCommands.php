@@ -92,5 +92,4 @@ class RoboAssetsCommands extends AbstractCommands
             }
         }
     }
-
 }
