@@ -1,0 +1,10 @@
+// Example SCSS file to test the `assets:compile-scss` command.
+$dark: #111;
+nav {
+  ul {
+    margin: 0;
+    li {
+      color: $dark;
+    }
+  }
+}
