@@ -265,58 +265,39 @@ EOF;
     }
 
     /**
-     * @param array $config
+     * @param array $configs
      * @param array $expected
      *
-     * @dataProvider settingsSetupForceDataProvider
+     * @dataProvider settingsSetupParametersDataProvider
      */
-    public function testSettingsSetupForce(array $config, array $expected)
+    public function testSettingsSetupParameters(array $configs, array $expected)
     {
-        $configFile = $this->getSandboxFilepath('runner.yml');
-        file_put_contents($configFile, Yaml::dump($config));
-
-        $sites_subdir = isset($config['drupal']['site']['sites_subdir']) ? $config['drupal']['site']['sites_subdir'] : 'default';
-        mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0777, true);
-        file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
-        file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/settings.php', '# Already existing file.');
-
-        $input = new StringInput('drupal:settings-setup --working-dir=' . $this->getSandboxRoot());
-
-        if (true === $config['drupal']['site']['force']) {
-            $input = new StringInput('drupal:settings-setup --working-dir=' . $this->getSandboxRoot() . ' --force');
+        $sites_subdir = isset($configs['drupal']['site']['sites_subdir']) ? $configs['drupal']['site']['sites_subdir'] : 'default';
+        mkdir($this->getSandboxRoot() . '/build/sites/default', 0755, true);
+        if ($sites_subdir !== 'default') {
+            mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0755, true);
         }
-        $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
-        $runner->run();
+        file_put_contents($this->getSandboxRoot() . '/build/sites/default/default.settings.php', '');
+        file_put_contents($this->getSandboxRoot() . '/build/sites/example.settings.local.php', '// Local development override configuration.');
 
-        foreach ($expected as $row) {
-            $content = file_get_contents($this->getSandboxFilepath($row['file']));
-            $this->assertContainsNotContains($content, $row);
+        if (!empty($configs['files'])) {
+            foreach ($configs['files'] as $file) {
+                file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/' . $file['name'], $file['content']);
+            }
         }
 
-        // Generate a random function name.
-        $fct = $this->generateRandomString(20);
+        $input = 'drupal:settings-setup --working-dir=' . $this->getSandboxRoot() . ' --sites-subdir=' . $sites_subdir;
+        if (isset($configs['parameters']['force']) && $configs['parameters']['force']) {
+            $input .= ' --force';
+        }
+        if (isset($configs['parameters']['dev']) && $configs['parameters']['dev']) {
+            $input .= ' --dev';
+        }
+        $runner = new TaskRunner(new StringInput($input), new BufferedOutput(), $this->getClassLoader());
+        $exit_code = $runner->run();
+        $this->assertEquals(0, $exit_code, 'Command run returned an error.');
 
-        // Generate a dummy PHP code.
-        $config_override_dummy_script = <<< EOF
-<?php 
-function $fct() {}
-EOF;
-
-        $config_override_filename = isset($config['drupal']['site']['settings_override_file']) ?
-        $config['drupal']['site']['settings_override_file'] :
-        'settings.override.php';
-
-        // Add the dummy PHP code to the config override file.
-        file_put_contents(
-            $this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/' . $config_override_filename,
-            $config_override_dummy_script
-        );
-
-        // Include the config override file.
-        include_once $this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/' . $config_override_filename;
-
-        // Test if the dummy PHP code has been properly included.
-        $this->assertTrue(\function_exists($fct));
+        $this->processSettingsAssertions($expected);
     }
 
     /**
@@ -446,9 +427,9 @@ EOF;
     /**
      * @return array
      */
-    public function settingsSetupForceDataProvider()
+    public function settingsSetupParametersDataProvider()
     {
-        return $this->getFixtureContent('commands/drupal-settings-setup-force.yml');
+        return $this->getFixtureContent('commands/drupal-settings-setup-parameters.yml');
     }
 
     /**
@@ -488,13 +469,35 @@ EOF;
 
     /**
      * @param string $content
-     * @param array  $expected
+     * @param array  $expectations
      */
-    protected function assertContainsNotContains($content, array $expected)
+    protected function assertContainsNotContains($content, array $expectations)
     {
-        $this->assertContains($expected['contains'], $content);
+        if (!empty($expectations['contains'])) {
+            foreach ((array) $expectations['contains'] as $expected) {
+                $this->assertContains($expected, $content);
+            }
+        }
         if (!empty($expected['not_contains'])) {
-            $this->assertNotContains($expected['not_contains'], $content);
+            foreach ((array) $expectations['not_contains'] as $expected) {
+                $this->assertNotContains($expected, $content);
+            }
+        }
+    }
+
+    /**
+     * @param array $expected
+     */
+    protected function processSettingsAssertions(array $expected)
+    {
+        foreach ($expected as $row) {
+            if (isset($row['file'])) {
+                $content = file_get_contents($this->getSandboxFilepath($row['file']));
+                $this->assertContainsNotContains($content, $row);
+            }
+            if (isset($row['no_file'])) {
+                $this->assertFileNotExists($row['no_file']);
+            }
         }
     }
 }

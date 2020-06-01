@@ -37,6 +37,12 @@ drupal:
     config_dir: ~
     existing_config: false
     settings_override_file: "settings.override.php"
+    # Local development settings override.
+    # Add development settings that you want to share with your team and commit this file.
+    # If found this file will be copied in `/sites/{sites-subdir}/settings.local.php`,
+    # which should be, instead, git-ignored. This will give the possibility to locally
+    # tweak development settings.
+    settings_local_file: "${drupal.root}/sites/example.settings.local.php"
     # Setting this to "false" will run "site-install" without the "--db-url" parameter.
     # This is useful if the database settings are already set in your settings.php file.
     generate_db_url: true

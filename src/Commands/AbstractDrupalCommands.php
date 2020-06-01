@@ -27,9 +27,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      */
     public function getDrupal()
     {
-        return $this->getConfig()->get('drupal.core') === 7 ?
-        new Drupal7Commands() :
-        new Drupal8Commands();
+        return $this->getConfig()->get('drupal.core') === 7 ? new Drupal7Commands() : new Drupal8Commands();
     }
 
     /**
@@ -343,12 +341,15 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      * @option root                     Drupal root.
      * @option sites-subdir             Drupal site subdirectory.
      * @option settings-override-file   Drupal site settings override filename.
-     * @option force                    Drupal force generation of a new settings.php.
-     * @option skip-permissions-setup   Drupal skip permissions setup.
+     * @option force                    Force generation of a new settings.php.
+     * @option skip-permissions-setup   Skip permissions setup.
+     * @option dev                      Development settings setup.
      *
      * @param array $options
      *
      * @return \Robo\Collection\CollectionBuilder
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function settingsSetup(array $options = [
         'root' => InputOption::VALUE_REQUIRED,
@@ -356,21 +357,21 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         'settings-override-file' => InputOption::VALUE_REQUIRED,
         'force' => false,
         'skip-permissions-setup' => false,
+        'dev' => false
     ])
     {
-        $settings_default_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/default.settings.php';
+        $settings_default_path = $options['root'] . '/sites/default/default.settings.php';
         $settings_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.php';
         $settings_override_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/' . $options['settings-override-file'];
 
         // Save the filename of the override file in a single variable to use it
         // in the heredoc variable $custom_config hereunder.
         $settings_override_filename = $options['settings-override-file'];
-
         $custom_config = $this->getDrupal()->getSettingsSetupAddendum($settings_override_filename);
 
         $collection = [];
 
-        if (true === (bool) $options['force'] || !file_exists($settings_path)) {
+        if ((bool) $options['force'] || !file_exists($settings_path)) {
             $collection[] = $this->taskWriteToFile($settings_default_path)->append()->lines([$custom_config]);
             $collection[] = $this->taskFilesystemStack()->copy($settings_default_path, $settings_path, true);
         }
@@ -379,6 +380,19 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
             $settings_override_path,
             $this->getConfig()
         )->setConfigKey('drupal.settings');
+
+        // If ran in dev mode copy local settings file to 'settings.local.php'.
+        // Such file will be conditionally included in 'settings-override-file'.
+        if ($options['dev']) {
+            $local_settings_file = $this->getConfig()->get('drupal.site.settings_local_file');
+            if (file_exists($local_settings_file)) {
+                $local_settings_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.local.php';
+                $collection[] = $this->taskFilesystemStack()->copy($local_settings_file, $local_settings_path, $options['force']);
+            }
+            $collection[] = $this->taskWriteToFile($settings_override_path)
+                ->append()
+                ->text($this->getDrupal()->getSettingsLocalSetupAddendum());
+        }
 
         if (!$options['skip-permissions-setup']) {
             $collection[] = $this->permissionsSetup($options);
@@ -438,5 +452,25 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
                 $commands[$key] = str_replace(array_keys($tokens), array_values($tokens), $value);
             }
         }
+    }
+
+    /**
+     * Get include portion for local development override configuration.
+     *
+     * This will be optionally appended to the settings override file.
+     *
+     * @return string
+     */
+    protected function getSettingsLocalSetupAddendum()
+    {
+        return <<< EOF
+
+/**
+ * Load local development override configuration, if available.
+ */
+if (file_exists(__DIR__ . '/settings.local.php')) {
+  include __DIR__ . '/settings.local.php';
+}
+EOF;
     }
 }
