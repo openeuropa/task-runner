@@ -30,3 +30,21 @@
     - file: "build/sites/default/drushrc.php"
       contains: "$options[\"uri\"] = 'http://web';"
       not_contains: "ignored-directories"
+
+- configuration:
+    drupal:
+      drush:
+        options:
+          uri: "http://web"
+    command:
+      drupal:
+        drush-setup:
+          options:
+            config-dir: ${drupal.root}/..
+  expected:
+    - file: "drush/drush.yml"
+      contains: "uri: 'http://web'"
+      not_contains: ~
+    - file: "build/sites/default/drushrc.php"
+      contains: "$options[\"uri\"] = 'http://web';"
+      not_contains: "ignored-directories"
