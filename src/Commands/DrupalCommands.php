@@ -1,15 +1,8 @@
 <?php
 
-namespace OpenEuropa\TaskRunner\Commands;
+declare(strict_types=1);
 
-use Consolidation\AnnotatedCommand\CommandData;
-use NuvoleWeb\Robo\Task as NuvoleWebTasks;
-use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
-use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
-use OpenEuropa\TaskRunner\Traits as TaskRunnerTraits;
-use Symfony\Component\Console\Event\ConsoleCommandEvent;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Yaml\Yaml;
+namespace OpenEuropa\TaskRunner\Commands;
 
 /**
  * Base class for commands that interact with a Drupal installation.

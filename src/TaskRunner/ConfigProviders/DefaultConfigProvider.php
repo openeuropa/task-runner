@@ -35,7 +35,7 @@ class DefaultConfigProvider implements ConfigProviderInterface
     public static function provide(Config $config): void
     {
         static::importFromFiles($config, [
-            __DIR__.'/../../../config/runner.yml',
+            __DIR__ . '/../../../config/runner.yml',
             'runner.yml.dist',
         ]);
     }

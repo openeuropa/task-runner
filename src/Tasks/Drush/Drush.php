@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Tasks\Drush;
 
 use Robo\Task\Base\Exec;
 
 /**
- * Class Drush
+ * Tasks to interact with Drush.
  *
  * @SuppressWarnings(PHPMD)
- *
- * @package OpenEuropa\TaskRunner\Tasks\Drush
  */
 class Drush extends Exec
 {
@@ -40,7 +40,7 @@ class Drush extends Exec
     public function siteInstall()
     {
         $this->option('-y')
-            ->rawArg("--root=$(pwd)/".$this->root)
+            ->rawArg("--root=$(pwd)/" . $this->root)
             ->options([
                 'site-name' => $this->siteName,
                 'site-mail' => $this->siteMail,

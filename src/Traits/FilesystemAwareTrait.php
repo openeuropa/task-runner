@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Traits;
 
 /**
  * Trait FilesystemAwareTrait
- *
- * @package OpenEuropa\TaskRunner\Traits
  */
 trait FilesystemAwareTrait
 {

@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Tests\Services;
 
 use OpenEuropa\TaskRunner\Services\Composer;
 use OpenEuropa\TaskRunner\Tests\AbstractTest;
 
 /**
- * Class ComposerTest
- *
- * @package OpenEuropa\TaskRunner\Tests\Services
+ * Tests the parsing of a composer.json file.
  */
 class ComposerTest extends AbstractTest
 {

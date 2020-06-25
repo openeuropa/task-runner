@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Traits;
 
 use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
 
 /**
- * Class ConfigurationTokensTrait
- *
- * @package OpenEuropa\TaskRunner\Traits
+ * Shared code to handle configuration tokens.
  */
 trait ConfigurationTokensTrait
 {
@@ -44,7 +44,8 @@ trait ConfigurationTokensTrait
         return array_map(function ($key) use ($config) {
             $value = $config->get($key);
             if (is_array($value)) {
-                return implode(',', iterator_to_array(new RecursiveIteratorIterator(new RecursiveArrayIterator($value))));
+                $array = iterator_to_array(new RecursiveIteratorIterator(new RecursiveArrayIterator($value)));
+                return implode(',', $array);
             }
             return $value;
         }, $this->extractRawTokens($text));

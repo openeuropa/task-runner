@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Commands;
 
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
@@ -7,9 +9,7 @@ use OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
- * Class ChangelogCommands
- *
- * @package OpenEuropa\TaskRunner\Commands
+ * Command for generating a changelog.
  */
 class ChangelogCommands extends AbstractCommands implements ComposerAwareInterface
 {
@@ -20,7 +20,7 @@ class ChangelogCommands extends AbstractCommands implements ComposerAwareInterfa
      */
     public function getConfigurationFile()
     {
-        return __DIR__.'/../../config/commands/changelog.yml';
+        return __DIR__ . '/../../config/commands/changelog.yml';
     }
 
     /**

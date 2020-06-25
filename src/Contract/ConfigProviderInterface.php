@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OpenEuropa\TaskRunner\Contract;
 
-use OpenEuropa\TaskRunner\Traits\ConfigFromFilesTrait;
 use Robo\Config\Config;
 
 /**
@@ -31,7 +30,7 @@ interface ConfigProviderInterface
      *
      * @var string
      */
-    const DEFAULT_CONFIG_LOCATION = 'openeuropa/taskrunner/runner.yml';
+    public const DEFAULT_CONFIG_LOCATION = 'openeuropa/taskrunner/runner.yml';
 
     /**
      * Adds or overrides configuration.

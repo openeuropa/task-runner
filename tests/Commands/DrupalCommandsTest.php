@@ -1,17 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Tests\Commands;
 
-use OpenEuropa\TaskRunner\Tests\AbstractTest;
 use OpenEuropa\TaskRunner\TaskRunner;
+use OpenEuropa\TaskRunner\Tests\AbstractTest;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class DrupalCommandsTest
- *
- * @package OpenEuropa\TaskRunner\Tests\DrupalSettings
+ * Tests the `drupal:*` commands.
  */
 class DrupalCommandsTest extends AbstractTest
 {
@@ -32,8 +32,13 @@ class DrupalCommandsTest extends AbstractTest
      *
      * @dataProvider drupalSettingsDataProvider
      */
-    public function testPermissions(array $config, $command, $expected_error, $expected_settings_dir_permission, $expected_settings_file_permission)
-    {
+    public function testPermissions(
+        array $config,
+        $command,
+        $expected_error,
+        $expected_settings_dir_permission,
+        $expected_settings_file_permission
+    ) {
         $configFile = $this->getSandboxFilepath('runner.yml');
         file_put_contents($configFile, Yaml::dump($config));
 

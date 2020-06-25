@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Commands;
 
 use Consolidation\AnnotatedCommand\CommandData;
@@ -12,7 +14,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class DrupalCommands.
+ * Base class for Drupal commands.
  */
 abstract class AbstractDrupalCommands extends AbstractCommands implements FilesystemAwareInterface
 {
@@ -37,7 +39,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      */
     public function getConfigurationFile()
     {
-        return __DIR__.'/../../config/commands/drupal.yml';
+        return __DIR__ . '/../../config/commands/drupal.yml';
     }
 
     /**
@@ -94,10 +96,11 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         ]);
 
         // Check if required files/folders exist and they are writable.
-        $requiredFiles = [$siteDirectory, $siteDirectory.'/settings.php'];
+        $requiredFiles = [$siteDirectory, $siteDirectory . '/settings.php'];
         foreach ($requiredFiles as $requiredFile) {
             if (file_exists($requiredFile) && !is_writable($requiredFile)) {
-                throw new \Exception(sprintf('The file/folder %s must be writable for installation to continue.', $requiredFile));
+                $message = 'The file/folder %s must be writable for installation to continue.';
+                throw new \Exception(sprintf($message, $requiredFile));
             }
         }
     }
@@ -162,7 +165,8 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
     ])
     {
         if ($options['database-type']) {
-            $this->io()->warning("Option 'database-type' is deprecated and it will be removed in 1.0.0. Use 'database-scheme' instead.");
+            $message = "'database-type' is deprecated and will be removed in 1.0.0. Use 'database-scheme' instead.";
+            $this->io()->warning($message);
             $options['database-scheme'] = $options['database-type'];
         }
         if ($options['config-dir']) {
@@ -170,7 +174,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
             $options['existing-config'] = true;
         }
 
-        $drush = $this->getConfig()->get('runner.bin_dir').'/drush';
+        $drush = $this->getConfig()->get('runner.bin_dir') . '/drush';
         $task = $this->taskDrush($drush)
             ->root($options['root'])
             ->siteName($options['site-name'])
@@ -312,8 +316,9 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         $yaml = Yaml::dump($config->get('drupal.drush'));
 
         return $this->collectionBuilder()->addTaskList([
-            $this->taskWriteConfiguration($options['root'].'/sites/default/drushrc.php', $config)->setConfigKey('drupal.drush'),
-            $this->taskWriteToFile($options['config-dir'].'/drush.yml')->text($yaml),
+            $this->taskWriteConfiguration($options['root'] . '/sites/default/drushrc.php', $config)
+                ->setConfigKey('drupal.drush'),
+            $this->taskWriteToFile($options['config-dir'] . '/drush.yml')->text($yaml),
         ]);
     }
 
@@ -358,9 +363,10 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         'skip-permissions-setup' => false,
     ])
     {
-        $settings_default_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/default.settings.php';
-        $settings_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/settings.php';
-        $settings_override_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/' . $options['settings-override-file'];
+        $base_path = $options['root'] . '/sites/' . $options['sites-subdir'] . '/';
+        $settings_default_path = $base_path . 'default.settings.php';
+        $settings_path = $base_path . 'settings.php';
+        $settings_override_path = $base_path . $options['settings-override-file'];
 
         // Save the filename of the override file in a single variable to use it
         // in the heredoc variable $custom_config hereunder.

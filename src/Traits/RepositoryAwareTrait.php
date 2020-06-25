@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Traits;
 
 use Gitonomy\Git\Repository;
 
 /**
  * Trait RepositoryAwareTrait
- *
- * @package OpenEuropa\TaskRunner\Traits
  */
 trait RepositoryAwareTrait
 {

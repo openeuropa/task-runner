@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Tasks\ProcessConfigFile;
 
 /**
- * Trait loadTasks
+ * Robo loadTasks trait for the config processing tasks.
  *
- * @package OpenEuropa\TaskRunner\Tasks\ProcessConfigFile
+ * phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
  */
 trait loadTasks
 {
