@@ -93,7 +93,7 @@ abstract class AbstractTest extends TestCase
     protected function generateRandomString($length = 10)
     {
         $x = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $sequence = str_repeat($x, ceil((int) $length / strlen($x)));
+        $sequence = str_repeat($x, (int) ceil($length / strlen($x)));
         return substr(str_shuffle($sequence), 1, $length);
     }
 }
