@@ -83,72 +83,116 @@ docker-compose exec --user=$(id -u):$(id -g) web ./vendor/bin/phpunit
 
 Task Runner commands can be customized in two ways:
 
-1. By setting arguments and options when running a command.
-2. By providing default values in configuration files. The task runner will read
-   the following files in the specified order. Options supplied in later files
-   will override earlier ones:
-    * The defaults provided by Task Runner. This file is located inside the Task
-      Runner repository in `config/runner.yml`.
-    * `runner.yml.dist` - project specific defaults. This file should be placed
-      in the root folder of the project that depends on the Task Runner. Use
-      this file to declare default options which are expected to work with your
-      application under regular circumstances. This file should be committed in
-      the project.
-    * Third parties might implement config providers to modify the config. A
-      config provider is a class implementing the `ConfigProviderInterface`.
-      Such a class should be placed under the `TaskRunner\ConfigProviders`
-      relative namespace. For instance when `Some\Namespace` points to `src/`
-      directory, then the config provider class should be placed under the
-      `src/TaskRunner/ConfigProviders` directory and will have the namespace set
-      to `Some\Namespace\TaskRunner\ConfigProviders`. The class name should end
-      with the `ConfigProvider` suffix. Use the `::provide()` method to alter
-      the configuration object. A `@priority` annotation tag can be defined in
-      the class docblock in order to determine the order in which the config
-      providers are running. If omitted, `@priority 0` is assumed. This
-      mechanism allows also to insert custom YAML config files in the flow, see
-      the following example:
-      ```
-      namespace Some\Namespace\TaskRunner\ConfigProviders;
+### Passing arguments and options
 
-      use OpenEuropa\TaskRunner\Contract\ConfigProviderInterface;
-      use OpenEuropa\TaskRunner\Traits\ConfigFromFilesTrait;
-      use Robo\Config\Config;
+Since Task Runner commands adhere to the POSIX standard for shell commands it is
+is possible to modify the behaviour of a command by passing arguments and
+options on the command line:
 
-      /**
-       * @priority 100
-       */
-      class AddCustomFileConfigProvider implements ConfigProviderInterface
+```
+$ ./vendor/bin/run my-command [my-argument] --my-option=my-value
+```
+
+### Providing default values in configuration files
+
+In many cases it is beneficial to be able to provide default values for certain
+commands. It is possible to provide default values in configuration files. The
+task runner will read the following files in the specified order. Options
+supplied in later files will override earlier ones:
+
+* The defaults provided by Task Runner. This file is located inside the Task
+  Runner repository in `config/runner.yml`.
+* `runner.yml.dist` - project specific defaults. This file should be placed
+  in the root folder of the project that depends on the Task Runner. Use
+  this file to declare default options which are expected to work with your
+  application under regular circumstances. This file should be committed in
+  the project.
+* Third parties might implement config providers to modify the config. A
+  config provider is a class implementing the `ConfigProviderInterface`.
+  Such a class should be placed under the `TaskRunner\ConfigProviders`
+  relative namespace. For instance when `Some\Namespace` points to `src/`
+  directory, then the config provider class should be placed under the
+  `src/TaskRunner/ConfigProviders` directory and will have the namespace set
+  to `Some\Namespace\TaskRunner\ConfigProviders`. The class name should end
+  with the `ConfigProvider` suffix. Use the `::provide()` method to alter
+  the configuration object. A `@priority` annotation tag can be defined in
+  the class docblock in order to determine the order in which the config
+  providers are running. If omitted, `@priority 0` is assumed. This
+  mechanism allows also to insert custom YAML config files in the flow, see
+  the following example:
+  ```
+  namespace Some\Namespace\TaskRunner\ConfigProviders;
+
+  use OpenEuropa\TaskRunner\Contract\ConfigProviderInterface;
+  use OpenEuropa\TaskRunner\Traits\ConfigFromFilesTrait;
+  use Robo\Config\Config;
+
+  /**
+   * @priority 100
+   */
+  class AddCustomFileConfigProvider implements ConfigProviderInterface
+  {
+      use ConfigFromFilesTrait;
+      public static function provide(Config $config): void
       {
-          use ConfigFromFilesTrait;
-          public static function provide(Config $config): void
-          {
-              // Load the configuration from custom.yml and custom2.yml and
-              // apply it to the configuration object. This will override config
-              // from runner.yml.dist (which has priority 1500) but get
-              // overridden by the config from runner.yml (priority -1000).
-              static::importFromFiles($config, [
-                  'custom.yml',
-                  'custom2.yml',
-              ]);
-          }
+          // Load the configuration from custom.yml and custom2.yml and
+          // apply it to the configuration object. This will override config
+          // from runner.yml.dist (which has priority 1500) but get
+          // overridden by the config from runner.yml (priority -1000).
+          static::importFromFiles($config, [
+              'custom.yml',
+              'custom2.yml',
+          ]);
       }
-      ```
-    * `runner.yml` - project specific user overrides. This file is also located
-      in the root folder of the project that depends on the Task Runner. This
-      file can be used to override options with values that are specific to the
-      user's local environment. It is considered good practice to add this file
-      to `.gitignore` to prevent `runner.yml` from being accidentally committed
-      in the project repository.
-    * User provided global overrides stored in environment variables. These can
-      be used to define environment specific configuration that applies to all
-      projects that use the Task Runner, such as database credentials and the
-      Github access token. The following locations will be checked and the first
-      one that is found will be used:
-        * `$OPENEUROPA_TASKRUNNER_CONFIG`
-        * `$XDG_CONFIG_HOME/openeuropa/taskrunner/runner.yml`
-        * `$HOME/.config/openeuropa/taskrunner/runner.yml`
+  }
+  ```
+* `runner.yml` - project specific user overrides. This file is also located
+  in the root folder of the project that depends on the Task Runner. This
+  file can be used to override options with values that are specific to the
+  user's local environment. It is considered good practice to add this file
+  to `.gitignore` to prevent `runner.yml` from being accidentally committed
+  in the project repository.
+* User provided global overrides stored in environment variables. These can
+  be used to define environment specific configuration that applies to all
+  projects that use the Task Runner, such as database credentials and the
+  Github access token. The following locations will be checked and the first
+  one that is found will be used:
+    * `$OPENEUROPA_TASKRUNNER_CONFIG`
+    * `$XDG_CONFIG_HOME/openeuropa/taskrunner/runner.yml`
+    * `$HOME/.config/openeuropa/taskrunner/runner.yml`
 
-- [Installation](#installation)
+### Format of a configuration file
+
+A configuration file consists of both default values and dynamic commands (see
+below). Configuration is defined as a tree of values, and values can be
+dynamically replaced using shell variable notation: `${config-name}`.
+
+### Example
+
+```yaml
+# Dynamic commands are located in the `commands` item, located in the root.
+commands:
+  dev:phpunit:
+    - task: exec
+      command: ${paths.phpunit} --fail-on-warning
+
+# Default configuration values.
+database:
+  scheme: mysql
+  # Values can be taken from environment variables by using ${env.MYVAR}.
+  host: ${env.DATABASE_HOST}
+  port: ${env.DATABASE_PORT}
+  name: ${env.DATABASE_NAME}
+  user: ${env.DATABASE_USERNAME}
+  password: ${env.DATABASE_PASSWORD}
+
+paths:
+  # The ${runner.working_dir} is a built-in value containing the root path.
+  vendor: ${runner.working_dir}/vendor
+  # Config values can be nested by using ${parent-config.child-config} notation.
+  binaries: ${paths.vendor}/bin
+  phpunit: ${paths.binaries}/phpunit
+```
 
 A list of default values, with a brief explanation, can be found at the default
 [`runner.yml`](./config/runner.yml).
@@ -230,19 +274,43 @@ For example, the following YAML portion will expose two dynamic commands, `drupa
 
 ```yaml
 commands:
+  # The name of the command, in the format "group:commandname".
   drupal:site-setup:
+    # A list of tasks that will be executed in sequence. Any value using shell
+    # variable notation "${config.option}" will be replaced by the config value.
     - { task: "chmod", file: "${drupal.root}/sites", permissions: 0774, recursive: true }
     - { task: "symlink", from: "../../custom/modules", to: "${drupal.root}/modules/custom" }
     - { task: "symlink", from: "../../custom/themes", to: "${drupal.root}/themes/custom" }
+    # Commands can reference each other using the "run" task, allowing for
+    # complex scenarios to be implemented with relative ease.
     - { task: "run", command: "drupal:drush-setup" }
     - { task: "run", command: "drupal:settings-setup" }
     - { task: "run", command: "setup:behat" }
+    # A shell command can be executed by including it as a string. For more
+    # advanced cases it is recommended to use the "exec" task instead.
     - "./vendor/bin/drush --root=$(pwd)/${drupal.root} cr"
-  setup:behat:
-    - { task: "process", source: "behat.yml.dist", destination: "behat.yml" }
+  deploy:rsync-files:
+    - task: exec
+      command: rsync
+      # Define the command arguments as an array.
+      arguments:
+        - ${files.source_path}
+        - ${files.destination_path}
+      options:
+        # Options that have the value `null` are passed without a value, this
+        # will result in `--archive --compress --verbose`.
+        archive: null
+        compress: null
+        verbose: null
+        # Any specified values will be passed to the option: `--info=del`.
+        info: del
+        # Some options can be passed multiple times. In this case define the
+        # values as an array. This outputs `--exclude=cache --exclude=vendor`.
+        exclude:
+          - cache
+          - vendor
 ```
 
-Commands can reference each-other, allowing for complex scenarios to be implemented with relative ease.
 
 At the moment the following tasks are supported (optional argument default values in parenthesis):
 
