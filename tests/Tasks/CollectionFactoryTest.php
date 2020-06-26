@@ -96,7 +96,7 @@ class CollectionFactoryTest extends AbstractTaskTest
             ],
         ];
         $this->taskCollectionFactory($tasks)->run();
-        $this->assertSame(__METHOD__.'opt1opt2', file_get_contents($filePath));
+        $this->assertSame(__METHOD__ . 'opt1opt2', file_get_contents($filePath));
     }
 
     /**
@@ -109,7 +109,7 @@ class CollectionFactoryTest extends AbstractTaskTest
         $tasks = [
             [
                 'task' => 'exec',
-                'command' => __DIR__.'/../../bin/run',
+                'command' => __DIR__ . '/../../bin/run',
                 'arguments' => [
                     'custom:test',
                     __METHOD__,
@@ -125,7 +125,7 @@ class CollectionFactoryTest extends AbstractTaskTest
             ],
         ];
         $this->taskCollectionFactory($tasks)->run();
-        $this->assertSame(__METHOD__.'opt1opt2', file_get_contents($filePath));
+        $this->assertSame(__METHOD__ . 'opt1opt2', file_get_contents($filePath));
     }
 
     /**

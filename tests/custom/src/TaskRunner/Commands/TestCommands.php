@@ -26,6 +26,6 @@ class TestCommands extends AbstractCommands
         'array-opt' => [],
     ]): void
     {
-        file_put_contents($options['filepath'], $content.$options['array-opt'][0].$options['array-opt'][1]);
+        file_put_contents($options['filepath'], $content . $options['array-opt'][0] . $options['array-opt'][1]);
     }
 }
