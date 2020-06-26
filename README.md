@@ -2,12 +2,12 @@
 [![Build Status](https://drone.fpfis.eu/api/badges/openeuropa/task-runner/status.svg)](https://drone.fpfis.eu/openeuropa/task-runner)
 [![Packagist](https://img.shields.io/packagist/v/openeuropa/task-runner.svg)](https://packagist.org/packages/openeuropa/task-runner)
 
-PHP task runner based on [Robo](http://robo.li), focused on extensibility.
-
-Quick references:
+PHP task runner based on [Robo](http://robo.li), focused on extensibility and
+easy configuration using YAML files.
 
 - [Installation](#installation)
 - [Configuration](#configuration)
+- [Background](#background)
 - [Built-in commands](#built-in-commands)
 - [Expose custom commands as YAML configuration](#expose-custom-commands-as-yaml-configuration)
 - [Expose custom commands as PHP classes](#expose-custom-commands-as-php-classes)
@@ -76,7 +76,7 @@ docker-compose exec web ./vendor/bin/grumphp run
 To run the phpunit tests:
 
 ```bash
-docker-compose exec web ./vendor/bin/phpunit
+docker-compose exec --user=$(id -u):$(id -g) web ./vendor/bin/phpunit
 ```
 
 ## Configuration
@@ -153,10 +153,63 @@ Task Runner commands can be customized in two ways:
 A list of default values, with a brief explanation, can be found at the default
 [`runner.yml`](./config/runner.yml).
 
+## Background
+
+The goal of Task Runner is to allow developers and system engineers to quickly
+rig up a set of CLI commands to interact with their PHP applications. These
+commands can be used to script automations, deploy new features, perform
+database operations, run tests, and execute any kind of maintenance task that
+might be required.
+
+### Commands
+
+In Task Runner a "command" is equivalent to a shell command: an action that can
+be executed from a command line interface. Commands are following the POSIX
+standard and consist of the command name, followed by arguments and options.
+
+Example:
+
+```
+# The following outputs the "runner" configuration value in the terminal window.
+$ ./vendor/bin/run config runner
+```
+
+Getting a list of available commands:
+
+```
+$ ./vendor/bin/run list
+```
+
+Getting more information about a particular command, including their available
+arguments and options:
+
+```
+$ ./vendor/bin/run help [command-name]
+```
+
+### Tasks
+
+In Task Runner a "task" is a discrete (and usually small) operation that can be
+performed as part of a command. Some examples are: creating a symbolic link,
+starting a database server or writing a configuration file.
+
+Several tasks can be sequenced together to form a command.
 
 ## Built-in commands
 
 The Task Runner comes with the following built-in commands:
+
+| Command  | Description                                              |
+| -------- |--------------------------------------------------------- |
+| `config` | Shows the full Task Runner configuration in YAML format. |
+| `help`   | Shows the help for a command.                            |
+| `list`   | Lists all available commands.                            |
+
+### Deprecated built-in commands
+
+The following built-in commands are present in version 1.x but are deprecated
+and will be removed from the next major version. The idea for Task Runner is to
+not make any assumptions about how users interact with their projects.
 
 | Command                      | Description |
 | ---------------------------- |-------------|
@@ -167,8 +220,6 @@ The Task Runner comes with the following built-in commands:
 | `drupal:settings-setup`      | Setup default Drupal settings file by appending values specified at `drupal.settings` |
 | `drupal:drush-setup`         | Setup Drush 8 and 9 configuration files |
 | `release:create-archive`     | Create and archive a release for the current project |
-
-Run `./vendor/bin/run help [command-name]` for more information about each command's capabilities.
 
 ## Expose "dynamic" commands as YAML configuration
 
