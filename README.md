@@ -102,24 +102,22 @@ supplied in later files will override earlier ones:
 
 * The defaults provided by Task Runner. This file is located inside the Task
   Runner repository in `config/runner.yml`.
-* `runner.yml.dist` - project specific defaults. This file should be placed
-  in the root folder of the project that depends on the Task Runner. Use
-  this file to declare default options which are expected to work with your
-  application under regular circumstances. This file should be committed in
-  the project.
-* Third parties might implement config providers to modify the config. A
-  config provider is a class implementing the `ConfigProviderInterface`.
-  Such a class should be placed under the `TaskRunner\ConfigProviders`
-  relative namespace. For instance when `Some\Namespace` points to `src/`
-  directory, then the config provider class should be placed under the
-  `src/TaskRunner/ConfigProviders` directory and will have the namespace set
-  to `Some\Namespace\TaskRunner\ConfigProviders`. The class name should end
-  with the `ConfigProvider` suffix. Use the `::provide()` method to alter
-  the configuration object. A `@priority` annotation tag can be defined in
-  the class docblock in order to determine the order in which the config
-  providers are running. If omitted, `@priority 0` is assumed. This
-  mechanism allows also to insert custom YAML config files in the flow, see
-  the following example:
+* `runner.yml.dist` - project specific defaults. This file should be placed in
+  the root folder of the project that depends on the Task Runner. Use this file
+  to declare default options which are expected to work with your application
+  under regular circumstances. This file should be committed in the project.
+* Third parties might implement config providers to modify the config. A config
+  provider is a class implementing the `ConfigProviderInterface`. Such a class
+  should be placed under the `TaskRunner\ConfigProviders` relative namespace.
+  For instance when `Some\Namespace` points to `src/` directory, then the config
+  provider class should be placed under the `src/TaskRunner/ConfigProviders`
+  directory and will have the namespace set to
+  `Some\Namespace\TaskRunner\ConfigProviders`. The class name should end with
+  the `ConfigProvider` suffix. Use the `::provide()` method to alter the
+  configuration object. A `@priority` annotation tag can be defined in the class
+  docblock in order to determine the order in which the config providers are
+  running. If omitted, `@priority 0` is assumed. This mechanism allows also to
+  insert custom YAML config files in the flow, see the following example:
   ```
   namespace Some\Namespace\TaskRunner\ConfigProviders;
 
@@ -146,17 +144,17 @@ supplied in later files will override earlier ones:
       }
   }
   ```
-* `runner.yml` - project specific user overrides. This file is also located
-  in the root folder of the project that depends on the Task Runner. This
-  file can be used to override options with values that are specific to the
-  user's local environment. It is considered good practice to add this file
-  to `.gitignore` to prevent `runner.yml` from being accidentally committed
-  in the project repository.
-* User provided global overrides stored in environment variables. These can
-  be used to define environment specific configuration that applies to all
-  projects that use the Task Runner, such as database credentials and the
-  Github access token. The following locations will be checked and the first
-  one that is found will be used:
+* `runner.yml` - project specific user overrides. This file is also located in
+  the root folder of the project that depends on the Task Runner. This file can
+  be used to override options with values that are specific to the user's local
+  environment. It is considered good practice to add this file to `.gitignore`
+  to prevent `runner.yml` from being accidentally committed in the project
+  repository.
+* User provided global overrides stored in environment variables. These can be
+  used to define environment specific configuration that applies to all projects
+  that use the Task Runner, such as database credentials and the Github access
+  token. The following locations will be checked and the first one that is found
+  will be used:
     * `$OPENEUROPA_TASKRUNNER_CONFIG`
     * `$XDG_CONFIG_HOME/openeuropa/taskrunner/runner.yml`
     * `$HOME/.config/openeuropa/taskrunner/runner.yml`
