@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Commands;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
@@ -15,9 +17,7 @@ use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
- * Class AbstractCommands
- *
- * @package OpenEuropa\TaskRunner\Commands
+ * Base class for commands.
  */
 abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterface, ConfigAwareInterface
 {
@@ -34,7 +34,7 @@ abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterfa
      */
     public function getConfigurationFile()
     {
-        return __DIR__.'/../../config/commands/base.yml';
+        return __DIR__ . '/../../config/commands/base.yml';
     }
 
     /**
@@ -115,7 +115,7 @@ abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterfa
      */
     protected function getBin($name)
     {
-        $filename = $this->getConfig()->get('runner.bin_dir').'/'.$name;
+        $filename = $this->getConfig()->get('runner.bin_dir') . '/' . $name;
         if (!file_exists($filename) && !$this->isSimulating()) {
             throw new TaskException($this, "Executable '{$filename}' not found.");
         }

@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Services;
 
 /**
- * Class Time
- *
- * @package OpenEuropa\TaskRunner\Services
+ * Showcases how to use a built-in PHP function in a more complicated way.
  */
 class Time
 {

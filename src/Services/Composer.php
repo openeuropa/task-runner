@@ -1,11 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Services;
 
 /**
  * Parse composer package information.
- *
- * @package OpenEuropa\TaskRunner\Services
  */
 class Composer
 {
@@ -15,7 +15,7 @@ class Composer
     private $workingDir;
 
     /**
-     * Composer constructor.
+     * Constructs a new Composer object.
      *
      * @param string $workingDir
      */
@@ -77,7 +77,7 @@ class Composer
      */
     public function getPackage()
     {
-        return json_decode(file_get_contents($this->workingDir.'/composer.json'));
+        return json_decode(file_get_contents($this->workingDir . '/composer.json'));
     }
 
     /**

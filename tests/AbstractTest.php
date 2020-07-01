@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Tests;
 
 use PHPUnit\Framework\TestCase;
@@ -7,9 +9,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class AbstractTest
- *
- * @package OpenEuropa\TaskRunner\Tests
+ * Base class for TaskRunner tests.
  */
 abstract class AbstractTest extends TestCase
 {
@@ -30,7 +30,7 @@ abstract class AbstractTest extends TestCase
      */
     protected function getClassLoader()
     {
-        return require __DIR__.'/../vendor/autoload.php';
+        return require __DIR__ . '/../vendor/autoload.php';
     }
 
     /**
@@ -58,7 +58,7 @@ abstract class AbstractTest extends TestCase
      */
     protected function getFixtureContent($filepath)
     {
-        return Yaml::parse(file_get_contents(__DIR__."/fixtures/{$filepath}"));
+        return Yaml::parse(file_get_contents(__DIR__ . "/fixtures/{$filepath}"));
     }
 
     /**
@@ -68,7 +68,7 @@ abstract class AbstractTest extends TestCase
      */
     protected function getSandboxFilepath($name)
     {
-        return $this->getSandboxRoot().'/'.$name;
+        return $this->getSandboxRoot() . '/' . $name;
     }
 
     /**
@@ -78,7 +78,7 @@ abstract class AbstractTest extends TestCase
      */
     protected function getSandboxRoot()
     {
-        return __DIR__."/sandbox";
+        return __DIR__ . "/sandbox";
     }
 
     /**
@@ -92,6 +92,8 @@ abstract class AbstractTest extends TestCase
      */
     protected function generateRandomString($length = 10)
     {
-        return substr(str_shuffle(str_repeat($x = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)))), 1, $length);
+        $x = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $sequence = str_repeat($x, (int) ceil($length / strlen($x)));
+        return substr(str_shuffle($sequence), 1, $length);
     }
 }

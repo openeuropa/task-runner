@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Tasks\Drush;
 
 /**
- * Trait loadTasks
+ * Robo loadTasks trait for the Drush commands.
  *
- * @package OpenEuropa\TaskRunner\Tasks\Drush
+ * phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
  */
 trait loadTasks
 {

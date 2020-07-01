@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Contract;
 
 use OpenEuropa\TaskRunner\Services\Time;
 
 /**
- * Interface TimeAwareInterface
- *
- * @package OpenEuropa\TaskRunner\Contract
+ * Interface for classes that need to know the system time.
  */
 interface TimeAwareInterface
 {

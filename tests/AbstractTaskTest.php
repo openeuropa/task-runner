@@ -1,19 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Tests;
 
-use OpenEuropa\TaskRunner\TaskRunner;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
+use OpenEuropa\TaskRunner\TaskRunner;
+use Robo\Collection\CollectionBuilder;
+use Robo\TaskAccessor;
+use Robo\Tasks;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Robo\TaskAccessor;
-use Robo\Collection\CollectionBuilder;
 
 /**
- * Class AbstractTaskTest.
- *
- * @package OpenEuropa\TaskRunner\Tests
+ * Base class for testing tasks.
  */
 abstract class AbstractTaskTest extends AbstractTest implements ContainerAwareInterface
 {
@@ -33,7 +34,7 @@ abstract class AbstractTaskTest extends AbstractTest implements ContainerAwareIn
         $this->output = new BufferedOutput();
         $runner = new TaskRunner(new StringInput(''), $this->output, $this->getClassLoader());
         $this->setContainer($runner->getContainer());
-        $this->getContainer()->get('config')->set('runner.bin_dir', realpath(__DIR__.'/../bin'));
+        $this->getContainer()->get('config')->set('runner.bin_dir', realpath(__DIR__ . '/../bin'));
     }
 
     /**
@@ -41,6 +42,6 @@ abstract class AbstractTaskTest extends AbstractTest implements ContainerAwareIn
      */
     public function collectionBuilder()
     {
-        return CollectionBuilder::create($this->getContainer(), new \Robo\Tasks());
+        return CollectionBuilder::create($this->getContainer(), new Tasks());
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner;
 
 use Composer\Autoload\ClassLoader;
@@ -7,6 +9,7 @@ use Consolidation\AnnotatedCommand\Parser\Internal\DocblockTag;
 use Consolidation\AnnotatedCommand\Parser\Internal\TagFactory;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Gitonomy\Git\Repository;
+use League\Container\ContainerAwareTrait;
 use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use OpenEuropa\TaskRunner\Commands\DrupalCommands;
 use OpenEuropa\TaskRunner\Commands\DynamicCommands;
@@ -14,11 +17,10 @@ use OpenEuropa\TaskRunner\Commands\ReleaseCommands;
 use OpenEuropa\TaskRunner\Commands\RunnerCommands;
 use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
 use OpenEuropa\TaskRunner\Contract\ConfigProviderInterface;
+use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
 use OpenEuropa\TaskRunner\Contract\TimeAwareInterface;
 use OpenEuropa\TaskRunner\Services\Composer;
-use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
-use League\Container\ContainerAwareTrait;
 use OpenEuropa\TaskRunner\Services\Time;
 use Robo\Application;
 use Robo\Common\ConfigAwareTrait;
@@ -27,23 +29,20 @@ use Robo\Robo;
 use Robo\Runner as RoboRunner;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Class Application.
- *
- * @package OpenEuropa\TaskRunner
+ * Logic for discovering and running commands and tasks.
  */
 class TaskRunner
 {
     use ConfigAwareTrait;
     use ContainerAwareTrait;
 
-    const APPLICATION_NAME = 'OpenEuropa Task Runner';
+    public const APPLICATION_NAME = 'OpenEuropa Task Runner';
 
-    const REPOSITORY = 'openeuropa/task-runner';
+    public const REPOSITORY = 'openeuropa/task-runner';
 
     /**
      * @var RoboRunner
@@ -81,7 +80,7 @@ class TaskRunner
     ];
 
     /**
-     * TaskRunner constructor.
+     * Constructs a new TaskRunner.
      *
      * @param \Symfony\Component\Console\Input\InputInterface   $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
@@ -98,7 +97,13 @@ class TaskRunner
         $this->config = new Config();
         $this->application = $this->createApplication();
         $this->application->setAutoExit(false);
-        $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config, $classLoader);
+        $this->container = $this->createContainer(
+            $this->input,
+            $this->output,
+            $this->application,
+            $this->config,
+            $classLoader
+        );
 
         $this->createConfiguration();
 
@@ -256,8 +261,13 @@ class TaskRunner
      *
      * @return \League\Container\Container|\League\Container\ContainerInterface
      */
-    private function createContainer(InputInterface $input, OutputInterface $output, Application $application, Config $config, ClassLoader $classLoader)
-    {
+    private function createContainer(
+        InputInterface $input,
+        OutputInterface $output,
+        Application $application,
+        Config $config,
+        ClassLoader $classLoader
+    ) {
         $container = Robo::createDefaultContainer($input, $output, $application, $config, $classLoader);
         $container->get('commandFactory')->setIncludeAllPublicMethods(false);
         $container->share('task_runner.composer', Composer::class)->withArgument($this->workingDir);
@@ -288,7 +298,13 @@ class TaskRunner
         $application = new Application(self::APPLICATION_NAME, 'UNKNOWN');
         $application
             ->getDefinition()
-            ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', $this->workingDir));
+            ->addOption(new InputOption(
+                '--working-dir',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Working directory, defaults to current working directory.',
+                $this->workingDir
+            ));
 
         return $application;
     }
@@ -327,7 +343,7 @@ class TaskRunner
         // namespace with "Commands" appended to it. This results in identifiers
         // like "OpenEuropa\TaskRunner\Commands\DrupalCommandsCommands".
         // @see \Robo\Runner::instantiateCommandClass()
-        $commandFileName = DynamicCommands::class."Commands";
+        $commandFileName = DynamicCommands::class . "Commands";
         $this->runner->registerCommandClass($this->application, DynamicCommands::class);
         $commandClass = $this->container->get($commandFileName);
 

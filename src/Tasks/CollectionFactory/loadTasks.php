@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Tasks\CollectionFactory;
 
 /**
- * Trait loadTasks
+ * Robo loadTasks trait for the CollectionFactory.
  *
- * @package OpenEuropa\TaskRunner\Tasks\CollectionFactory
+ * phpcs:disable Squiz.Classes.ValidClassName.NotCamelCaps
  */
 trait loadTasks
 {

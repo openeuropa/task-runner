@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Contract;
 
 use OpenEuropa\TaskRunner\Services\Composer;
 
 /**
- * Interface ComposerAwareInterface
- *
- * @package OpenEuropa\TaskRunner\Contract
+ * Interface for classes that interact with the composer manifest.
  */
 interface ComposerAwareInterface
 {

@@ -1,23 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Tests\Commands;
 
 use Gitonomy\Git\Commit;
-use OpenEuropa\TaskRunner\Services\Time;
-use OpenEuropa\TaskRunner\Tests\AbstractTest;
 use Gitonomy\Git\Reference;
 use Gitonomy\Git\Repository;
 use OpenEuropa\TaskRunner\Services\Composer;
+use OpenEuropa\TaskRunner\Services\Time;
 use OpenEuropa\TaskRunner\TaskRunner;
+use OpenEuropa\TaskRunner\Tests\AbstractTest;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Yaml\Yaml;
-use PHPUnit\Framework\MockObject\MockObject;
 
 /**
- * Class ReleaseCommandsTest
- *
- * @package OpenEuropa\TaskRunner\Tests\Commands
+ * Tests the `release:*` commands.
  */
 class ReleaseCommandsTest extends AbstractTest
 {
@@ -36,7 +35,9 @@ class ReleaseCommandsTest extends AbstractTest
 
         file_put_contents($configFile, Yaml::dump($config));
 
-        $input = new StringInput("release:create-archive {$options} --simulate --working-dir=".$this->getSandboxRoot());
+        $input = new StringInput(
+            "release:create-archive {$options} --simulate --working-dir=" . $this->getSandboxRoot()
+        );
         $output = new BufferedOutput();
         $runner = new TaskRunner($input, $output, $this->getClassLoader());
 
@@ -67,7 +68,7 @@ class ReleaseCommandsTest extends AbstractTest
 
         file_put_contents($configFile, Yaml::dump($config));
 
-        $input = new StringInput("release:create-archive --simulate --working-dir=".$this->getSandboxRoot());
+        $input = new StringInput("release:create-archive --simulate --working-dir=" . $this->getSandboxRoot());
         $output = new BufferedOutput();
         $runner = new TaskRunner($input, $output, $this->getClassLoader());
 

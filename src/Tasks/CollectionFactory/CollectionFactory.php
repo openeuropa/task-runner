@@ -1,21 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Tasks\CollectionFactory;
 
+use OpenEuropa\TaskRunner;
 use Robo\Contract\BuilderAwareInterface;
 use Robo\Contract\SimulatedInterface;
 use Robo\Exception\TaskException;
 use Robo\LoadAllTasks;
-use OpenEuropa\TaskRunner as TaskRunner;
 use Robo\Task\BaseTask;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class CollectionFactory
- *
  * Return a task collection given its array representation.
- *
- * @package OpenEuropa\TaskRunner\Tasks\YamlTaskFacorty
  */
 class CollectionFactory extends BaseTask implements BuilderAwareInterface, SimulatedInterface
 {
@@ -29,7 +27,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     protected $tasks;
 
     /**
-     * CollectionFactory constructor.
+     * Constructs a new CollectionFactory.
      *
      * @param array $tasks
      */
@@ -103,7 +101,9 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     protected function taskFactory($task)
     {
         if (is_string($task)) {
-            @trigger_error('Defining a task as a plain text is deprecated in openeuropa/task-runner:1.0.0 and is removed from openeuropa/task-runner:2.0.0. Use the "exec" task and pass arguments and options.', E_USER_DEPRECATED);
+            // @codingStandardsIgnoreLine
+            $message = 'Defining a task as a plain text is deprecated in openeuropa/task-runner:1.0.0 and is removed from openeuropa/task-runner:2.0.0. Use the "exec" task and pass arguments and options.';
+            @trigger_error($message, E_USER_DEPRECATED);
             return $this->taskExec($task)->interactive($this->isTtySupported());
         }
 
@@ -133,13 +133,16 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 return $this->taskFilesystemStack()->copy($task['from'], $task['to'], $task['force']);
 
             case "chmod":
-                return $this->taskFilesystemStack()->chmod($task['file'], $task['permissions'], $task['umask'], $task['recursive']);
+                return $this->taskFilesystemStack()
+                    ->chmod($task['file'], $task['permissions'], $task['umask'], $task['recursive']);
 
             case "chgrp":
-                return $this->taskFilesystemStack()->chgrp($task['file'], $task['group'], $task['umask'], $task['recursive']);
+                return $this->taskFilesystemStack()
+                    ->chgrp($task['file'], $task['group'], $task['umask'], $task['recursive']);
 
             case "chown":
-                return $this->taskFilesystemStack()->chown($task['file'], $task['user'], $task['umask'], $task['recursive']);
+                return $this->taskFilesystemStack()
+                    ->chown($task['file'], $task['user'], $task['umask'], $task['recursive']);
 
             case "remove":
                 return $this->taskFilesystemStack()->remove($task['file']);
@@ -163,7 +166,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 ]);
 
             case "run":
-                $taskExec = $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')
+                $taskExec = $this->taskExec($this->getConfig()->get('runner.bin_dir') . '/run')
                     ->arg($task['command'])
                     ->interactive($this->isTtySupported());
                 if (!empty($task['arguments'])) {
@@ -193,7 +196,9 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 ];
 
                 if (!isset($map[$task['type']])) {
-                    throw new TaskException($this, "'process-php' task type '{$task['type']}' is not supported, valid values are: 'append', 'prepend' and 'write'.");
+                    // @codingStandardsIgnoreLine
+                    $message = "'process-php' task type '{$task['type']}' is not supported, valid values are: 'append', 'prepend' and 'write'.";
+                    throw new TaskException($this, $message);
                 }
                 $method = $map[$task['type']];
 
@@ -245,6 +250,10 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
      */
     protected function isTtySupported()
     {
-        return PHP_OS !== 'WINNT' && (bool) @proc_open('echo 1 >/dev/null', [['file', '/dev/tty', 'r'], ['file', '/dev/tty', 'w'], ['file', '/dev/tty', 'w']], $pipes);
+        return PHP_OS !== 'WINNT' && (bool) @proc_open('echo 1 >/dev/null', [
+            ['file', '/dev/tty', 'r'],
+            ['file', '/dev/tty', 'w'],
+            ['file', '/dev/tty', 'w'],
+        ], $pipes);
     }
 }

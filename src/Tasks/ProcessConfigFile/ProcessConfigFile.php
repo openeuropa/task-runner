@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Tasks\ProcessConfigFile;
 
 use OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
@@ -11,9 +13,7 @@ use Robo\Task\File\Replace;
 use Robo\Task\Filesystem\FilesystemStack;
 
 /**
- * Class ProcessConfigFile
- *
- * @package OpenEuropa\TaskRunner\Tasks\ProcessConfigFile
+ * Tasks to process configuration files.
  */
 class ProcessConfigFile extends BaseTask implements BuilderAwareInterface
 {
@@ -45,7 +45,7 @@ class ProcessConfigFile extends BaseTask implements BuilderAwareInterface
     protected $replace;
 
     /**
-     * ProcessConfigFile constructor.
+     * Constructs a new ProcessConfigFile task.
      *
      * @param string $source
      * @param string $destination

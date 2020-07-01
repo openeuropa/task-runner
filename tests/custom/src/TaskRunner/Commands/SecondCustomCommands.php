@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace My\Custom\TaskRunner\Commands;
 
 use OpenEuropa\TaskRunner\Commands\AbstractCommands;
 
 /**
- * Class SecondCustomCommands
- *
- * @package My\Custom\TaskRunner\Commands
+ * Test commands.
  */
 class SecondCustomCommands extends AbstractCommands
 {

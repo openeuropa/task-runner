@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="task-runner">
+  <description>PHP CodeSniffer configuration for TaskRunner.</description>
+  <rule ref="phpcs-ruleset.xml"/>
+  <file>src</file>
+  <file>tests</file>
+</ruleset>

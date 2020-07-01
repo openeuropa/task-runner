@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Commands;
 
 use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;

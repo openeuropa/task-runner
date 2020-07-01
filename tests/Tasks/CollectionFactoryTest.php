@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Tests\Tasks;
 
 use OpenEuropa\TaskRunner\Tasks\CollectionFactory\loadTasks;
 use OpenEuropa\TaskRunner\Tests\AbstractTaskTest;
 
 /**
- * Class CollectionFactoryTest
- *
- * @package OpenEuropa\TaskRunner\Tests\Tasks
+ * Tests the collection factory task.
  */
 class CollectionFactoryTest extends AbstractTaskTest
 {

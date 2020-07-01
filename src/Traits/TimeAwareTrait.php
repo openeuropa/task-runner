@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Traits;
 
 use OpenEuropa\TaskRunner\Services\Time;
 
 /**
  * Trait TimeAwareTrait
- *
- * @package OpenEuropa\TaskRunner\Traits
  */
 trait TimeAwareTrait
 {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Tests\Commands;
 
 use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
@@ -11,9 +13,7 @@ use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class DrupalCommandsTest.
- *
- * @package OpenEuropa\TaskRunner\Tests\Commands
+ * Tests various commands.
  *
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
@@ -58,7 +58,7 @@ class CommandsTest extends AbstractTest
         file_put_contents($configFile, Yaml::dump($config));
         file_put_contents($composerFile, $composer);
 
-        $input = new StringInput("{$command} --simulate --working-dir=".$this->getSandboxRoot());
+        $input = new StringInput("{$command} --simulate --working-dir=" . $this->getSandboxRoot());
         $output = new BufferedOutput();
         $runner = new TaskRunner($input, $output, $this->getClassLoader());
         $runner->run();
@@ -91,7 +91,7 @@ class CommandsTest extends AbstractTest
         file_put_contents($source, $content);
         file_put_contents($configFile, Yaml::dump($config));
 
-        $input = new StringInput("{$command} --working-dir=".$this->getSandboxRoot());
+        $input = new StringInput("{$command} --working-dir=" . $this->getSandboxRoot());
         $output = new BufferedOutput();
         $runner = new TaskRunner($input, $output, $this->getClassLoader());
         $runner->run();
@@ -152,7 +152,7 @@ class CommandsTest extends AbstractTest
 
         file_put_contents($configFile, Yaml::dump($config));
 
-        $input = new StringInput("drupal:drush-setup --working-dir=".$this->getSandboxRoot());
+        $input = new StringInput("drupal:drush-setup --working-dir=" . $this->getSandboxRoot());
         $runner = new TaskRunner($input, new BufferedOutput(), $this->getClassLoader());
         $runner->run();
 
@@ -174,7 +174,7 @@ class CommandsTest extends AbstractTest
 
         file_put_contents($configFile, Yaml::dump($config));
 
-        $sites_subdir = isset($config['drupal']['site']['sites_subdir']) ? $config['drupal']['site']['sites_subdir'] : 'default';
+        $sites_subdir = $config['drupal']['site']['sites_subdir'] ?? 'default';
         mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0777, true);
         file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
 
@@ -190,9 +190,9 @@ class CommandsTest extends AbstractTest
         // Generate a random function name.
         $fct = $this->generateRandomString(20);
 
-        // Generate a dummy PHP code.
+        // Generate dummy PHP code.
         $config_override_dummy_script = <<< EOF
-<?php 
+<?php
 function $fct() {}
 EOF;
 
@@ -225,7 +225,7 @@ EOF;
 
         file_put_contents($configFile, Yaml::dump($config));
 
-        $sites_subdir = isset($config['drupal']['site']['sites_subdir']) ? $config['drupal']['site']['sites_subdir'] : 'default';
+        $sites_subdir = $config['drupal']['site']['sites_subdir'] ?? 'default';
         mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0777, true);
         file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
 
@@ -241,9 +241,9 @@ EOF;
         // Generate a random function name.
         $fct = $this->generateRandomString(20);
 
-        // Generate a dummy PHP code.
+        // Generate dummy PHP code.
         $config_override_dummy_script = <<< EOF
-<?php 
+<?php
 function $fct() {}
 EOF;
 
@@ -275,10 +275,12 @@ EOF;
         $configFile = $this->getSandboxFilepath('runner.yml');
         file_put_contents($configFile, Yaml::dump($config));
 
-        $sites_subdir = isset($config['drupal']['site']['sites_subdir']) ? $config['drupal']['site']['sites_subdir'] : 'default';
+        $sites_subdir = $config['drupal']['site']['sites_subdir'] ?? 'default';
         mkdir($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/', 0777, true);
-        file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php', '');
-        file_put_contents($this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/settings.php', '# Already existing file.');
+        $filename = $this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/default.settings.php';
+        file_put_contents($filename, '');
+        $filename = $this->getSandboxRoot() . '/build/sites/' . $sites_subdir . '/settings.php';
+        file_put_contents($filename, '# Already existing file.');
 
         $input = new StringInput('drupal:settings-setup --working-dir=' . $this->getSandboxRoot());
 
@@ -296,9 +298,9 @@ EOF;
         // Generate a random function name.
         $fct = $this->generateRandomString(20);
 
-        // Generate a dummy PHP code.
+        // Generate dummy PHP code.
         $config_override_dummy_script = <<< EOF
-<?php 
+<?php
 function $fct() {}
 EOF;
 
@@ -330,7 +332,7 @@ EOF;
         ];
         file_put_contents($configFile, Yaml::dump($config));
 
-        $input = new StringInput("list --working-dir=".$this->getSandboxRoot());
+        $input = new StringInput("list --working-dir=" . $this->getSandboxRoot());
         $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
         $runner->run();
 
@@ -344,7 +346,7 @@ EOF;
     public function testUserConfigFile()
     {
         // Create a local config file.
-        $runnerYaml = $this->getSandboxRoot().'/runner.yml';
+        $runnerYaml = $this->getSandboxRoot() . '/runner.yml';
         file_put_contents($runnerYaml, Yaml::dump(['foo' => 'baz']));
 
         // Add the environment setting.
@@ -396,7 +398,7 @@ EOF;
         $runnerConfigFile = $this->getSandboxFilepath('runner.yml');
         file_put_contents($runnerConfigFile, Yaml::dump($runnerConfig));
 
-        $input = new StringInput("{$command} --working-dir=".$this->getSandboxRoot());
+        $input = new StringInput("{$command} --working-dir=" . $this->getSandboxRoot());
         $output = new BufferedOutput();
         $runner = new TaskRunner($input, $output, $this->getClassLoader());
         $exit_code = $runner->run();

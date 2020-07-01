@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenEuropa\TaskRunner\Commands;
 
 use Gitonomy\Git\Reference\Branch;
-use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface;
-use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
-use OpenEuropa\TaskRunner\Contract\TimeAwareInterface;
-use OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
+use OpenEuropa\TaskRunner\Contract\ComposerAwareInterface as ComposerAware;
+use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface as RepositoryAware;
+use OpenEuropa\TaskRunner\Contract\TimeAwareInterface as TimeAware;
 use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
+use OpenEuropa\TaskRunner\Traits\ComposerAwareTrait;
 use OpenEuropa\TaskRunner\Traits\RepositoryAwareTrait;
 use OpenEuropa\TaskRunner\Traits\TimeAwareTrait;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -16,7 +18,7 @@ use Symfony\Component\Console\Input\InputOption;
 /**
  * Project release commands.
  */
-class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface, RepositoryAwareInterface, TimeAwareInterface
+class ReleaseCommands extends AbstractCommands implements ComposerAware, RepositoryAware, TimeAware
 {
     use ComposerAwareTrait;
     use RepositoryAwareTrait;
@@ -139,9 +141,10 @@ class ReleaseCommands extends AbstractCommands implements ComposerAwareInterface
         $tag = end($tags);
 
         // Resolve local branch name for current HEAD.
-        $branches = array_filter($repository->getReferences()->getBranches(), function (Branch $branch) use ($revision) {
+        $filter = function (Branch $branch) use ($revision) {
             return $branch->isLocal() && $branch->getRevision() === $revision;
-        });
+        };
+        $branches = array_filter($repository->getReferences()->getBranches(), $filter);
         $branch = reset($branches);
 
         // Make sure we always have a version string, i.e. when in detached state.
