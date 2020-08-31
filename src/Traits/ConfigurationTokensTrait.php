@@ -21,7 +21,7 @@ trait ConfigurationTokensTrait
      */
     protected function extractRawTokens($text)
     {
-        preg_match_all('/\$\{(([A-Za-z_\-]+\.?)+)\}/', $text, $matches);
+        preg_match_all('/\${(([A-Za-z]([A-Za-z0-9_\-]+)?\.?)+)}/', $text, $matches);
         if (isset($matches[0]) && !empty($matches[0]) && is_array($matches[0])) {
             return array_combine($matches[0], $matches[1]);
         }
