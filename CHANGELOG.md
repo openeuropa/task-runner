@@ -1,5 +1,20 @@
 # Change Log
 
+## [1.0.0-beta7](https://github.com/openeuropa/task-runner/tree/1.0.0-beta7) (2020-04-08)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta6...1.0.0-beta7)
+
+**Closed issues:**
+
+- Allow further arguments to be passed to run drupal:site-install or implement re-installing [\#68](https://github.com/openeuropa/task-runner/issues/68)
+
+**Merged pull requests:**
+
+- OPENEUROPA-2943: Update composer json. [\#115](https://github.com/openeuropa/task-runner/pull/115) ([sergepavle](https://github.com/sergepavle))
+- OPENEUROPA-2943: Upgrade to PHP 7.3. [\#114](https://github.com/openeuropa/task-runner/pull/114) ([sergepavle](https://github.com/sergepavle))
+- OPENEUROPA-2258: Undo use of PHP 7.2. [\#109](https://github.com/openeuropa/task-runner/pull/109) ([dxvargas](https://github.com/dxvargas))
+- OPENEUROPA-2464: Use PHP 7.1 in docker-compose. [\#108](https://github.com/openeuropa/task-runner/pull/108) ([dxvargas](https://github.com/dxvargas))
+- OPENEUROPA-2258: Use PHP 7.2 [\#106](https://github.com/openeuropa/task-runner/pull/106) ([dxvargas](https://github.com/dxvargas))
+
 ## [1.0.0-beta6](https://github.com/openeuropa/task-runner/tree/1.0.0-beta6) (2019-06-27)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta5...1.0.0-beta6)
 
@@ -9,6 +24,7 @@
 
 **Merged pull requests:**
 
+- Create the release 1.0.0-beta6 [\#103](https://github.com/openeuropa/task-runner/pull/103) ([sergepavle](https://github.com/sergepavle))
 - OPENEUROPA-2030: Allow to pass Drupal root as a token to pre and post commands [\#102](https://github.com/openeuropa/task-runner/pull/102) ([ademarco](https://github.com/ademarco))
 - OPENEUROPA-1897: Use ci image. [\#101](https://github.com/openeuropa/task-runner/pull/101) ([imanoleguskiza](https://github.com/imanoleguskiza))
 
