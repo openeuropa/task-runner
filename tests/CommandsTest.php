@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace OpenEuropa\TaskRunner\Tests;
 
-use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use OpenEuropa\TaskRunner\TaskRunner;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -44,23 +43,6 @@ class CommandsTest extends AbstractTest
 
         $actual = file_get_contents($destination);
         $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * @param array  $options
-     * @param string $expected
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     *
-     * @dataProvider changelogDataProvider
-     */
-    public function testChangelogCommands(array $options, $expected)
-    {
-        $runner = new TaskRunner(new StringInput(''), new NullOutput(), $this->getClassLoader());
-        /** @var ChangelogCommands $commands */
-        $commands = $runner->getCommands(ChangelogCommands::class);
-        $this->assertEquals($expected, $commands->generateChangelog($options)->getCommand());
     }
 
     /**
@@ -397,14 +379,6 @@ EOF;
     public function setupDataProvider()
     {
         return $this->getFixtureContent('setup.yml');
-    }
-
-    /**
-     * @return array
-     */
-    public function changelogDataProvider()
-    {
-        return $this->getFixtureContent('changelog.yml');
     }
 
     /**

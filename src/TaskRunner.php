@@ -10,7 +10,6 @@ use Consolidation\AnnotatedCommand\Parser\Internal\TagFactory;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Gitonomy\Git\Repository;
 use League\Container\ContainerAwareTrait;
-use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use OpenEuropa\TaskRunner\Commands\DrupalCommands;
 use OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use OpenEuropa\TaskRunner\Commands\ReleaseCommands;
@@ -73,7 +72,6 @@ class TaskRunner
      * @var array
      */
     private $defaultCommandClasses = [
-        ChangelogCommands::class,
         DrupalCommands::class,
         ReleaseCommands::class,
         RunnerCommands::class,
