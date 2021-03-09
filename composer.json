@@ -15,6 +15,9 @@
         "openeuropa/task-runner-changelog": "^1.0.1",
         "symfony/console": "^3.4.21|^4|^5"
     },
+    "replace": {
+        "openeuropa/task-runner": "dev-master"
+    },
     "require-dev": {
         "openeuropa/code-review": "~1.0.0-beta3",
         "phpunit/phpunit": "~6.0||~7.0",
