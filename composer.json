@@ -19,10 +19,6 @@
         "phpunit/phpunit": "~6.0||~7.0",
         "slevomat/coding-standard": "~6.0"
     },
-    "suggest": {
-        "openeuropa/task-runner-changelog": "Provides a command to automatically generate a changelog for a release.",
-        "openeuropa/task-runner-drupal": "Provides Drupal related commands for the task runner."
-    },
     "autoload": {
         "psr-4": {
             "OpenEuropa\\TaskRunner\\": "./src/"

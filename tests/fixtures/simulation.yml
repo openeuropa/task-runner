@@ -1,0 +1,332 @@
+- command: "drupal:site-install"
+  configuration:
+    drupal:
+      database:
+        name: "drupal"
+        user: "root"
+        password: "root"
+  composer: ''
+  contains:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+
+- command: 'drupal:site-install --site-name="Test site"'
+  configuration:
+    drupal:
+      database:
+        name: "drupal"
+        user: "root"
+        password: "root"
+  composer: ''
+  contains:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+
+- command: 'drupal:site-install --site-mail="test@example.com" --site-profile=minimal'
+  configuration:
+    drupal:
+      database:
+        name: "drupal"
+        user: "root"
+        password: "root"
+  composer: ''
+  contains:
+    - "site-install minimal"
+    - "--site-mail=test@example.com"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      root: 'test'
+      site:
+        profile: 'minimal'
+  composer: ''
+  contains:
+    - "./vendor/bin/drush -y --root=$(pwd)/test"
+    - "site-install minimal"
+
+- command: 'drupal:site-install --root="overridden"'
+  configuration:
+    drupal:
+      root: './test'
+  composer: ''
+  contains:
+    - "./vendor/bin/drush -y --root=$(pwd)/overridden"
+
+- command: 'drupal:site-install --root="overridden"'
+  configuration:
+    runner:
+      bin_dir: "./bin"
+  composer: ''
+  contains:
+    - "./bin/drush -y --root=$(pwd)/overridden"
+
+# Test for passing the deprecated option --config-dir on the command line. This
+# should emit a warning, and should be automatically converted to the new option
+# --existing-config.
+- command: 'drupal:site-install --site-name="Test site" --config-dir="../config-dir"'
+  configuration:
+    drupal:
+      database:
+        name: "drupal"
+        user: "root"
+        password: "root"
+  composer: ''
+  contains:
+  - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' --existing-config site-install standard"
+  - "[WARNING] The 'config-dir' option is deprecated. Use 'existing-config' instead."
+
+# Test for setting the deprecated option --config-dir in a configuration file.
+# This should emit a warning, and should be automatically converted to the new
+# option --existing-config.
+- command: 'drupal:site-install --site-name="Test site"'
+  configuration:
+    drupal:
+      site:
+        config_dir: "../config/sync"
+      database:
+        name: "drupal"
+        user: "root"
+        password: "root"
+  composer: ''
+  contains:
+  - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Test site' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' --existing-config site-install standard"
+  - "[WARNING] The 'config-dir' option is deprecated. Use 'existing-config' instead."
+
+- command: 'drupal:site-post-install'
+  configuration:
+    drupal:
+      post_install:
+        - "./vendor/bin/drush en views -y"
+        - "./vendor/bin/drush cr"
+  composer: ''
+  contains:
+    - "./vendor/bin/drush en views -y"
+    - "./vendor/bin/drush cr"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      database:
+        name: "drupal"
+        user: "root"
+        password: "root"
+      post_install:
+        - "./vendor/bin/drush en views -y"
+        - "./vendor/bin/drush cr"
+  composer: ''
+  contains:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+    - "./vendor/bin/drush en views -y"
+    - "./vendor/bin/drush cr"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      post_install:
+        - "./vendor/bin/drush --root=${drupal.root} en views -y"
+  composer: ''
+  contains:
+    - "./vendor/bin/drush --root=build en views -y"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      database:
+        name: "drupal"
+        user: "root"
+        password: "root"
+      post_install: []
+  composer: ''
+  contains:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      post_install: []
+      database:
+        scheme: "sqlite"
+        host: "sites/default/files"
+        name: ".ht.drupal"
+        password: ''
+        port: ''
+  composer: ''
+  contains:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='sqlite://sites/default/files/.ht.drupal' site-install standard"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      post_install: []
+      database:
+        type: "sqlite"
+        host: "sites/default/files"
+        name: ".ht.drupal"
+        password: ''
+        port: ''
+  composer: ''
+  contains:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='sqlite://sites/default/files/.ht.drupal' site-install standard"
+
+- command: 'drupal:site-install --database-type=pgsql'
+  configuration:
+    drupal:
+      post_install: []
+      database:
+        name: "drupal"
+        user: 'root'
+        password: 'root'
+  composer: ''
+  contains:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='pgsql://root:root@127.0.0.1:3306/drupal' site-install standard"
+
+- command: 'drupal:site-install --database-scheme=pgsql'
+  configuration:
+    drupal:
+      post_install: []
+      database:
+        name: "drupal"
+        user: 'root'
+        password: 'root'
+  composer: ''
+  contains:
+    - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='pgsql://root:root@127.0.0.1:3306/drupal' site-install standard"
+
+- command: 'custom:run-tasks'
+  configuration:
+    commands:
+      custom:run-tasks:
+        - { task: "symlink", from: "${drupal.root}/modules/custom", to: "../../custom/modules" }
+        - { task: "symlink", from: "${drupal.root}/modules/custom", to: "../../custom/themes" }
+  composer: ''
+  contains:
+    - "[Simulator] { task: symlink, from: build/modules/custom, to: ../../custom/modules }"
+    - "[Simulator] { task: symlink, from: build/modules/custom, to: ../../custom/themes }"
+
+- command: 'drupal:drush-setup'
+  configuration: []
+  composer: ''
+  contains:
+    - "WriteConfiguration('build/sites/default/drushrc.php'"
+    - "File\\Write('build/drush/drush.yml')"
+
+- command: 'drupal:drush-setup --root=web --config-dir=./drush'
+  configuration: []
+  composer: ''
+  contains:
+    - "WriteConfiguration('web/sites/default/drushrc.php'"
+    - "File\\Write('./drush/drush.yml')"
+
+- command: 'drupal:settings-setup'
+  configuration: []
+  composer: ''
+  contains:
+    - "WriteConfiguration('build/sites/default/settings.override.php'"
+
+- command: 'drupal:settings-setup --root=web'
+  configuration: []
+  composer: ''
+  contains:
+    - "WriteConfiguration('web/sites/default/settings.override.php'"
+
+- command: 'drupal:site-setup'
+  configuration:
+    drupal:
+      root: "web"
+    commands:
+      drupal:site-setup:
+        - { task: "chmod", file: "${drupal.root}/sites", permissions: 0775 }
+        - { task: "symlink", from: "../../custom/modules", to: "${drupal.root}/modules/custom" }
+        - { task: "symlink", from: "../../custom/themes", to: "${drupal.root}/themes/custom" }
+        - { task: "symlink", from: "../../custom/profiles", to: "${drupal.root}/profiles/custom" }
+        - { task: "run", command: "drupal:drush-setup" }
+        - { task: "run", command: "drupal:settings-setup" }
+        - { task: "run", command: "setup:behat" }
+        - { task: "run", command: "setup:phpunit" }
+      setup:behat:
+        - { task: "process", source: "behat.yml.dist", destination: "behat.yml" }
+      setup:phpunit:
+        - { task: "process", source: "phpunit.xml.dist", destination: "phpunit.xml" }
+  composer: ''
+  contains:
+    - "{ task: chmod, file: web/sites, permissions: 509 }"
+    - "{ task: symlink, from: ../../custom/modules, to: web/modules/custom }"
+    - "{ task: symlink, from: ../../custom/themes, to: web/themes/custom }"
+    - "{ task: symlink, from: ../../custom/profiles, to: web/profiles/custom }"
+    - "{ task: run, command: 'drupal:drush-setup' }"
+    - "{ task: run, command: 'drupal:settings-setup' }"
+    - "{ task: run, command: 'setup:behat' }"
+    - "{ task: run, command: 'setup:phpunit' }"
+
+# Check that if the "existing-config" option is set to TRUE in a configuration
+# file, it is passed as a valueless option on the command line (i.e. not
+# followed by an '=' symbol).
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      site:
+        existing_config: true
+  composer: ''
+  contains:
+  - "./vendor/bin/drush -y"
+  - "--existing-config "
+
+# Check that if the "existing-config" option is passed on the command line, it
+# is passed on the the Drush command as a valueless option (i.e. not followed by
+# an '=' symbol).
+- command: 'drupal:site-install --existing-config'
+  configuration: []
+  composer: ''
+  contains:
+  - "./vendor/bin/drush -y"
+  - "--existing-config "
+
+# Check that if the "existing_config" option is set to FALSE it is not passed on
+# the command line.
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      site:
+        existing_config: false
+  composer: ''
+  contains:
+  - "./vendor/bin/drush -y"
+  not_contains:
+  - "--existing-config"
+
+# Check that if the "existing_config" option is neither set in a configuration
+# file nor passed to the command, it is not passed on to the Drush command.
+- command: 'drupal:site-install'
+  configuration: []
+  composer: ''
+  contains:
+  - "./vendor/bin/drush -y"
+  not_contains:
+  - "--existing-config"
+
+- command: "drupal:site-install"
+  configuration:
+    drupal:
+      site:
+        generate_db_url: false
+  composer: ''
+  contains: []
+  not_contains:
+  - "--db-url='mysql://127.0.0.1:3306'"
+
+- command: 'drupal:site-install --root=foo'
+  configuration:
+    drupal:
+      post_install:
+        - "./vendor/bin/drush --root=!root"
+  composer: ''
+  contains:
+    - "./vendor/bin/drush --root=foo"
+
+- command: 'drupal:site-install --root=foo'
+  configuration:
+    drupal:
+      pre_install:
+        - "./vendor/bin/drush --root=!root"
+  composer: ''
+  contains:
+    - "./vendor/bin/drush --root=foo"

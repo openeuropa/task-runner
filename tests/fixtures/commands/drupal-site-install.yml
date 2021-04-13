@@ -1,0 +1,26 @@
+# When the drupal:permissions-setup command is run it should make the settings
+# folder and file writable, and there should not be any error.
+- configuration:
+    drupal:
+      settings:
+        sites-subdir: "build/sites/default/"
+        settings_file: "settings.php"
+  command: "drupal:permissions-setup"
+  expected_error: false
+  expected_settings_dir_permission: "0775"
+  expected_settings_file_permission: "0664"
+
+# When the drupal:site-install command is run with the 'skip-permission-setup'
+# option set to 'true' then the settings folder and file should not be made
+# writable, and an error should be returned.
+- configuration:
+    drupal:
+      settings:
+        sites-subdir: "build/sites/default/"
+        settings_file: "settings.php"
+      site:
+        skip_permissions_setup: true
+  command: "drupal:site-install"
+  expected_error: true
+  expected_settings_dir_permission: "0555"
+  expected_settings_file_permission: "0444"
