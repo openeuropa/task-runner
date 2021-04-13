@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace OpenEuropa\TaskRunner\Tasks\Drush;
 
-use OpenEuropa\TaskRunnerDrupal\Tasks\Drush\loadTasks as newLoadTasks;
-
 /**
  * Robo loadTasks trait for the Drush commands.
  *
@@ -13,5 +11,11 @@ use OpenEuropa\TaskRunnerDrupal\Tasks\Drush\loadTasks as newLoadTasks;
  */
 trait loadTasks
 {
-    use newLoadTasks;
+    /**
+     * @return \OpenEuropa\TaskRunner\Tasks\Drush\Drush
+     */
+    public function taskDrush($command)
+    {
+        return $this->task(Drush::class, $command);
+    }
 }
