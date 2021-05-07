@@ -160,6 +160,7 @@ The Task Runner comes with the following built-in commands:
 
 | Command                      | Description |
 | ---------------------------- |-------------|
+| `changelog:generate`         | Generate a changelog for the current project based on its GitHub issues and pull requests |
 | `drupal:site-install`        | Install a target Drupal site using default configuration values and/or CLI options |
 | `drupal:site-pre-install`    | Run Drupal pre-install commands as listed under the `drupal.pre_install` property |
 | `drupal:site-post-install`   | Run Drupal post-install commands as listed under the `drupal.post_install` property |

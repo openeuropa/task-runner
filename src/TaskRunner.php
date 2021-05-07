@@ -10,6 +10,7 @@ use Consolidation\AnnotatedCommand\Parser\Internal\TagFactory;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Gitonomy\Git\Repository;
 use League\Container\ContainerAwareTrait;
+use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use OpenEuropa\TaskRunner\Commands\DrupalCommands;
 use OpenEuropa\TaskRunner\Commands\DynamicCommands;
 use OpenEuropa\TaskRunner\Commands\ReleaseCommands;
@@ -72,6 +73,7 @@ class TaskRunner
      * @var array
      */
     private $defaultCommandClasses = [
+        ChangelogCommands::class,
         DrupalCommands::class,
         ReleaseCommands::class,
         RunnerCommands::class,
@@ -128,7 +130,17 @@ class TaskRunner
      */
     public function run()
     {
-        $this->registerCommands();
+        // Discover early the commands to allow dynamic command overrides.
+        $commandClasses = $this->discoverCommandClasses();
+        $commandClasses = array_merge($this->defaultCommandClasses, $commandClasses);
+
+        // Register command classes.
+        $this->runner->registerCommandClasses($this->application, $commandClasses);
+
+        // Register commands defined in runner.yml file. These are registered
+        // after the command classes so that dynamic commands can override
+        // commands defined in classes.
+        $this->registerDynamicCommands($this->application);
 
         // Run the command entered by the user in the CLI.
         return $this->runner->run($this->input, $this->output, $this->application);
@@ -145,7 +157,8 @@ class TaskRunner
     public function getCommands($class)
     {
         // Register command classes.
-        $this->registerCommands();
+        $this->runner->registerCommandClasses($this->application, $this->defaultCommandClasses);
+
         return $this->getContainer()->get("{$class}Commands");
     }
 
@@ -304,24 +317,6 @@ class TaskRunner
     private function getWorkingDir(InputInterface $input)
     {
         return $input->getParameterOption('--working-dir', getcwd());
-    }
-
-    /**
-     * Register all commands.
-     */
-    private function registerCommands(): void
-    {
-        // Discover early the commands to allow dynamic command overrides.
-        $commandClasses = $this->discoverCommandClasses();
-        $commandClasses = array_merge($this->defaultCommandClasses, $commandClasses);
-
-        // Register command classes.
-        $this->runner->registerCommandClasses($this->application, $commandClasses);
-
-        // Register commands defined in runner.yml file. These are registered
-        // after the command classes so that dynamic commands can override
-        // commands defined in classes.
-        $this->registerDynamicCommands($this->application);
     }
 
     /**
