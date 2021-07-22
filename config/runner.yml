@@ -40,6 +40,8 @@ drupal:
     # Setting this to "false" will run "site-install" without the "--db-url" parameter.
     # This is useful if the database settings are already set in your settings.php file.
     generate_db_url: true
+    update_status_module: "true"
+    update_status_emails: "true"
 
   # Administrator account information.
   account:

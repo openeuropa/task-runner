@@ -31,6 +31,8 @@ class Drush extends Exec
     protected $sitesSubdir = '';
     protected $existingConfig = false;
     protected $generateDbUrl = true;
+    protected $updateStatusModule = true;
+    protected $updateStatusEmails = true;
 
     /**
      * Build Drush site install command.
@@ -69,7 +71,10 @@ class Drush extends Exec
             $this->option('existing-config');
         }
 
-        return $this->arg('site-install')->arg($this->siteProfile);
+        return $this->arg('site-install')
+            ->arg($this->siteProfile)
+            ->rawArg("install_configure_form.enable_update_status_module=" . $this->updateStatusModule)
+            ->rawArg("install_configure_form.enable_update_status_emails=" . $this->updateStatusEmails);
     }
 
     /**
@@ -284,6 +289,30 @@ class Drush extends Exec
     public function setGenerateDbUrl($generateDbUrl)
     {
         $this->generateDbUrl = $generateDbUrl;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $updateStatusModule
+     *
+     * @return Drush
+     */
+    public function setUpdateStatusModule($updateStatusModule)
+    {
+        $this->updateStatusModule = $updateStatusModule;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $updateStatusEmails
+     *
+     * @return Drush
+     */
+    public function setUpdateStatusEmails($updateStatusEmails)
+    {
+        $this->updateStatusEmails = $updateStatusEmails;
 
         return $this;
     }

@@ -133,6 +133,8 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      * @option config-dir             Deprecated, use "existing-config" for Drupal 8.6 and higher.
      * @option existing-config        Whether existing config should be imported during installation.
      * @option skip-permissions-setup Whether to skip making the settings file and folder writable during installation.
+     * @option enable-update-status-module Check for updates automatically.
+     * @option enable-update-status-emails Receive email notifications regarding updates.
      *
      * @aliases drupal:si,dsi
      *
@@ -162,6 +164,8 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         'config-dir' => InputOption::VALUE_REQUIRED,
         'existing-config' => false,
         'skip-permissions-setup' => false,
+        'enable-update-status-module' => true,
+        'enable-update-status-emails' => true,
     ])
     {
         if ($options['database-type']) {
@@ -190,7 +194,9 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
             ->databasePort($options['database-port'])
             ->databaseName($options['database-name'])
             ->sitesSubdir($options['sites-subdir'])
-            ->siteProfile($options['site-profile']);
+            ->siteProfile($options['site-profile'])
+            ->setUpdateStatusModule($options['enable-update-status-module'])
+            ->setUpdateStatusEmails($options['enable-update-status-emails']);
 
         $task->setGenerateDbUrl($this->getConfig()->get('drupal.site.generate_db_url'));
 
