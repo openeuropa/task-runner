@@ -8,6 +8,7 @@
   composer: ''
   contains:
     - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='mysql://root:root@127.0.0.1:3306/drupal' site-install standard"
+    - "site-install standard install_configure_form.enable_update_status_module=true install_configure_form.enable_update_status_emails=true"
 
 - command: 'drupal:site-install --site-name="Test site"'
   configuration:
@@ -374,3 +375,19 @@
   composer: ''
   contains:
     - "./vendor/bin/drush --root=foo"
+
+- command: 'drupal:site-install --enable-update-status-module=false --enable-update-status-emails=false'
+  configuration: {}
+  composer: ''
+  contains:
+    - "standard install_configure_form.enable_update_status_module=false install_configure_form.enable_update_status_emails=false"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      site:
+        update_status_module: 'false'
+        update_status_emails: 'false'
+  composer: ''
+  contains:
+    - "standard install_configure_form.enable_update_status_module=false install_configure_form.enable_update_status_emails=false"
