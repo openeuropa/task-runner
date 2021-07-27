@@ -113,26 +113,26 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      *
      * @command drupal:site-install
      *
-     * @option root                   Drupal root.
-     * @option site-name              Site name.
-     * @option site-mail              Site mail.
-     * @option site-profile           Installation profile
-     * @option site-update            Whereas to enable the update module or not.
-     * @option site-locale            Default site locale.
-     * @option account-name           Admin account name.
-     * @option account-password       Admin account password.
-     * @option account-mail           Admin email.
-     * @option database-type          Deprecated, use "database-scheme"
-     * @option database-scheme        Database scheme.
-     * @option database-host          Database host.
-     * @option database-port          Database port.
-     * @option database-name          Database name.
-     * @option database-user          Database username.
-     * @option database-password      Database password.
-     * @option sites-subdir           Sites sub-directory.
-     * @option config-dir             Deprecated, use "existing-config" for Drupal 8.6 and higher.
-     * @option existing-config        Whether existing config should be imported during installation.
-     * @option skip-permissions-setup Whether to skip making the settings file and folder writable during installation.
+     * @option root                        Drupal root.
+     * @option site-name                   Site name.
+     * @option site-mail                   Site mail.
+     * @option site-profile                Installation profile
+     * @option site-update                 Whereas to enable the update module or not.
+     * @option site-locale                 Default site locale.
+     * @option account-name                Admin account name.
+     * @option account-password            Admin account password.
+     * @option account-mail                Admin email.
+     * @option database-type               Deprecated, use "database-scheme"
+     * @option database-scheme             Database scheme.
+     * @option database-host               Database host.
+     * @option database-port               Database port.
+     * @option database-name               Database name.
+     * @option database-user               Database username.
+     * @option database-password           Database password.
+     * @option sites-subdir                Sites sub-directory.
+     * @option config-dir                  Deprecated, use "existing-config" for Drupal 8.6 and higher.
+     * @option existing-config             Whether existing config should be imported during installation.
+     * @option skip-permissions-setup      Whether to skip making the settings file and folder writable during installation.
      * @option enable-update-status-module Check for updates automatically.
      * @option enable-update-status-emails Receive email notifications regarding updates.
      *
