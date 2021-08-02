@@ -380,14 +380,46 @@
   configuration: {}
   composer: ''
   contains:
-    - "standard install_configure_form.enable_update_status_module=false install_configure_form.enable_update_status_emails=false"
+    - "standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL"
+
+- command: 'drupal:site-install --enable-update-status-module= --enable-update-status-emails='
+  configuration: {}
+  composer: ''
+  contains:
+    - "standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL"
+
+- command: 'drupal:site-install --enable-update-status-module=true --enable-update-status-emails=true'
+  configuration: {}
+  composer: ''
+  contains:
+    - "standard install_configure_form.enable_update_status_module=true install_configure_form.enable_update_status_emails=true"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      site:
+        update_status_module: false
+        update_status_emails: ~
+  composer: ''
+  contains:
+    - "standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL"
 
 - command: 'drupal:site-install'
   configuration:
     drupal:
       site:
         update_status_module: 'false'
-        update_status_emails: 'false'
+        update_status_emails: ''
   composer: ''
   contains:
-    - "standard install_configure_form.enable_update_status_module=false install_configure_form.enable_update_status_emails=false"
+    - "standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      site:
+        update_status_module: "false"
+        update_status_emails: ""
+  composer: ''
+  contains:
+    - "standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL"

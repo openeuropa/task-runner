@@ -178,6 +178,10 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
             $options['existing-config'] = true;
         }
 
+        // Adapt values for the installation configuration form parameters.
+        $options['enable-update-status-module'] = filter_var($options['enable-update-status-module'], FILTER_VALIDATE_BOOLEAN) === false ? 'NULL' : $options['enable-update-status-module'];
+        $options['enable-update-status-emails'] = filter_var($options['enable-update-status-emails'], FILTER_VALIDATE_BOOLEAN) === false ? 'NULL' : $options['enable-update-status-emails'];
+
         $drush = $this->getConfig()->get('runner.bin_dir') . '/drush';
         $task = $this->taskDrush($drush)
             ->root($options['root'])
