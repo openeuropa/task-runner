@@ -138,11 +138,11 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
 
             case "chgrp":
                 return $this->taskFilesystemStack()
-                    ->chgrp($task['file'], $task['group'], $task['umask'], $task['recursive']);
+                    ->chgrp($task['file'], $task['group'], $task['recursive']);
 
             case "chown":
                 return $this->taskFilesystemStack()
-                    ->chown($task['file'], $task['user'], $task['umask'], $task['recursive']);
+                    ->chown($task['file'], $task['user'], $task['recursive']);
 
             case "remove":
                 return $this->taskFilesystemStack()->remove($task['file']);
