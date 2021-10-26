@@ -27,8 +27,8 @@ command:
         # @deprecated
         # Should only be used with Drupal 8.5 and lower. Use "existing-config".
         config-dir: ${drupal.site.config_dir}
-        enable-update-status-module: ${drupal.site.update_status_module}
-        enable-update-status-emails: ${drupal.site.update_status_emails}
+        enable-update-status-module: ${drupal.install.update_status_module}
+        enable-update-status-emails: ${drupal.install.update_status_emails}
     drush-setup:
       options:
         config-dir: ${drupal.root}/drush

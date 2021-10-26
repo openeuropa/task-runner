@@ -178,9 +178,9 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
             $options['existing-config'] = true;
         }
 
-        // Adapt values for the installation configuration form parameters.
-        $options['enable-update-status-module'] = filter_var($options['enable-update-status-module'], FILTER_VALIDATE_BOOLEAN) === false ? 'NULL' : $options['enable-update-status-module'];
-        $options['enable-update-status-emails'] = filter_var($options['enable-update-status-emails'], FILTER_VALIDATE_BOOLEAN) === false ? 'NULL' : $options['enable-update-status-emails'];
+        // Pass value as boolean type only.
+        $options['enable-update-status-module'] = filter_var($options['enable-update-status-module'], FILTER_VALIDATE_BOOLEAN);
+        $options['enable-update-status-emails'] = filter_var($options['enable-update-status-emails'], FILTER_VALIDATE_BOOLEAN);
 
         $drush = $this->getConfig()->get('runner.bin_dir') . '/drush';
         $task = $this->taskDrush($drush)
@@ -199,8 +199,8 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
             ->databaseName($options['database-name'])
             ->sitesSubdir($options['sites-subdir'])
             ->siteProfile($options['site-profile'])
-            ->setUpdateStatusModule($options['enable-update-status-module'])
-            ->setUpdateStatusEmails($options['enable-update-status-emails']);
+            ->enableUpdateStatusModuleOnInstall($options['enable-update-status-module'])
+            ->enableUpdateStatusEmailsOnInstall($options['enable-update-status-emails']);
 
         $task->setGenerateDbUrl($this->getConfig()->get('drupal.site.generate_db_url'));
 

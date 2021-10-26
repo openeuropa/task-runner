@@ -73,8 +73,9 @@ class Drush extends Exec
 
         return $this->arg('site-install')
             ->arg($this->siteProfile)
-            ->rawArg("install_configure_form.enable_update_status_module=" . $this->updateStatusModule)
-            ->rawArg("install_configure_form.enable_update_status_emails=" . $this->updateStatusEmails);
+            // Adapt values for the installation configuration form parameters.
+            ->rawArg('install_configure_form.enable_update_status_module=' . ($this->updateStatusModule ? 'true' : 'NULL'))
+            ->rawArg('install_configure_form.enable_update_status_emails=' . ($this->updateStatusEmails ? 'true' : 'NULL'));
     }
 
     /**
@@ -294,25 +295,25 @@ class Drush extends Exec
     }
 
     /**
-     * @param bool $updateStatusModule
+     * @param bool $enable
      *
      * @return Drush
      */
-    public function setUpdateStatusModule($updateStatusModule)
+    public function enableUpdateStatusModuleOnInstall($enable)
     {
-        $this->updateStatusModule = $updateStatusModule;
+        $this->updateStatusModule = $enable;
 
         return $this;
     }
 
     /**
-     * @param bool $updateStatusEmails
+     * @param bool $enable
      *
      * @return Drush
      */
-    public function setUpdateStatusEmails($updateStatusEmails)
+    public function enableUpdateStatusEmailsOnInstall($enable)
     {
-        $this->updateStatusEmails = $updateStatusEmails;
+        $this->updateStatusEmails = $enable;
 
         return $this;
     }

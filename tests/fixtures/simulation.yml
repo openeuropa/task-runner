@@ -397,7 +397,7 @@
 - command: 'drupal:site-install'
   configuration:
     drupal:
-      site:
+      install:
         update_status_module: false
         update_status_emails: ~
   composer: ''
@@ -407,7 +407,7 @@
 - command: 'drupal:site-install'
   configuration:
     drupal:
-      site:
+      install:
         update_status_module: 'false'
         update_status_emails: ''
   composer: ''
@@ -417,7 +417,7 @@
 - command: 'drupal:site-install'
   configuration:
     drupal:
-      site:
+      install:
         update_status_module: "false"
         update_status_emails: ""
   composer: ''

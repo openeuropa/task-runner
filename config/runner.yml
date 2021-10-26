@@ -40,12 +40,11 @@ drupal:
     # Setting this to "false" will run "site-install" without the "--db-url" parameter.
     # This is useful if the database settings are already set in your settings.php file.
     generate_db_url: true
-    # By setting this to FALSE, will disable the update status module option
-    # (install_configure_form.enable_update_status_module) during "site-install" execution. By default, is TRUE.
-    update_status_module: "true"
-    # By setting this to FALSE, will disable the update status emails option
-    # (install_configure_form.enable_update_status_emails) during "site-install" execution. By default, is TRUE.
-    update_status_emails: "true"
+  install:
+    # Setting this to "false" will tell the "site-install" command to not enable the update status module.
+    update_status_module: true
+    # Setting this to "false" will tell the "site-install" command to disable email notifications about updates.
+    update_status_emails: true
 
   # Administrator account information.
   account:
