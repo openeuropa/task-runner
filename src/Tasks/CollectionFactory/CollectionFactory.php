@@ -9,6 +9,7 @@ use Robo\Contract\BuilderAwareInterface;
 use Robo\Contract\SimulatedInterface;
 use Robo\Exception\TaskException;
 use Robo\LoadAllTasks;
+use Robo\Robo;
 use Robo\Task\BaseTask;
 use Symfony\Component\Yaml\Yaml;
 
@@ -27,13 +28,20 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     protected $tasks;
 
     /**
+     * @var array
+     */
+    protected $options;
+
+    /**
      * Constructs a new CollectionFactory.
      *
      * @param array $tasks
+     * @param array $options
      */
-    public function __construct(array $tasks = [])
+    public function __construct(array $tasks = [], array $options =[])
     {
         $this->tasks = $tasks;
+        $this->options = $options;
     }
 
     /**
@@ -172,9 +180,17 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 if (!empty($task['arguments'])) {
                     $taskExec->args($task['arguments']);
                 }
-                if (!empty($task['options'])) {
-                    $taskExec->options($task['options'], '=');
-                }
+
+                $options = $task['options'] ?? [];
+
+                // Propagate any input option passed to the parent command,
+                // but only if the command eats it, and only if it is not set
+                // explicitly.
+                $commandOptions = $this->fetchCommandOptions($task['command']);
+                $options += $this->filterInputOptions($commandOptions);
+
+                $taskExec->options($options, '=');
+
                 return $taskExec;
 
             case "process-php":
@@ -224,6 +240,38 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
             default:
                 throw new TaskException($this, "Task '{$task['task']}' not supported.");
         }
+    }
+
+    /**
+     * @param string $commandName
+     * @return array
+     */
+    protected function fetchCommandOptions($commandName) {
+        $container = Robo::getContainer();
+        /** @var \Robo\Application $app */
+        $app = $container->get('application');
+        /** @var \Consolidation\AnnotatedCommand\AnnotatedCommand $command */
+        $command = $app->get($commandName);
+        $commandOptions = $command->getDefinition()->getOptions();
+        return $commandOptions;
+    }
+
+    /**
+     * @param array $commandOptions
+     * @return array
+     */
+    protected function filterInputOptions(array $commandOptions): array {
+        $options = [];
+        foreach ($this->options as $name => $values) {
+            // But only if the called command has this option.
+            if (isset($commandOptions[$name])) {
+                $values = (array) $values;
+                foreach ($values as $value) {
+                    $options[$name] = $value;
+                }
+            }
+        }
+        return $options;
     }
 
     /**

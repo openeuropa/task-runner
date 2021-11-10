@@ -13,11 +13,12 @@ trait loadTasks
 {
     /**
      * @param array $tasks
+     * @param array $options
      *
      * @return \OpenEuropa\TaskRunner\Tasks\CollectionFactory\CollectionFactory
      */
-    public function taskCollectionFactory(array $tasks)
+    public function taskCollectionFactory(array $tasks, array $options = [])
     {
-        return $this->task(CollectionFactory::class, $tasks);
+        return $this->task(CollectionFactory::class, $tasks, $options);
     }
 }

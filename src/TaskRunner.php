@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenEuropa\TaskRunner;
 
 use Composer\Autoload\ClassLoader;
+use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\Parser\Internal\DocblockTag;
 use Consolidation\AnnotatedCommand\Parser\Internal\TagFactory;
 use Consolidation\Config\Loader\ConfigProcessor;
@@ -347,7 +348,7 @@ class TaskRunner
         $this->runner->registerCommandClass($this->application, DynamicCommands::class);
         $commandClass = $this->container->get($commandFileName);
 
-        foreach ($commands as $name => $tasks) {
+        foreach ($commands as $name => $commandDefinition) {
             $aliases = [];
             // This command has been already registered as an annotated command.
             if ($application->has($name)) {
@@ -361,11 +362,55 @@ class TaskRunner
             }
 
             $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
+            $tasks = $commandDefinition['tasks'] ?? $commandDefinition;
             $commandInfo->addAnnotation('tasks', $tasks);
             $command = $commandFactory->createCommand($commandInfo, $commandClass)
                 ->setName($name)
                 ->setAliases($aliases);
+
+            // Dynamic commands may define their own options.
+            $this->addOptions($command, $commandDefinition);
+
+            // Append also options of subsequent tasks.
+            foreach ($tasks as $taskEntry) {
+                // This is a 'run' task.
+                if (is_array($taskEntry) && isset($taskEntry['task']) && ($taskEntry['task'] === 'run') && !empty($taskEntry['command'])) {
+                    if (!empty($customCommands[$taskEntry['command']])) {
+                        // Add the options of another custom command.
+                        $this->addOptions($command, $customCommands[$taskEntry['command']]);
+                    } else {
+                        // Add the options of an already registered command.
+                        $subCommand = $this->application->get($taskEntry['command']);
+                        $command->addOptions($subCommand->getDefinition()->getOptions());
+                    }
+                }
+            }
+
             $application->add($command);
+        }
+    }
+
+    /**
+     * @param \Consolidation\AnnotatedCommand\AnnotatedCommand $command
+     * @param array $commandDefinition
+     */
+    private function addOptions(AnnotatedCommand $command, array $commandDefinition)
+    {
+        // This command doesn't define any option.
+        if (empty($commandDefinition['options'])) {
+            return;
+        }
+
+        $defaults = array_fill_keys(['shortcut', 'mode', 'description', 'default'], null);
+        foreach ($commandDefinition['options'] as $optionName => $optionDefinition) {
+            $optionDefinition += $defaults;
+            $command->addOption(
+                "--$optionName",
+                $optionDefinition['shortcut'],
+                $optionDefinition['mode'],
+                $optionDefinition['description'],
+                $optionDefinition['default']
+            );
         }
     }
 
