@@ -32,13 +32,6 @@ class DynamicCommands extends AbstractCommands
         $command = Robo::application()->get($commandName);
         $tasks = $command->getAnnotationData()['tasks'];
 
-        $inputOptions = [];
-        foreach ($this->input()->getOptions() as $name => $value) {
-            if ($this->input()->hasParameterOption("--$name")) {
-                $inputOptions[$name] = $value;
-            }
-        }
-
         return $this->taskCollectionFactory($tasks);
     }
 
