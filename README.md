@@ -240,13 +240,18 @@ commands:
         shortcut:
           - wdu
           - wurl
-        # The mode of this option. See the Symfony `InputOption::VALUE_*`
-        # constants. Several options can be combined.
+        # The mode of this option, one of:
+        # - none (the default behavior if omitted)
+        # - required
+        # - optional
+        # - required-array
+        # - optional-array
+        # See the Symfony `InputOption::VALUE_*` constants.
         # @see \Symfony\Component\Console\Input\InputOption::VALUE_NONE
         # @see \Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED
         # @see \Symfony\Component\Console\Input\InputOption::VALUE_OPTIONAL
         # @see \Symfony\Component\Console\Input\InputOption::VALUE_IS_ARRAY
-        mode: 4
+        mode: optional
         # Optional. A description for this option. This is displayed when
         # asking for help. E.g. `./vendor/bin/run setup:behat --help`.
         description: 'The webdriver URL.'

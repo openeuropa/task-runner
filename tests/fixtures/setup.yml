@@ -65,7 +65,7 @@
             config: drupal.base_url
             shortcut:
               - dbu
-            mode: 4
+            mode: optional
             description: 'The Drupal base URL.'
             default: null
   content: >

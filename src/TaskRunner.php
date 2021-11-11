@@ -407,11 +407,28 @@ class TaskRunner
             $command->addOption(
                 "--$optionName",
                 $optionDefinition['shortcut'],
-                $optionDefinition['mode'],
+                $this->mapOptionMode($optionDefinition['mode']),
                 $optionDefinition['description'],
                 $optionDefinition['default']
             );
         }
+    }
+
+    private function mapOptionMode($mode) {
+        $modes = [
+            'none' => InputOption::VALUE_NONE,
+            'required' => InputOption::VALUE_REQUIRED,
+            'optional' => InputOption::VALUE_OPTIONAL,
+            'required-array' => InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            'optional-array' => InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+        ];
+        $modeKeys = implode('|', array_keys($modes));
+        return $modes[$mode]
+            ?? $this->throwInvalidArgumentException("Unknown options mode '$mode', valid modes are [$modeKeys].");
+    }
+
+    private function throwInvalidArgumentException($message) {
+        throw new \InvalidArgumentException($message);
     }
 
     /**
