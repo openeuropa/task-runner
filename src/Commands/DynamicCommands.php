@@ -39,7 +39,7 @@ class DynamicCommands extends AbstractCommands
             }
         }
 
-        return $this->taskCollectionFactory($tasks, $inputOptions);
+        return $this->taskCollectionFactory($tasks);
     }
 
     /**

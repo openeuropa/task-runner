@@ -372,21 +372,6 @@ class TaskRunner
             // Dynamic commands may define their own options.
             $this->addOptions($command, $commandDefinition);
 
-            // Append also options of subsequent tasks.
-            foreach ($tasks as $taskEntry) {
-                // This is a 'run' task.
-                if (is_array($taskEntry) && isset($taskEntry['task']) && ($taskEntry['task'] === 'run') && !empty($taskEntry['command'])) {
-                    if (!empty($customCommands[$taskEntry['command']])) {
-                        // Add the options of another custom command.
-                        $this->addOptions($command, $customCommands[$taskEntry['command']]);
-                    } else {
-                        // Add the options of an already registered command.
-                        $subCommand = $this->application->get($taskEntry['command']);
-                        $command->addOptions($subCommand->getDefinition()->getOptions());
-                    }
-                }
-            }
-
             $application->add($command);
         }
     }
