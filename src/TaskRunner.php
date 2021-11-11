@@ -363,8 +363,16 @@ class TaskRunner
             }
 
             $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
-            $tasks = $commandDefinition['tasks'] ?? $commandDefinition;
-            $commandInfo->addAnnotation('tasks', $tasks);
+            if (isset($commandDefinition['tasks'])) {
+                $commandInfo->addAnnotation('tasks', $commandDefinition['tasks']);
+            }
+            else {
+                $commandInfo->addAnnotation('tasks', $commandDefinition);
+
+                // @codingStandardsIgnoreLine
+                $message = 'Defining a dynamic command as a plain list of tasks is deprecated in openeuropa/task-runner:1.0.0 and is removed from openeuropa/task-runner:2.0.0. Define tasks in the "tasks" subkey of the custom command definition.';
+                @trigger_error($message, E_USER_DEPRECATED);
+            }
             $command = $commandFactory->createCommand($commandInfo, $commandClass)
                 ->setName($name)
                 ->setAliases($aliases);
