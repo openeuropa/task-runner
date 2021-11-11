@@ -30,7 +30,9 @@ class DynamicCommands extends AbstractCommands
         $commandName = $this->input()->getArgument('command');
         /** @var \Consolidation\AnnotatedCommand\AnnotatedCommand $command */
         $command = Robo::application()->get($commandName);
-        $tasks = $command->getAnnotationData()['tasks'];
+        $tasksPath = $command->getAnnotationData()['tasks_path'];
+        // Get tasks only now to have variables updated with options data.
+        $tasks = $this->getConfig()->get($tasksPath);
 
         return $this->taskCollectionFactory($tasks);
     }

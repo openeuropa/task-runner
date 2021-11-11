@@ -23,6 +23,7 @@ use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
 use OpenEuropa\TaskRunner\Contract\TimeAwareInterface;
 use OpenEuropa\TaskRunner\Services\Composer;
 use OpenEuropa\TaskRunner\Services\Time;
+use OpenEuropa\TaskRunner\TaskRunner\ConfigUtility\SelfProcessingRoboConfig;
 use Robo\Application;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
@@ -177,9 +178,9 @@ class TaskRunner
             $class::provide($config);
         }
 
-        // Resolve variables and import into config.
-        $processor = (new ConfigProcessor())->add($config->export());
-        $this->config->import($processor->export());
+        // Let the self-processing wrapper handle resolving variables, so any
+        // later update will trigger re-resolving of variables.
+        $this->config = new SelfProcessingRoboConfig($config);
         // Keep the container in sync.
         $this->container->share('config', $this->config);
     }
@@ -364,13 +365,13 @@ class TaskRunner
 
             $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
             if (isset($commandDefinition['tasks'])) {
-                $commandInfo->addAnnotation('tasks', $commandDefinition['tasks']);
+                $commandInfo->addAnnotation('tasks_path', "commands.$name.tasks");
                 if (isset($commandDefinition['aliases'])) {
                     $aliases = array_unique(array_merge($aliases, $commandDefinition['aliases']));
                 }
             }
             else {
-                $commandInfo->addAnnotation('tasks', $commandDefinition);
+                $commandInfo->addAnnotation('tasks_path', "commands.$name");
 
                 // @codingStandardsIgnoreLine
                 $message = 'Defining a dynamic command as a plain list of tasks is deprecated in openeuropa/task-runner:1.0.0 and is removed from openeuropa/task-runner:2.0.0. Define tasks in the "tasks" subkey of the custom command definition.';
