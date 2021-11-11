@@ -226,6 +226,17 @@ commands:
     # placed under the 'tasks' key...
     tasks:
       - { task: "process", source: "behat.yml.dist", destination: "behat.yml" }
+    # An array of aliases.
+    aliases:
+      - subh
+    # The description.
+    description: Setup Behat testing.
+    # An array of usage info.
+    usages:
+      - 'setup:behat # Usage without option.'
+      - 'setup:behat --webdriver-url=localhost:8888 # With long option.'
+      - 'setup:behat --wdu=localhost:8888 # With short option.'
+      - '--wdu=localhost:8888 # Same as above: Command is prefixed if not given.'
     # ...and option definitions are under 'options' key.
     options:
       # The option name, without the leading double dash ('--').

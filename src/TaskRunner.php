@@ -365,6 +365,9 @@ class TaskRunner
             $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
             if (isset($commandDefinition['tasks'])) {
                 $commandInfo->addAnnotation('tasks', $commandDefinition['tasks']);
+                if (isset($commandDefinition['aliases'])) {
+                    $aliases = array_unique(array_merge($aliases, $commandDefinition['aliases']));
+                }
             }
             else {
                 $commandInfo->addAnnotation('tasks', $commandDefinition);
@@ -376,6 +379,16 @@ class TaskRunner
             $command = $commandFactory->createCommand($commandInfo, $commandClass)
                 ->setName($name)
                 ->setAliases($aliases);
+            if (isset($commandDefinition['tasks'])) {
+                if (isset($commandDefinition['description'])) {
+                    $command->setDescription($commandDefinition['description']);
+                }
+                if (isset($commandDefinition['usages'])) {
+                    foreach ($commandDefinition['usages'] as $usage) {
+                        $command->addUsage($usage);
+                    }
+                }
+            }
 
             // Dynamic commands may define their own options.
             $this->addOptions($command, $commandDefinition);
