@@ -7,6 +7,7 @@ namespace OpenEuropa\TaskRunner\Commands;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use OpenEuropa\TaskRunner\Tasks as TaskRunnerTasks;
 use Robo\Robo;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
 /**
  * Command class for dynamic commands.
