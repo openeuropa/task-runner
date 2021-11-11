@@ -263,7 +263,6 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
     protected function filterInputOptions(array $commandOptions): array {
         $options = [];
         foreach ($this->options as $name => $values) {
-            // But only if the called command has this option.
             if (isset($commandOptions[$name])) {
                 $values = (array) $values;
                 foreach ($values as $value) {
