@@ -314,7 +314,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         'root' => InputOption::VALUE_REQUIRED,
         'config-dir' => InputOption::VALUE_REQUIRED,
         'config-source' => InputOption::VALUE_REQUIRED,
-        'fail-on-missing' => false,
+        'fail-on-missing' => true,
     ])
     {
         $config = $this->getConfig();
