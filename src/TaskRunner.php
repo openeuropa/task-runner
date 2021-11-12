@@ -97,7 +97,9 @@ class TaskRunner
         $this->workingDir = $this->getWorkingDir($this->input);
         chdir($this->workingDir);
 
-        $this->config = new Config();
+        // Let the self-processing wrapper handle resolving variables, so any
+        // later update will trigger re-resolving of variables.
+        $this->config = new SelfProcessingRoboConfig();
         $this->application = $this->createApplication();
         $this->application->setAutoExit(false);
         $this->container = $this->createContainer(
@@ -170,17 +172,13 @@ class TaskRunner
      */
     private function createConfiguration()
     {
-        $config = new Config();
-        $config->set('runner.working_dir', realpath($this->workingDir));
+        $this->config->set('runner.working_dir', realpath($this->workingDir));
 
         foreach ($this->getConfigProviders() as $class) {
             /** @var \OpenEuropa\TaskRunner\Contract\ConfigProviderInterface $class */
-            $class::provide($config);
+            $class::provide($this->config);
         }
 
-        // Let the self-processing wrapper handle resolving variables, so any
-        // later update will trigger re-resolving of variables.
-        $this->config = new SelfProcessingRoboConfig($config);
         // Keep the container in sync.
         $this->container->share('config', $this->config);
     }
