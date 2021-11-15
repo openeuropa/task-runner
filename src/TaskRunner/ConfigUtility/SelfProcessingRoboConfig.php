@@ -2,211 +2,177 @@
 
 namespace OpenEuropa\TaskRunner\TaskRunner\ConfigUtility;
 
+use Consolidation\Config\Config;
 use Consolidation\Config\ConfigInterface;
 use Consolidation\Config\Loader\ConfigProcessor;
-use Robo\Config\Config;
+use Robo\Config\Config as RoboConfig;
 
 /**
  * Config that updates references when unprocessed config is updated.
  */
-final class SelfProcessingRoboConfig extends Config
+final class SelfProcessingRoboConfig extends RoboConfig
 {
 
-    /**
-     * @var \Consolidation\Config\ConfigInterface|\Consolidation\Config\Util\ConfigInterpolatorInterface|\Consolidation\Config\Util\ConfigRuntimeInterface|null
-     */
-    protected $processedConfig = NULL;
+    const VARIABLES_SUBSTITUTED_CONTEXT = 'variables-substituted';
 
     /**
-     * @return \Consolidation\Config\ConfigInterface|\Consolidation\Config\Util\ConfigInterpolatorInterface|\Consolidation\Config\Util\ConfigRuntimeInterface|null
+     * @var bool
      */
-    protected function getProcessedConfig() {
-        if (!$this->processedConfig) {
-            $this->updateProcessedConfig();
+    protected $needsVariablesSubstitutedContextUpdate = FALSE;
+
+    public function __construct(array $data = NULL) {
+        parent::__construct($data);
+        $this->ensureVariablesSubstitutedContext();
+    }
+
+    protected function ensureVariablesSubstitutedContext() {
+        // Ensure our context is last.
+        // @todo Replace with array_keys_last() once we require php 7.3.
+        $lastContext = array_keys($this->contexts)[count($this->contexts) - 1];
+        if ($lastContext !== self::VARIABLES_SUBSTITUTED_CONTEXT) {
+            $config = $this->contexts[self::VARIABLES_SUBSTITUTED_CONTEXT] ?? new Config();
+            unset($this->contexts[self::VARIABLES_SUBSTITUTED_CONTEXT]);
+            $this->contexts[self::VARIABLES_SUBSTITUTED_CONTEXT] = $config;
+        };
+        if ($this->needsVariablesSubstitutedContextUpdate) {
+            $this->updateVariablesSubstitutedContext();
         }
-        return $this->processedConfig;
     }
 
-    protected function updateProcessedConfig() {
-        // Resolve variables and import into config.
-        $processor = (new ConfigProcessor())->add(parent::export());
-        $this->processedConfig = new Config($processor->export());
+    protected function updateVariablesSubstitutedContext() {
+        // Resolve variables and import into that context.
+        $processor = (new ConfigProcessor())->add($this->export());
+        $this->getContext(self::VARIABLES_SUBSTITUTED_CONTEXT)
+            ->replace($processor->export());
+        $this->needsVariablesSubstitutedContextUpdate = FALSE;
     }
 
-    protected function invalidateProcessedConfig() {
-        $this->processedConfig = null;
+    protected function invalidateVariablesSubstitutedContext() {
+        $this->needsVariablesSubstitutedContextUpdate = TRUE;
     }
 
+
+    public function export() {
+        // Export without variables-substituted-context.
+        // @see \OpenEuropa\TaskRunner\Traits\ConfigFromFilesTrait::importFromFiles
+        $contexts = $this->contexts;
+        unset($contexts[self::VARIABLES_SUBSTITUTED_CONTEXT]);
+
+        $export = [];
+        foreach ($contexts as $name => $config) {
+            $exportToMerge = $config->export();
+            $export = \array_replace_recursive($export, $exportToMerge);
+        }
+        return $export;
+    }
 
 
     public function import($data) {
-        // Setters act on $this and invalidate processed config.
-        $this->invalidateProcessedConfig();
+        $this->invalidateVariablesSubstitutedContext();
         return parent::import($data);
     }
 
     public function replace($data) {
-        // Setters act on $this and invalidate processed config.
-        $this->invalidateProcessedConfig();
+        $this->invalidateVariablesSubstitutedContext();
         return parent::replace($data);
     }
 
     public function combine($data) {
-        // Setters act on $this and invalidate processed config.
-        $this->invalidateProcessedConfig();
+        $this->invalidateVariablesSubstitutedContext();
         return parent::combine($data);
     }
 
     public function setSimulated($simulated = TRUE) {
-        // Setters act on $this and invalidate processed config.
-        $this->invalidateProcessedConfig();
+        $this->invalidateVariablesSubstitutedContext();
         return parent::setSimulated($simulated);
     }
 
     public function setInteractive($interactive = TRUE) {
-        // Setters act on $this and invalidate processed config.
-        $this->invalidateProcessedConfig();
+        $this->invalidateVariablesSubstitutedContext();
         return parent::setInteractive($interactive);
     }
 
     public function setDecorated($decorated = TRUE) {
-        // Setters act on $this and invalidate processed config.
-        $this->invalidateProcessedConfig();
+        $this->invalidateVariablesSubstitutedContext();
         return parent::setDecorated($decorated);
     }
 
     public function setProgressBarAutoDisplayInterval($interval) {
-        // Setters act on $this and invalidate processed config.
-        $this->invalidateProcessedConfig();
+        $this->invalidateVariablesSubstitutedContext();
         return parent::setProgressBarAutoDisplayInterval($interval);
     }
 
     public function set($key, $value) {
-        // Setters act on $this and invalidate processed config.
-        $this->invalidateProcessedConfig();
+        $this->invalidateVariablesSubstitutedContext();
         return parent::set($key, $value);
     }
 
+
     public function setDefault($key, $value) {
-        // Setters act on $this and invalidate processed config.
-        $this->invalidateProcessedConfig();
+        $this->invalidateVariablesSubstitutedContext();
         return parent::setDefault($key, $value);
     }
 
-
     public function addContext($name, ConfigInterface $config) {
-        // Setters act on $this and invalidate processed config.
-        $this->invalidateProcessedConfig();
+        $this->invalidateVariablesSubstitutedContext();
         return parent::addContext($name, $config);
     }
 
     public function increasePriority($name) {
-        // Setters act on $this and invalidate processed config.
-        $this->invalidateProcessedConfig();
+        $this->invalidateVariablesSubstitutedContext();
         return parent::increasePriority($name);
     }
 
     public function addPlaceholder($name) {
-        // Setters act on $this and invalidate processed config.
-        $this->invalidateProcessedConfig();
+        $this->invalidateVariablesSubstitutedContext();
         return parent::addPlaceholder($name);
     }
 
     public function removeContext($name) {
-        // Setters act on $this and invalidate processed config.
-        $this->invalidateProcessedConfig();
+        $this->invalidateVariablesSubstitutedContext();
         parent::removeContext($name);
     }
 
 
 
-    public function hasContext($name) {
-        // ContextGetters act on $this, no need to invalidate.
-        return parent::hasContext($name);
-    }
-
-    public function getContext($name) {
-        // ContextGetters act on $this, no need to invalidate.
-        return parent::getContext($name);
-    }
-
-    public function runtimeConfig() {
-        // ContextGetters act on $this, no need to invalidate.
-        return parent::runtimeConfig();
-    }
-
-    public function findContext($key) {
-        // ContextGetters act on $this, no need to invalidate.
-        return parent::findContext($key);
-    }
-
-    public function hasDefault($key) {
-        // ContextGetters act on $this, no need to invalidate.
-        return parent::hasDefault($key);
-    }
-
-    public function getDefault($key, $default = NULL) {
-        // ContextGetters act on $this, no need to invalidate.
-        return parent::getDefault($key, $default);
-    }
-
-
-
     public function isSimulated() {
-        // Getters act on processed config.
-        return $this->getProcessedConfig()->isSimulated();
+        $this->ensureVariablesSubstitutedContext();
+        return parent::isSimulated();
     }
 
     public function isInteractive() {
-        // Getters act on processed config.
-        return $this->getProcessedConfig()->isInteractive();
+        $this->ensureVariablesSubstitutedContext();
+        return parent::isInteractive();
     }
 
     public function isDecorated() {
-        // Getters act on processed config.
-        return $this->getProcessedConfig()->isDecorated();
+        $this->ensureVariablesSubstitutedContext();
+        return parent::isDecorated();
     }
 
     public function has($key) {
-        // Getters act on processed config.
-        return $this->getProcessedConfig()->has($key);
+        $this->ensureVariablesSubstitutedContext();
+        return parent::has($key);
     }
 
     public function get($key, $default = NULL) {
-        // Getters act on processed config.
-        return $this->getProcessedConfig()->get($key, $default);
+        $this->ensureVariablesSubstitutedContext();
+        return parent::get($key, $default);
     }
 
     public function getSingle($key, $default = NULL) {
-        // Getters act on processed config.
-        return $this->getProcessedConfig()->getSingle($key, $default);
+        $this->ensureVariablesSubstitutedContext();
+        return parent::getSingle($key, $default);
     }
 
     public function getUnion($key) {
-        // Getters act on processed config.
-        return $this->getProcessedConfig()->getUnion($key);
-    }
-
-    public function export() {
-        // Getters act on processed config.
-        return $this->getProcessedConfig()->export();
+        $this->ensureVariablesSubstitutedContext();
+        return parent::getUnion($key);
     }
 
     public function exportAll() {
-        // Getters act on processed config.
-        return $this->getProcessedConfig()->exportAll();
-    }
-
-
-
-    public function interpolate($message, $default = '') {
-        // Getters act on processed config. Copied trait method.
-        return $this->getInterpolator()->interpolate($this->getProcessedConfig(), $message, $default);
-    }
-
-    public function mustInterpolate($message) {
-        // Getters act on processed config. Copied trait method.
-        return $this->getInterpolator()->mustInterpolate($this->getProcessedConfig(), $message);
+        $this->ensureVariablesSubstitutedContext();
+        return parent::exportAll();
     }
 
 }
