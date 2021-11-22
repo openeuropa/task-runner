@@ -9,6 +9,7 @@ use Robo\Robo;
 use Robo\Runner as RoboRunner;
 use Robo\Task\BaseTask;
 use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * Run a configurable command in current process.
@@ -24,6 +25,11 @@ class RunInCurrentProcess extends BaseTask
     protected $command;
 
     /**
+     * @var bool
+     */
+    protected $capture = false;
+
+    /**
      * @param string $command
      */
     public function __construct(string $command)
@@ -31,7 +37,26 @@ class RunInCurrentProcess extends BaseTask
         $this->command = $command;
     }
 
-    public function run() {
+    /**
+     * @return bool
+     */
+    public function getCapture()
+    {
+        return $this->capture;
+    }
+
+    /**
+     * Capture and return output.
+     *
+     * @param bool $capture
+     */
+    public function setCapture(bool $capture)
+    {
+        $this->capture = $capture;
+    }
+
+    public function run()
+    {
         // Backup config, as command may change it.
         $container = Robo::getContainer();
         $config = $container->get('config');
@@ -43,11 +68,15 @@ class RunInCurrentProcess extends BaseTask
         $input = new StringInput($line);
         $runner = new RoboRunner();
         $runner->setContainer($container);
-        $exitCode = $runner->run($input, Robo::output());
+        $output = $this->capture ? new BufferedOutput() : Robo::output();
+        $exitCode = $runner->run($input, $output);
 
         // Restore config.
         $config->replace($configExport);
-        return new Result($this, $exitCode);
+
+        // Get captured output if requested.
+        $message = $output instanceof BufferedOutput ? $output->fetch() : '';
+        return new Result($this, $exitCode, $message);
     }
 
 }
