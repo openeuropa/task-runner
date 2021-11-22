@@ -43,11 +43,11 @@ class RunInCurrentProcess extends BaseTask
         $input = new StringInput($line);
         $runner = new RoboRunner();
         $runner->setContainer($container);
-        $statusCode = $runner->run($input, Robo::output());
+        $exitCode = $runner->run($input, Robo::output());
 
         // Restore config.
         $config->replace($configExport);
-        return $statusCode;
+        return new Result($this, $exitCode);
     }
 
 }
