@@ -19,6 +19,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
 {
     use LoadAllTasks;
     use TaskRunner\Tasks\ProcessConfigFile\loadTasks;
+    use TaskRunner\Tasks\RunInCurrentProcess\loadTasks;
     use \NuvoleWeb\Robo\Task\Config\Php\loadTasks;
 
     /**
@@ -166,9 +167,14 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 ]);
 
             case "run":
-                $taskExec = $this->taskExec($this->getConfig()->get('runner.bin_dir') . '/run')
-                    ->arg($task['command'])
-                    ->interactive($this->isTtySupported());
+                if (!empty($task['in-current-process'])) {
+                    $taskExec = $this->taskRunInCurrentProcess($task['command']);
+                }
+                else {
+                    $taskExec = $this->taskExec($this->getConfig()->get('runner.bin_dir') . '/run')
+                        ->arg($task['command'])
+                        ->interactive($this->isTtySupported());
+                }
                 if (!empty($task['arguments'])) {
                     $taskExec->args($task['arguments']);
                 }
