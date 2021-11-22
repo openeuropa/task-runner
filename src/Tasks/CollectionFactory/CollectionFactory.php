@@ -168,13 +168,11 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
 
             case "run":
                 if (!empty($task['in-current-process'])) {
-                    $taskExec = $this->taskRunInCurrentProcess($task['command'])
-                      ->capture($task['capture'] ?? false);
+                    $taskExec = $this->taskRunInCurrentProcess($task['command']);
                 }
                 else {
                     $taskExec = $this->taskExec($this->getConfig()->get('runner.bin_dir') . '/run')
                         ->arg($task['command'])
-                        ->printOutput(!($task['capture'] ?? false))
                         ->interactive($this->isTtySupported());
                 }
                 if (!empty($task['arguments'])) {
@@ -217,9 +215,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 return $this->collectionBuilder()->addTaskList($tasks);
 
             case 'exec':
-                $taskExec = $this->taskExec($task['command'])
-                    ->interactive($this->isTtySupported())
-                    ->printOutput(!($task['capture'] ?? false));
+                $taskExec = $this->taskExec($task['command'])->interactive($this->isTtySupported());
                 if (!empty($task['arguments'])) {
                     $taskExec->args($task['arguments']);
                 }
