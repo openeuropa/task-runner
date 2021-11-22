@@ -185,13 +185,15 @@ commands:
     - { task: "symlink", from: "../../custom/themes", to: "${drupal.root}/themes/custom" }
     - { task: "run", command: "drupal:drush-setup" }
     - { task: "run", command: "drupal:settings-setup" }
-    - { task: "run", command: "setup:behat" }
+    - { task: "run", command: "setup:behat", "in-current-process": true }
     - "./vendor/bin/drush --root=$(pwd)/${drupal.root} cr"
   setup:behat:
     - { task: "process", source: "behat.yml.dist", destination: "behat.yml" }
 ```
 
 Commands can reference each-other, allowing for complex scenarios to be implemented with relative ease.
+
+In this example, the `setup:behat` task will be executed in the current process, while the other tasks run in a new runner instance launched via command line.
 
 At the moment the following tasks are supported (optional argument default values in parenthesis):
 
@@ -211,7 +213,7 @@ At the moment the following tasks are supported (optional argument default value
 | `process-php` | `taskAppendConfiguration()`  | `type: append`, `config`, `source`, `destination`, `override` (false) |
 | `process-php` | `taskPrependConfiguration()` | `type: prepend`, `config`, `source`, `destination`, `override` (false) |
 | `process-php` | `taskWriteConfiguration()`   | `type: write`, `config`, `source`, `destination`, `override` (false) |
-| `run`         | `taskExec()`                 | `command`, `arguments`, `options` (will run `./vendor/bin/run [command] [argument1] [argument2] ... --[option1]=[value1] --[option2]=[value2] ...`) |
+| `run`         | `taskExec()`                 | `command`, `arguments`, `options` (will run `./vendor/bin/run [command] [argument1] [argument2] ... --[option1]=[value1] --[option2]=[value2] ...`), `in-current-process` (false) |
 
 Tasks provided as plain-text strings will be executed as is in the current working directory.
 
