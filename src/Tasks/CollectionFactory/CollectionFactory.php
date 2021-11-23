@@ -168,7 +168,8 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
 
             case "run":
                 if (!empty($task['in-current-process'])) {
-                    $taskExec = $this->taskRunInCurrentProcess($task['command']);
+                    $taskExec = $this->taskRunInCurrentProcess($task['command'])
+                        ->setInheritConfig($task['inherit-config'] ?? false);
                 }
                 else {
                     $taskExec = $this->taskExec($this->getConfig()->get('runner.bin_dir') . '/run')

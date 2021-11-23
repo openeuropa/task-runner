@@ -2,11 +2,10 @@
 
 namespace OpenEuropa\TaskRunner\Tasks\RunInCurrentProcess;
 
-use Consolidation\Config\ConfigInterface;
+use OpenEuropa\TaskRunner\TaskRunner;
 use Robo\Common\CommandArguments;
 use Robo\Result;
 use Robo\Robo;
-use Robo\Runner as RoboRunner;
 use Robo\Task\BaseTask;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -28,6 +27,11 @@ class RunInCurrentProcess extends BaseTask
      * @var bool
      */
     protected $capture = false;
+
+    /**
+     * @var bool
+     */
+    protected $inheritConfig = false;
 
     /**
      * @param string $command
@@ -55,24 +59,46 @@ class RunInCurrentProcess extends BaseTask
         $this->capture = $capture;
     }
 
+    /**
+     * @return bool
+     */
+    public function getInheritConfig()
+    {
+        return $this->inheritConfig;
+    }
+
+    /**
+     * @param bool $inheritConfig
+     */
+    public function setInheritConfig(bool $inheritConfig)
+    {
+        $this->inheritConfig = $inheritConfig;
+    }
+
     public function run()
     {
-        // Backup config, as command may change it.
-        $container = Robo::getContainer();
-        $config = $container->get('config');
-        assert($config instanceof ConfigInterface);
-        $configExport = $config->export();
-
-        // Assemble and run command.
+        // Assemble command and input.
         $line = trim($this->command . $this->arguments);
         $input = new StringInput($line);
-        $runner = new RoboRunner();
-        $runner->setContainer($container);
-        $output = $this->capture ? new BufferedOutput() : Robo::output();
-        $exitCode = $runner->run($input, $output);
 
-        // Restore config.
-        $config->replace($configExport);
+        // Backup the container, robo has a global for it :-/.
+        $backupOutput = Robo::output();
+        $backupConfig = Robo::config();
+        $backupContainer = Robo::getContainer();
+        $classLoader = $backupContainer->get('classLoader');
+        Robo::unsetContainer();
+
+        if ($this->inheritConfig) {
+            Robo::config()->replace($backupConfig->export());
+        }
+
+        // Run command.
+        $output = $this->capture ? new BufferedOutput() : $backupOutput;
+        $taskRunner = new TaskRunner($input, $output, $classLoader);
+        $exitCode = $taskRunner->run();
+
+        // Restore the container.
+        Robo::setContainer($backupContainer);
 
         // Get captured output if requested.
         $message = $output instanceof BufferedOutput ? $output->fetch() : '';
