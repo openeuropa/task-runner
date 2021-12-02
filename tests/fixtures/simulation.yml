@@ -423,3 +423,63 @@
   composer: ''
   contains:
     - "standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      install:
+        update_status_module: true
+        update_status_emails: ~
+  composer: ''
+  contains:
+    - "standard install_configure_form.enable_update_status_module=true install_configure_form.enable_update_status_emails=NULL"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      install:
+        update_status_module: 'true'
+        update_status_emails: ''
+  composer: ''
+  contains:
+    - "standard install_configure_form.enable_update_status_module=true install_configure_form.enable_update_status_emails=NULL"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      install:
+        update_status_module: "true"
+        update_status_emails: ""
+  composer: ''
+  contains:
+    - "standard install_configure_form.enable_update_status_module=true install_configure_form.enable_update_status_emails=NULL"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      install:
+        update_status_module: ~
+        update_status_emails: true
+  composer: ''
+  contains:
+    - "standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=true"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      install:
+        update_status_module: ''
+        update_status_emails: 'true'
+  composer: ''
+  contains:
+    - "standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=true"
+
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      install:
+        update_status_module: ""
+        update_status_emails: "true"
+  composer: ''
+  contains:
+    - "standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=true"
