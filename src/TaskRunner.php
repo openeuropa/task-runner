@@ -270,9 +270,9 @@ class TaskRunner
     ) {
         $container = Robo::createDefaultContainer($input, $output, $application, $config, $classLoader);
         $container->get('commandFactory')->setIncludeAllPublicMethods(false);
-        $container->share('task_runner.composer', Composer::class)->withArgument($this->workingDir);
+        $container->share('task_runner.composer', Composer::class)->addArgument($this->workingDir);
         $container->share('task_runner.time', Time::class);
-        $container->share('repository', Repository::class)->withArgument($this->workingDir);
+        $container->share('repository', Repository::class)->addArgument($this->workingDir);
         $container->share('filesystem', Filesystem::class);
 
         // Add service inflectors.

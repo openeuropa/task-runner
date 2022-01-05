@@ -41,16 +41,17 @@ class ReleaseCommandsTest extends AbstractTest
         $output = new BufferedOutput();
         $runner = new TaskRunner($input, $output, $this->getClassLoader());
 
-        $runner->getContainer()->share('task_runner.composer', $this->getComposerMock('test_project'));
-        $runner->getContainer()->share('repository', $this->getRepositoryMock($repository));
+        // Replace objects from container on mock objects.
+        $runner->getContainer()->extend('task_runner.composer')->setConcrete($this->getComposerMock('test_project'));
+        $runner->getContainer()->extend('repository')->setConcrete($this->getRepositoryMock($repository));
         $runner->run();
 
         $text = $output->fetch();
         foreach ($contains as $row) {
-            $this->assertContains($row, $text);
+            $this->assertStringContainsString($row, $text);
         }
         foreach ($notContains as $row) {
-            $this->assertNotContains($row, $text);
+            $this->assertStringNotContainsString($row, $text);
         }
     }
 
@@ -72,9 +73,10 @@ class ReleaseCommandsTest extends AbstractTest
         $output = new BufferedOutput();
         $runner = new TaskRunner($input, $output, $this->getClassLoader());
 
-        $runner->getContainer()->share('task_runner.time', $this->getTimeMock($timestamp));
-        $runner->getContainer()->share('task_runner.composer', $this->getComposerMock('test_project'));
-        $runner->getContainer()->share('repository', $this->getRepositoryMock($repository));
+        // Replace objects from container on mock objects.
+        $runner->getContainer()->extend('task_runner.time')->setConcrete($this->getTimeMock($timestamp));
+        $runner->getContainer()->extend('task_runner.composer')->setConcrete($this->getComposerMock('test_project'));
+        $runner->getContainer()->extend('repository')->setConcrete($this->getRepositoryMock($repository));
         $runner->run();
 
         foreach ($expected as $name => $value) {
@@ -123,9 +125,11 @@ class ReleaseCommandsTest extends AbstractTest
 
         $mock = $this->getMockBuilder(Repository::class)
             ->disableOriginalConstructor()
-            ->setMethods([
+            ->onlyMethods([
                 'getHead',
                 'getReferences',
+            ])
+            ->addMethods([
                 'resolveTags',
                 'getBranches',
             ])
@@ -133,11 +137,12 @@ class ReleaseCommandsTest extends AbstractTest
 
         $head = $this->getMockBuilder(Commit::class)
             ->disableOriginalConstructor()
-            ->setMethods([
+            ->onlyMethods([
                 'getCommit',
                 'getRevision',
                 'getHash',
             ])
+            ->addMethods(['resolveTags'])
             ->getMock();
         $head->expects($this->any())->method('getCommit')->willReturnSelf();
         $head->expects($this->any())->method('getHash')->willReturn($repository['hash']);

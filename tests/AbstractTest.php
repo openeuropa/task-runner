@@ -13,11 +13,10 @@ use Symfony\Component\Yaml\Yaml;
  */
 abstract class AbstractTest extends TestCase
 {
-
     /**
      * @inheritDoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $filesystem = new Filesystem();
         $filesystem->chmod($this->getSandboxRoot(), 0777, umask(), true);

@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
  */
 class ConfigurationTokensTest extends TestCase
 {
-
     /**
      * @param string $text
      * @param string[] $expectedTokens

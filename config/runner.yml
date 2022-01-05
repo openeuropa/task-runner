@@ -19,7 +19,7 @@ runner:
 # Value of "drupal.root_absolute" is derived at runtime.
 # @see OpenEuropa\TaskRunner\Commands\DrupalCommands::setRuntimeConfig()
 drupal:
-  core: 8
+  core: 9
   root: "build"
   root_absolute: ~
   base_url: "http://127.0.0.1:8888"
