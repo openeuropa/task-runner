@@ -30,7 +30,7 @@ pipeline:
     # @link https://webgate.ec.europa.eu/CITnet/jira/browse/OPENEUROPA-1234
     - composer self-update --2
     - composer install --ansi --no-suggest --no-progress
-    - composer update --prefer-lowest --ansi --no-suggest --no-progress
+    - composer update --prefer-lowest --ansi --no-suggest --no-plugins --no-progress
     when:
       matrix:
         COMPOSER_BOUNDARY: lowest
