@@ -9,7 +9,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/sweetchuck/robo-config"
+            "url": "https://github.com/yenyasinn/robo-config"
         }
     ],
     "require": {
@@ -17,7 +17,7 @@
         "consolidation/robo": "^3.0",
         "gitonomy/gitlib": "^1.0",
         "jakeasmith/http_build_url": "^1.0.1",
-        "nuvoleweb/robo-config": "3.x-dev"
+        "nuvoleweb/robo-config": "dev-EWPP-1846"
     },
     "require-dev": {
         "openeuropa/code-review": "^2.0",
