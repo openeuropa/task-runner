@@ -7,3 +7,7 @@ parameters:
     - loadTasks.php
   tasks.phpmd.exclude:
     - vendor/
+
+grumphp:
+  git_hook_variables:
+    EXEC_GRUMPHP_COMMAND: 'docker-compose exec -T web'
