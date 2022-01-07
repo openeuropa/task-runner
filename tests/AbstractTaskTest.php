@@ -29,7 +29,7 @@ abstract class AbstractTaskTest extends AbstractTest implements ContainerAwareIn
     /**
      * Setup hook.
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->output = new BufferedOutput();
         $runner = new TaskRunner(new StringInput(''), $this->output, $this->getClassLoader());
