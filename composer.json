@@ -6,18 +6,12 @@
     "type": "library",
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/yenyasinn/robo-config"
-        }
-    ],
     "require": {
         "php": ">=7.4",
         "consolidation/robo": "^3.0",
         "gitonomy/gitlib": "^1.0",
         "jakeasmith/http_build_url": "^1.0.1",
-        "nuvoleweb/robo-config": "dev-EWPP-1846"
+        "nuvoleweb/robo-config": "^2.0"
     },
     "require-dev": {
         "openeuropa/code-review": "^2.0",
