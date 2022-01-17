@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.0.0-alpha1](https://github.com/openeuropa/task-runner/tree/2.0.0-alpha1) (2022-01-17)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta7...2.0.0-alpha1)
+
+**Merged pull requests:**
+
+- EWPP-1846: Upgrade task-runner to PHP 8. [\#160](https://github.com/openeuropa/task-runner/pull/160) ([yenyasinn](https://github.com/yenyasinn))
+
 ## [1.0.0-beta7](https://github.com/openeuropa/task-runner/tree/1.0.0-beta7) (2022-01-17)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta6...1.0.0-beta7)
 
@@ -14,6 +21,7 @@
 
 **Merged pull requests:**
 
+- EWPP-0000: Prepare for beta7 release. [\#161](https://github.com/openeuropa/task-runner/pull/161) ([hernani](https://github.com/hernani))
 - Issue \#154: The 'chgrp' & 'chown' tasks don't have a 'umask' attrib [\#155](https://github.com/openeuropa/task-runner/pull/155) ([claudiu-cristea](https://github.com/claudiu-cristea))
 - Revert "Merge pull request \#148 from openeuropa/ISAICP-6037" [\#152](https://github.com/openeuropa/task-runner/pull/152) ([idimopoulos](https://github.com/idimopoulos))
 - ISAICP-6037: Move changelog command in its own repo [\#148](https://github.com/openeuropa/task-runner/pull/148) ([claudiu-cristea](https://github.com/claudiu-cristea))
