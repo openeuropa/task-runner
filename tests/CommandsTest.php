@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OpenEuropa\TaskRunner\Tests\Commands;
+namespace OpenEuropa\TaskRunner\Tests;
 
 use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use OpenEuropa\TaskRunner\TaskRunner;
@@ -65,10 +65,10 @@ class CommandsTest extends AbstractTest
 
         $text = $output->fetch();
         foreach ($expected as $row) {
-            $this->assertContains($row, $text);
+            $this->assertStringContainsString($row, $text);
         }
         foreach ($absent as $row) {
-            $this->assertNotContains($row, $text);
+            $this->assertStringNotContainsString($row, $text);
         }
     }
 
@@ -136,7 +136,7 @@ class CommandsTest extends AbstractTest
 
         $text = $output->fetch();
         foreach ($expected as $row) {
-            $this->assertContains($row, $text);
+            $this->assertStringContainsString($row, $text);
         }
     }
 
@@ -336,8 +336,8 @@ EOF;
         $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
         $runner->run();
 
-        $this->assertContains('/tests/sandbox', $runner->getConfig()->get('runner.working_dir'));
-        $this->assertContains('/tests/sandbox', $runner->getConfig()->get('working_dir'));
+        $this->assertStringContainsString('/tests/sandbox', $runner->getConfig()->get('runner.working_dir'));
+        $this->assertStringContainsString('/tests/sandbox', $runner->getConfig()->get('working_dir'));
     }
 
     /**
@@ -409,7 +409,7 @@ EOF;
         // Check that the output is as expected.
         $text = $output->fetch();
         foreach ($expected as $row) {
-            $this->assertContains($row, $text);
+            $this->assertStringContainsString($row, $text);
         }
     }
 
@@ -494,9 +494,9 @@ EOF;
      */
     protected function assertContainsNotContains($content, array $expected)
     {
-        $this->assertContains($expected['contains'], $content);
+        $this->assertStringContainsString($expected['contains'], $content);
         if (!empty($expected['not_contains'])) {
-            $this->assertNotContains($expected['not_contains'], $content);
+            $this->assertStringNotContainsString($expected['not_contains'], $content);
         }
     }
 }

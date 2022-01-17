@@ -278,7 +278,7 @@
       root: "web"
     commands:
       drupal:site-setup:
-        - { task: "chmod", file: "${drupal.root}/sites", permissions: 0775 }
+        - { task: "chmod", file: "${drupal.root}/sites", permissions: 775 }
         - { task: "symlink", from: "../../custom/modules", to: "${drupal.root}/modules/custom" }
         - { task: "symlink", from: "../../custom/themes", to: "${drupal.root}/themes/custom" }
         - { task: "symlink", from: "../../custom/profiles", to: "${drupal.root}/profiles/custom" }
@@ -292,7 +292,7 @@
         - { task: "process", source: "phpunit.xml.dist", destination: "phpunit.xml" }
   composer: ''
   contains:
-    - "{ task: chmod, file: web/sites, permissions: 509 }"
+    - "{ task: chmod, file: web/sites, permissions: 775 }"
     - "{ task: symlink, from: ../../custom/modules, to: web/modules/custom }"
     - "{ task: symlink, from: ../../custom/themes, to: web/themes/custom }"
     - "{ task: symlink, from: ../../custom/profiles, to: web/profiles/custom }"
