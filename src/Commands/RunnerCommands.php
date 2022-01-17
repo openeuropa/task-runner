@@ -12,7 +12,6 @@ use Symfony\Component\Yaml\Yaml;
  */
 class RunnerCommands extends AbstractCommands
 {
-
     /**
      * Displays the current configuration in YAML format.
      *

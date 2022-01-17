@@ -1,5 +1,36 @@
 # Change Log
 
+## [1.0.0-beta7](https://github.com/openeuropa/task-runner/tree/1.0.0-beta7) (2022-01-17)
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta6...1.0.0-beta7)
+
+**Closed issues:**
+
+- The 'chgrp' and 'chown' tasks don't have a 'umask' attrib [\#154](https://github.com/openeuropa/task-runner/issues/154)
+- Move 'changelog:generate' command in a separate project [\#133](https://github.com/openeuropa/task-runner/issues/133)
+- Add an 'exec' task for dynamic commands. Deprecate usage of plain strings [\#123](https://github.com/openeuropa/task-runner/issues/123)
+- Allow 3rd party to alter the config [\#121](https://github.com/openeuropa/task-runner/issues/121)
+- Allow parameters in command definitions in runner.yml [\#111](https://github.com/openeuropa/task-runner/issues/111)
+- Allow further arguments to be passed to run drupal:site-install or implement re-installing [\#68](https://github.com/openeuropa/task-runner/issues/68)
+
+**Merged pull requests:**
+
+- Issue \#154: The 'chgrp' & 'chown' tasks don't have a 'umask' attrib [\#155](https://github.com/openeuropa/task-runner/pull/155) ([claudiu-cristea](https://github.com/claudiu-cristea))
+- Revert "Merge pull request \#148 from openeuropa/ISAICP-6037" [\#152](https://github.com/openeuropa/task-runner/pull/152) ([idimopoulos](https://github.com/idimopoulos))
+- ISAICP-6037: Move changelog command in its own repo [\#148](https://github.com/openeuropa/task-runner/pull/148) ([claudiu-cristea](https://github.com/claudiu-cristea))
+- EWPP-516: Update docker php image. [\#146](https://github.com/openeuropa/task-runner/pull/146) ([22Alexandra](https://github.com/22Alexandra))
+- ISAICP-5989: Tokens containing digits are not supported [\#145](https://github.com/openeuropa/task-runner/pull/145) ([claudiu-cristea](https://github.com/claudiu-cristea))
+- ISAICP-6079: Tighten up coding standards. [\#140](https://github.com/openeuropa/task-runner/pull/140) ([pfrenssen](https://github.com/pfrenssen))
+- Default to safe permissions when creating folders [\#128](https://github.com/openeuropa/task-runner/pull/128) ([pfrenssen](https://github.com/pfrenssen))
+- Add a new 'exec' task for dynamic commands [\#124](https://github.com/openeuropa/task-runner/pull/124) ([claudiu-cristea](https://github.com/claudiu-cristea))
+- Allow 3rd party to add and alter the configuration [\#122](https://github.com/openeuropa/task-runner/pull/122) ([claudiu-cristea](https://github.com/claudiu-cristea))
+- Task 'run' should allow arguments and options. [\#120](https://github.com/openeuropa/task-runner/pull/120) ([claudiu-cristea](https://github.com/claudiu-cristea))
+- MULTISITE-23486: Allow dynamic commands to override all code provided commands [\#119](https://github.com/openeuropa/task-runner/pull/119) ([claudiu-cristea](https://github.com/claudiu-cristea))
+- OPENEUROPA-2943: Update composer json. [\#115](https://github.com/openeuropa/task-runner/pull/115) ([sergepavle](https://github.com/sergepavle))
+- OPENEUROPA-2943: Upgrade to PHP 7.3. [\#114](https://github.com/openeuropa/task-runner/pull/114) ([sergepavle](https://github.com/sergepavle))
+- OPENEUROPA-2258: Undo use of PHP 7.2. [\#109](https://github.com/openeuropa/task-runner/pull/109) ([dxvargas](https://github.com/dxvargas))
+- OPENEUROPA-2464: Use PHP 7.1 in docker-compose. [\#108](https://github.com/openeuropa/task-runner/pull/108) ([dxvargas](https://github.com/dxvargas))
+- OPENEUROPA-2258: Use PHP 7.2 [\#106](https://github.com/openeuropa/task-runner/pull/106) ([dxvargas](https://github.com/dxvargas))
+
 ## [1.0.0-beta6](https://github.com/openeuropa/task-runner/tree/1.0.0-beta6) (2019-06-27)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta5...1.0.0-beta6)
 
@@ -9,6 +40,7 @@
 
 **Merged pull requests:**
 
+- Create the release 1.0.0-beta6 [\#103](https://github.com/openeuropa/task-runner/pull/103) ([sergepavle](https://github.com/sergepavle))
 - OPENEUROPA-2030: Allow to pass Drupal root as a token to pre and post commands [\#102](https://github.com/openeuropa/task-runner/pull/102) ([ademarco](https://github.com/ademarco))
 - OPENEUROPA-1897: Use ci image. [\#101](https://github.com/openeuropa/task-runner/pull/101) ([imanoleguskiza](https://github.com/imanoleguskiza))
 
