@@ -11,7 +11,6 @@ use Gitonomy\Git\Repository;
  */
 interface RepositoryAwareInterface
 {
-
     /**
      * @return Repository
      */
