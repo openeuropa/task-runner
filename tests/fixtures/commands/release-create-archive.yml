@@ -134,3 +134,39 @@
     - "[Simulator] { task: copy, from: fonts, to: test_project/fonts }"
     - "[Simulator] { task: copy, from: images, to: test_project/images }"
   not_contains: []
+
+- configuration:
+    release:
+      tasks: []
+  options: "--zip"
+  repository:
+    hash: "19di3458"
+    revision: "refs/heads/master"
+    tag: "1.2.0"
+    branches:
+      - { name: "develop", local: false, revision: "refs/heads/develop" }
+      - { name: "master", local: true, revision: "refs/heads/master" }
+  contains:
+    - |
+      [Simulator] Simulating Filesystem\FilesystemStack()
+          ->remove(array (
+        0 => 'test_project-1.2.0.zip',
+        1 => 'test_project',
+      ))
+       [Simulator] Simulating Vcs\GitStack('git')
+          ->exec(array (
+        0 => 'archive',
+        1 => 'HEAD',
+        2 => '-o test_project.zip',
+      ))
+       [Simulator] Simulating Archive\Extract('test_project.zip')
+          ->to('test_project')
+       [Simulator] Simulating Filesystem\FilesystemStack()
+          ->remove('test_project.zip')
+       [Simulator] Simulating OpenEuropa\TaskRunner\Tasks\CollectionFactory\CollectionFactory(array (
+      ))
+       [Simulator] Simulating ExecStack()
+          ->exec('zip -r test_project-1.2.0.zip test_project')
+       [Simulator] Simulating Filesystem\FilesystemStack()
+          ->remove('test_project')
+  not_contains: []

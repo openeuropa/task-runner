@@ -50,12 +50,14 @@ class ReleaseCommands extends AbstractCommands implements ComposerAware, Reposit
      * This command creates a .tag.gz archive for the current project named as
      * follow:
      *
-     * [PROJECT-NAME]-[CURRENT-TAG].tar.gz
+     * [PROJECT-NAME]-[CURRENT-TAG].[file-format]
+     *
+     * Where [file-format] can be tar.gz or zip, in case --zip option is used.
      *
      * If the current commit is not tagged then the current local branch name will
      * be used:
      *
-     * [PROJECT-NAME]-[BRANCH-NAME].tar.gz
+     * [PROJECT-NAME]-[BRANCH-NAME].[file-format]
      *
      * When running the release command will create a temporary release directory
      * named after the project itself. Such a directory will be deleted after
@@ -64,6 +66,8 @@ class ReleaseCommands extends AbstractCommands implements ComposerAware, Reposit
      * If you wish to keep the directory use the "--keep" option.
      *
      * If you wish to override the current tag use the "--tag" option.
+     *
+     * If you wish to use zip format use "--zip" option.
      *
      * Before the release directory is archived you can run a list of packaging
      * commands in your runner.yml.dist, as shown below:
@@ -84,17 +88,20 @@ class ReleaseCommands extends AbstractCommands implements ComposerAware, Reposit
      *
      * @option tag  Release tag, will override current repository tag.
      * @option keep Whereas to keep the temporary release directory or not.
+     * @option zip Create archive in zip file format.
      *
      * @aliases release:ca,rca
      */
     public function createRelease(array $options = [
         'tag' => InputOption::VALUE_OPTIONAL,
         'keep' => false,
+        'zip' => false
     ])
     {
+        $file_format = $options['zip'] ? 'zip' : 'tar.gz';
         $name = $this->composer->getProject();
         $version = $options['tag'] !== null ? $options['tag'] : $this->getVersionString();
-        $archive = "$name-$version.tar.gz";
+        $archive = "$name-$version." . $file_format;
 
         $tasks = [
             // Make sure we do not have a release directory yet.
@@ -111,8 +118,11 @@ class ReleaseCommands extends AbstractCommands implements ComposerAware, Reposit
         $tasks[] = $this->taskCollectionFactory($releaseTasks);
 
         // Create archive.
-        $tasks[] = $this->taskExecStack()->exec("tar -czf $archive $name");
-
+        if ($options['zip']) {
+            $tasks[] = $this->taskExecStack()->exec("zip -r $archive $name");
+        } else {
+            $tasks[] = $this->taskExecStack()->exec("tar -czf $archive $name");
+        }
         // Remove release directory, if not specified otherwise.
         if (!$options['keep']) {
             $tasks[] = $this->taskFilesystemStack()->remove($name);
