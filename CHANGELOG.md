@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.0.0-alpha2](https://github.com/openeuropa/task-runner/tree/2.0.0-alpha2) (2022-02-21)
+
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/2.0.0-alpha1...2.0.0-alpha2)
+
+**Merged pull requests:**
+
+- EWPP-2006: Support for --zip in create-archive. [\#163](https://github.com/openeuropa/task-runner/pull/163) ([hernani](https://github.com/hernani))
+
 ## [2.0.0-alpha1](https://github.com/openeuropa/task-runner/tree/2.0.0-alpha1) (2022-01-17)
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta7...2.0.0-alpha1)
 
