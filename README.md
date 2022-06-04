@@ -81,6 +81,13 @@ docker-compose exec web ./vendor/bin/phpunit
 
 ## Configuration
 
+Task Runner provides a useful command (`config`) that allows inspecting and
+debugging the configuration. To find out how can be used, run:
+
+```bash
+./vendor/bin/run config --help
+```
+
 Task Runner commands can be customized in two ways:
 
 1. By setting arguments and options when running a command.
