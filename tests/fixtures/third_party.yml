@@ -5,3 +5,7 @@ foo: bar
 # Should be 'is-baz' as the variables should be resolved only at the end, when
 # all config providers had the chance to provide token values.
 qux: is-${foo}
+
+# Overrides the command default config.
+command_config__overridden_by_3rd_party_provider: 200
+command_config__overridden_by_runner_yml: 2000

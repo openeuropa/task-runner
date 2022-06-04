@@ -12,6 +12,14 @@ use OpenEuropa\TaskRunner\Commands\AbstractCommands;
 class FirstCustomCommands extends AbstractCommands
 {
     /**
+     * {@inheritdoc}
+     */
+    public function getConfigurationFile(): string
+    {
+        return __DIR__ . '/config/config.yml';
+    }
+
+    /**
      * @command custom:command-one
      */
     public function commandOne()
