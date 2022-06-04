@@ -42,7 +42,7 @@
           options:
             config-dir: ${drupal.root}/..
   expected:
-    - file: "drush/drush.yml"
+    - file: "drush.yml"
       contains: "uri: 'http://web'"
       not_contains: ~
     - file: "build/sites/default/drushrc.php"
