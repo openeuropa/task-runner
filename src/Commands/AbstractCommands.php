@@ -12,8 +12,6 @@ use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\IOAwareInterface;
 use Robo\Exception\TaskException;
 use Robo\LoadAllTasks;
-use Robo\Robo;
-use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
@@ -35,18 +33,6 @@ abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterfa
     public function getConfigurationFile()
     {
         return __DIR__ . '/../../config/commands/base.yml';
-    }
-
-    /**
-     * Command initialization.
-     *
-     * @param \Symfony\Component\Console\Event\ConsoleCommandEvent $event
-     *
-     * @hook pre-command-event *
-     */
-    public function initializeRuntimeConfiguration(ConsoleCommandEvent $event)
-    {
-        Robo::loadConfiguration([$this->getConfigurationFile()], $this->getConfig());
     }
 
     /**
