@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace OpenEuropa\TaskRunner;
 
 use Composer\Autoload\ClassLoader;
+use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\Parser\Internal\DocblockTag;
 use Consolidation\AnnotatedCommand\Parser\Internal\TagFactory;
 use Consolidation\Config\Loader\ConfigProcessor;
@@ -22,6 +23,7 @@ use OpenEuropa\TaskRunner\Contract\RepositoryAwareInterface;
 use OpenEuropa\TaskRunner\Contract\TimeAwareInterface;
 use OpenEuropa\TaskRunner\Services\Composer;
 use OpenEuropa\TaskRunner\Services\Time;
+use OpenEuropa\TaskRunner\TaskRunner\ConfigUtility\SelfProcessingRoboConfig;
 use Robo\Application;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
@@ -29,6 +31,7 @@ use Robo\Robo;
 use Robo\Runner as RoboRunner;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -94,7 +97,9 @@ class TaskRunner
         $this->workingDir = $this->getWorkingDir($this->input);
         chdir($this->workingDir);
 
-        $this->config = new Config();
+        // Let the self-processing wrapper handle resolving variables, so any
+        // later update will trigger re-resolving of variables.
+        $this->config = new SelfProcessingRoboConfig();
         $this->application = $this->createApplication();
         $this->application->setAutoExit(false);
         $this->container = $this->createContainer(
@@ -167,17 +172,13 @@ class TaskRunner
      */
     private function createConfiguration()
     {
-        $config = new Config();
-        $config->set('runner.working_dir', realpath($this->workingDir));
+        $this->config->set('runner.working_dir', realpath($this->workingDir));
 
         foreach ($this->getConfigProviders() as $class) {
             /** @var \OpenEuropa\TaskRunner\Contract\ConfigProviderInterface $class */
-            $class::provide($config);
+            $class::provide($this->config);
         }
 
-        // Resolve variables and import into config.
-        $processor = (new ConfigProcessor())->add($config->export());
-        $this->config->import($processor->export());
         // Keep the container in sync.
         $this->container->share('config', $this->config);
     }
@@ -347,7 +348,7 @@ class TaskRunner
         $this->runner->registerCommandClass($this->application, DynamicCommands::class);
         $commandClass = $this->container->get($commandFileName);
 
-        foreach ($commands as $name => $tasks) {
+        foreach ($commands as $name => $commandDefinition) {
             $aliases = [];
             // This command has been already registered as an annotated command.
             if ($application->has($name)) {
@@ -361,12 +362,79 @@ class TaskRunner
             }
 
             $commandInfo = $commandFactory->createCommandInfo($commandClass, 'runTasks');
-            $commandInfo->addAnnotation('tasks', $tasks);
+            if (isset($commandDefinition['tasks'])) {
+                $commandInfo->addAnnotation('tasks_path', "commands.$name.tasks");
+                if (isset($commandDefinition['aliases'])) {
+                    $aliases = array_unique(array_merge($aliases, $commandDefinition['aliases']));
+                }
+            }
+            else {
+                $commandInfo->addAnnotation('tasks_path', "commands.$name");
+
+                // @codingStandardsIgnoreLine
+                $message = 'Defining a dynamic command as a plain list of tasks is deprecated in openeuropa/task-runner:1.0.0 and is removed from openeuropa/task-runner:2.0.0. Define tasks in the "tasks" subkey of the custom command definition.';
+                @trigger_error($message, E_USER_DEPRECATED);
+            }
             $command = $commandFactory->createCommand($commandInfo, $commandClass)
                 ->setName($name)
                 ->setAliases($aliases);
+            if (isset($commandDefinition['tasks'])) {
+                if (isset($commandDefinition['description'])) {
+                    $command->setDescription($commandDefinition['description']);
+                }
+                if (isset($commandDefinition['usages'])) {
+                    foreach ($commandDefinition['usages'] as $usage) {
+                        $command->addUsage($usage);
+                    }
+                }
+            }
+
+            // Dynamic commands may define their own options.
+            $this->addOptions($command, $commandDefinition);
+
             $application->add($command);
         }
+    }
+
+    /**
+     * @param \Consolidation\AnnotatedCommand\AnnotatedCommand $command
+     * @param array $commandDefinition
+     */
+    private function addOptions(AnnotatedCommand $command, array $commandDefinition)
+    {
+        // This command doesn't define any option.
+        if (empty($commandDefinition['options'])) {
+            return;
+        }
+
+        $defaults = array_fill_keys(['shortcut', 'mode', 'description', 'default'], null);
+        foreach ($commandDefinition['options'] as $optionName => $optionDefinition) {
+            $optionDefinition += $defaults;
+            $command->addOption(
+                "--$optionName",
+                $optionDefinition['shortcut'],
+                $this->mapOptionMode($optionDefinition['mode']),
+                $optionDefinition['description'],
+                $optionDefinition['default']
+            );
+        }
+    }
+
+    private function mapOptionMode($mode) {
+        $modes = [
+            'none' => InputOption::VALUE_NONE,
+            'required' => InputOption::VALUE_REQUIRED,
+            'optional' => InputOption::VALUE_OPTIONAL,
+            'required-array' => InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            'optional-array' => InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+        ];
+        $modeKeys = implode('|', array_keys($modes));
+        return $modes[$mode]
+            ?? $this->throwInvalidArgumentException("Unknown options mode '$mode', valid modes are [$modeKeys].");
+    }
+
+    private function throwInvalidArgumentException($message) {
+        throw new \InvalidArgumentException($message);
     }
 
     /**

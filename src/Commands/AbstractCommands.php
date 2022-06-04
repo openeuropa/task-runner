@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace OpenEuropa\TaskRunner\Commands;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
+use Consolidation\Config\Loader\ConfigProcessor;
+use Consolidation\Config\Loader\YamlConfigLoader;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Common\IO;
 use Robo\Contract\BuilderAwareInterface;
@@ -46,7 +48,9 @@ abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterfa
      */
     public function initializeRuntimeConfiguration(ConsoleCommandEvent $event)
     {
-        Robo::loadConfiguration([$this->getConfigurationFile()], $this->getConfig());
+        $loader = new YamlConfigLoader();
+        $loadedConfig = $loader->load($this->getConfigurationFile());
+        $this->config->combine($loadedConfig->export());
     }
 
     /**

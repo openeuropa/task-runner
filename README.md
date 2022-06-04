@@ -215,6 +215,62 @@ At the moment the following tasks are supported (optional argument default value
 
 Tasks provided as plain-text strings will be executed as is in the current working directory.
 
+### Advanced custom commands
+
+You can define also command options along with a custom command. Let's see how the previous defined `setup:behat` custom command can have its own command options:
+
+```yaml
+commands:
+  setup:behat:
+    # When you need to define command options, the list of tasks should be
+    # placed under the 'tasks' key...
+    tasks:
+      - { task: "process", source: "behat.yml.dist", destination: "behat.yml" }
+    # An array of aliases.
+    aliases:
+      - subh
+    # The description.
+    description: Setup Behat testing.
+    # An array of usage info.
+    usages:
+      - 'setup:behat # Usage without option.'
+      - 'setup:behat --webdriver-url=localhost:8888 # With long option.'
+      - 'setup:behat --wdu=localhost:8888 # With short option.'
+      - '--wdu=localhost:8888 # Same as above: Command is prefixed if not given.'
+    # ...and option definitions are under 'options' key.
+    options:
+      # The option name, without the leading double dash ('--').
+      webdriver-url:
+        # Optional. If this key is present, the input option value is assigned
+        # to this configuration entry. This a key feature because in this way
+        # you're able to override configuration values, making it very helpful
+        # in CI flows.
+        config: behat.webdriver_url
+        # Optional. You can provide a list of shortcuts to the command, without
+        # adding the dash ('-') prefix.
+        shortcut:
+          - wdu
+          - wurl
+        # The mode of this option, one of:
+        # - none (the default behavior if omitted)
+        # - required
+        # - optional
+        # - required-array
+        # - optional-array
+        # See the Symfony `InputOption::VALUE_*` constants.
+        # @see \Symfony\Component\Console\Input\InputOption::VALUE_NONE
+        # @see \Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED
+        # @see \Symfony\Component\Console\Input\InputOption::VALUE_OPTIONAL
+        # @see \Symfony\Component\Console\Input\InputOption::VALUE_IS_ARRAY
+        mode: optional
+        # Optional. A description for this option. This is displayed when
+        # asking for help. E.g. `./vendor/bin/run setup:behat --help`.
+        description: 'The webdriver URL.'
+        # Optional. A default value when an optional option is not present in
+        # the input.
+        default: null
+```
+
 ## Expose custom commands as PHP classes
 
 More complex commands can be provided by creating Task Runner command classes within your project's PSR-4 namespace.
