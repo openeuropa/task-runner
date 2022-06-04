@@ -19,11 +19,13 @@ class TestCommands extends AbstractCommands
      * @param array $options
      *
      * @option filepath
+     * @option array-opt
      */
     public function customTest(string $content, array $options = [
         'filepath' => InputOption::VALUE_REQUIRED,
+        'array-opt' => [],
     ]): void
     {
-        file_put_contents($options['filepath'], $content);
+        file_put_contents($options['filepath'], $content . $options['array-opt'][0] . $options['array-opt'][1]);
     }
 }

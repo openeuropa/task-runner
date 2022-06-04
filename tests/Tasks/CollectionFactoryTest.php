@@ -78,7 +78,7 @@ class CollectionFactoryTest extends AbstractTaskTest
      */
     public function testRunTask()
     {
-        $filePath = $this->getSandboxFilepath('test-file.txt');
+        $filePath = $this->getSandboxFilepath('test-file-run.txt');
 
         $tasks = [];
         $tasks[] = [
@@ -89,10 +89,14 @@ class CollectionFactoryTest extends AbstractTaskTest
             ],
             'options' => [
                 'filepath' => $filePath,
+                'array-opt' => [
+                    'opt1',
+                    'opt2',
+                ],
             ],
         ];
         $this->taskCollectionFactory($tasks)->run();
-        $this->assertSame(__METHOD__, file_get_contents($filePath));
+        $this->assertSame(__METHOD__ . 'opt1opt2', file_get_contents($filePath));
     }
 
     /**
@@ -100,25 +104,28 @@ class CollectionFactoryTest extends AbstractTaskTest
      */
     public function testExecTask(): void
     {
+        $filePath = $this->getSandboxFilepath('test-file-exec.txt');
+
         $tasks = [
             [
                 'task' => 'exec',
-                'command' => 'touch',
+                'command' => __DIR__ . '/../../bin/run',
                 'arguments' => [
-                    'file.txt',
+                    'custom:test',
+                    __METHOD__,
                 ],
                 'options' => [
-                    // 1980-06-06 23:59:59.
-                    '-t' => '198006062359.59'
+                    'filepath' => $filePath,
+                    'array-opt' => [
+                        'opt1',
+                        'opt2',
+                    ],
                 ],
                 'dir' => $this->getSandboxRoot(),
             ],
         ];
         $this->taskCollectionFactory($tasks)->run();
-
-        $this->assertFileExists($this->getSandboxFilepath('file.txt'));
-        $mtime = gmdate('Y-m-d H:i:s', filemtime($this->getSandboxFilepath('file.txt')));
-        $this->assertSame('1980-06-06 23:59:59', $mtime);
+        $this->assertSame(__METHOD__ . 'opt1opt2', file_get_contents($filePath));
     }
 
     /**
