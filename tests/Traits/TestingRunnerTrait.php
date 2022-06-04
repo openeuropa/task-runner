@@ -9,6 +9,9 @@ use OpenEuropa\TaskRunner\TaskRunner;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Reusable code used in tests.
+ */
 trait TestingRunnerTrait
 {
     /**
@@ -29,7 +32,7 @@ trait TestingRunnerTrait
     {
         $taskRunner = new TaskRunner($input, $output, $classLoader);
         $prepareConfigMethod = new \ReflectionMethod($taskRunner, 'prepareApplication');
-        $prepareConfigMethod->setAccessible(TRUE);
+        $prepareConfigMethod->setAccessible(true);
         $prepareConfigMethod->invoke($taskRunner);
         return $taskRunner;
     }
