@@ -169,9 +169,15 @@ class TaskRunner
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     *
+     * @deprecated in openeuropa/task-runner:2.0.0-alpha3 removed from
+     *   openeuropa/task-runner:2.0.0. No replacements are provided as it has
+     *   been used only in tests.
      */
     public function getCommands($class)
     {
+        @trigger_error(__METHOD__ . '() is deprecated in openeuropa/task-runner:2.0.0-alpha3 removed from openeuropa/task-runner:2.0.0. No replacements are provided as it has been used only in tests.');
+
         // Register command classes.
         $this->runner->registerCommandClasses($this->application, $this->defaultCommandClasses);
 
