@@ -6,7 +6,7 @@ namespace OpenEuropa\TaskRunner\Tests;
 
 use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
 use OpenEuropa\TaskRunner\TaskRunner;
-use OpenEuropa\TaskRunner\Tests\AbstractTest;
+use Robo\Robo;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\NullOutput;
@@ -111,9 +111,9 @@ class CommandsTest extends AbstractTest
      */
     public function testChangelogCommands(array $options, $expected)
     {
-        $runner = new TaskRunner(new StringInput(''), new NullOutput(), $this->getClassLoader());
-        /** @var ChangelogCommands $commands */
-        $commands = $runner->getCommands(ChangelogCommands::class);
+        $this->getTestingRunner(new StringInput(''), new NullOutput(), $this->getClassLoader());
+        /** @var ChangelogCommands $command */
+        $commands = Robo::getContainer()->get(ChangelogCommands::class . 'Commands');
         $this->assertEquals($expected, $commands->generateChangelog($options)->getCommand());
     }
 
@@ -347,14 +347,17 @@ EOF;
     {
         // Create a local config file.
         $runnerYaml = $this->getSandboxRoot() . '/runner.yml';
-        file_put_contents($runnerYaml, Yaml::dump(['foo' => 'baz']));
+        file_put_contents($runnerYaml, Yaml::dump([
+            'foo' => 'baz',
+            'command_config__overridden_by_runner_yml' => 3000,
+        ]));
 
         // Add the environment setting.
         putenv('OPENEUROPA_TASKRUNNER_CONFIG=' . __DIR__ . '/fixtures/userconfig.yml');
 
         // Create a new runner.
-        $input = new StringInput('list --working-dir=' . $this->getSandboxRoot());
-        $runner = new TaskRunner($input, new NullOutput(), $this->getClassLoader());
+        $input = new StringInput('custom:command-one --working-dir=' . $this->getSandboxRoot());
+        $runner = $this->getTestingRunner($input, new NullOutput(), $this->getClassLoader());
 
         // Set as `build` by `config/runner.yml`.
         // Overwritten as `drupal` by `tests/fixtures/userconfig.yml`.
@@ -377,6 +380,13 @@ EOF;
         // `bar`, in the `tests/fixtures/third_party.yml` file but is
         // overwritten at the end, in `tests/sandbox/runner.yml` with `baz`.
         $this->assertSame('is-baz', $runner->getConfig()->get('qux'));
+
+        // Shows how config is overridden in cascade. The config provided by
+        // command, via AbstractCommands::getConfigurationFile(), is overridden
+        // successively by config providers.
+        $this->assertSame(10, $runner->getConfig()->get('command_config__not_overridden'));
+        $this->assertSame(200, $runner->getConfig()->get('command_config__overridden_by_3rd_party_provider'));
+        $this->assertSame(3000, $runner->getConfig()->get('command_config__overridden_by_runner_yml'));
     }
 
     /**

@@ -8,6 +8,8 @@ use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\Parser\Internal\DocblockTag;
 use Consolidation\AnnotatedCommand\Parser\Internal\TagFactory;
 use Consolidation\Config\Loader\ConfigProcessor;
+use Consolidation\Config\Loader\YamlConfigLoader;
+use Dflydev\DotAccessData\Util;
 use Gitonomy\Git\Repository;
 use League\Container\ContainerAwareTrait;
 use OpenEuropa\TaskRunner\Commands\ChangelogCommands;
@@ -105,7 +107,7 @@ class TaskRunner
             $classLoader
         );
 
-        $this->createConfiguration();
+        $this->prepareConfiguration();
 
         // Create and initialize runner.
         $this->runner = new RoboRunner();
@@ -130,6 +132,16 @@ class TaskRunner
      */
     public function run()
     {
+        $this->prepareApplication();
+        // Run the command entered by the user in the CLI.
+        return $this->runner->run($this->input, $this->output, $this->application);
+    }
+
+    /**
+     * Register all commands and prepares the configuration.
+     */
+    private function prepareApplication(): void
+    {
         // Discover early the commands to allow dynamic command overrides.
         $commandClasses = $this->discoverCommandClasses();
         $commandClasses = array_merge($this->defaultCommandClasses, $commandClasses);
@@ -137,13 +149,17 @@ class TaskRunner
         // Register command classes.
         $this->runner->registerCommandClasses($this->application, $commandClasses);
 
+        // At this point we are ready to add the configuration provided by
+        // providers on top of commands default config and process them. It's
+        // important to do the processing here as the in the next step, in order
+        // to register dynamic commands, we need the full configuration to be
+        // already processed/resolved and tokens replaced.
+        $this->processConfiguration($commandClasses);
+
         // Register commands defined in runner.yml file. These are registered
         // after the command classes so that dynamic commands can override
         // commands defined in classes.
         $this->registerDynamicCommands($this->application);
-
-        // Run the command entered by the user in the CLI.
-        return $this->runner->run($this->input, $this->output, $this->application);
     }
 
     /**
@@ -153,9 +169,15 @@ class TaskRunner
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     *
+     * @deprecated in openeuropa/task-runner:2.0.0-alpha3 removed from
+     *   openeuropa/task-runner:2.0.0. No replacements are provided as it has
+     *   been used only in tests.
      */
     public function getCommands($class)
     {
+        @trigger_error(__METHOD__ . '() is deprecated in openeuropa/task-runner:2.0.0-alpha3 removed from openeuropa/task-runner:2.0.0. No replacements are provided as it has been used only in tests.');
+
         // Register command classes.
         $this->runner->registerCommandClasses($this->application, $this->defaultCommandClasses);
 
@@ -163,9 +185,9 @@ class TaskRunner
     }
 
     /**
-     * Parses the configuration files, and merges them into the Config object.
+     * Gathers unprocessed configuration from all providers.
      */
-    private function createConfiguration()
+    private function prepareConfiguration(): void
     {
         $config = new Config();
         $config->set('runner.working_dir', realpath($this->workingDir));
@@ -175,11 +197,38 @@ class TaskRunner
             $class::provide($config);
         }
 
-        // Resolve variables and import into config.
-        $processor = (new ConfigProcessor())->add($config->export());
-        $this->config->import($processor->export());
+        $this->config->replace($config->export());
+    }
+
+    /**
+     * Merges commands default configuration and processes tokens.
+     *
+     * @param string[] $commandClasses
+     */
+    private function processConfiguration(array $commandClasses): void
+    {
+        $loader = new YamlConfigLoader();
+        $configArray = [];
+
+        foreach ($commandClasses as $commandClass) {
+            // Commands were already registered as container services and
+            // instantiated, in \Robo\Runner::instantiateCommandClass().
+            // @see \Robo\Runner::instantiateCommandClass()
+            $serviceId = "{$commandClass}Commands";
+            /** @var \OpenEuropa\TaskRunner\Commands\AbstractCommands $command */
+            $command = $this->getContainer()->get($serviceId);
+            $file = $command->getConfigurationFile();
+            $configFromFile = file_exists($file) ? $loader->load($file)->export() : [];
+            $configArray = Util::mergeAssocArray($configArray, $configFromFile);
+        }
+
+        // Command default configs come first to allow overrides from providers.
+        $configArray = Util::mergeAssocArray($configArray, $this->getConfig()->export());
+        $processor = (new ConfigProcessor())->add($configArray);
+        $this->getConfig()->replace($processor->export());
+
         // Keep the container in sync.
-        $this->container->add('config', $this->config);
+        $this->getContainer()->add('config', $this->getConfig());
     }
 
     /**

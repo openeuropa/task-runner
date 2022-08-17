@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenEuropa\TaskRunner\Tests;
 
+use OpenEuropa\TaskRunner\Tests\Traits\TestingRunnerTrait;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
@@ -13,6 +14,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 abstract class AbstractTest extends TestCase
 {
+    use TestingRunnerTrait;
+
     /**
      * @inheritDoc
      */

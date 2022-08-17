@@ -8,3 +8,4 @@ behat.yml
 /.idea/
 runner.yml
 docker-compose.*.yml
+/.phpunit.result.cache

@@ -6,6 +6,8 @@ namespace OpenEuropa\TaskRunner\Tests\Tasks;
 
 use OpenEuropa\TaskRunner\Tasks\CollectionFactory\loadTasks;
 use OpenEuropa\TaskRunner\Tests\AbstractTaskTest;
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\NullOutput;
 
 /**
  * Tests the collection factory task.
@@ -69,7 +71,7 @@ class CollectionFactoryTest extends AbstractTaskTest
             file_put_contents($destinationFile, $source);
         }
 
-        $this->taskCollectionFactory($tasks)->run();
+        $this->runTasks($tasks);
         $this->assertEquals(trim($expected), trim(file_get_contents($destinationFile)));
     }
 
@@ -91,7 +93,7 @@ class CollectionFactoryTest extends AbstractTaskTest
                 'filepath' => $filePath,
             ],
         ];
-        $this->taskCollectionFactory($tasks)->run();
+        $this->runTasks($tasks);
         $this->assertSame(__METHOD__, file_get_contents($filePath));
     }
 
@@ -114,7 +116,7 @@ class CollectionFactoryTest extends AbstractTaskTest
                 'dir' => $this->getSandboxRoot(),
             ],
         ];
-        $this->taskCollectionFactory($tasks)->run();
+        $this->runTasks($tasks);
 
         $this->assertFileExists($this->getSandboxFilepath('file.txt'));
         $mtime = gmdate('Y-m-d H:i:s', filemtime($this->getSandboxFilepath('file.txt')));
@@ -127,5 +129,18 @@ class CollectionFactoryTest extends AbstractTaskTest
     public function processPhpTaskDataProvider()
     {
         return $this->getFixtureContent('tasks/process-php.yml');
+    }
+
+    /**
+     * @param array[] $tasks
+     */
+    private function runTasks(array $tasks): void
+    {
+        $runner = $this->getTestingRunner(new StringInput(''), new NullOutput(), $this->getClassLoader());
+        $collectionFactory = $this->taskCollectionFactory($tasks);
+        // Configuration of $runner is already prepared. Use it.
+        // @see \OpenEuropa\TaskRunner\Tests\Traits\RunnerTrait::getTestingRunner()
+        $collectionFactory->getBuilder()->getConfig()->replace($runner->getConfig()->export());
+        $collectionFactory->run();
     }
 }
