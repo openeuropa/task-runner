@@ -300,8 +300,11 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      *
      * @command drupal:drush-setup
      *
-     * @option root         Drupal root.
-     * @option config-dir   Directory where to store Drush 9 configuration file.
+     * @option root                    Drupal root.
+     * @option config-dir              Directory where to store Drush 9 configuration file.
+     * @option config-source           Config path of drush settings to write.
+     * @default config-source          drupal.drush
+     * @option fail-on-missing         Fail on missing config-source.
      *
      * @param array $options
      *
@@ -310,14 +313,21 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
     public function drushSetup(array $options = [
         'root' => InputOption::VALUE_REQUIRED,
         'config-dir' => InputOption::VALUE_REQUIRED,
+        'config-source' => InputOption::VALUE_REQUIRED,
+        'fail-on-missing' => true,
     ])
     {
         $config = $this->getConfig();
-        $yaml = Yaml::dump($config->get('drupal.drush'));
+        $config_source = $options['config-source'];
+        if (!$config->has($config_source) && !$options['fail-on-missing']) {
+            // Add missing config so taskWriteConfiguration won't throw.
+            $config->set($config_source, []);
+        }
+        $yaml = Yaml::dump($config->get($config_source));
 
         return $this->collectionBuilder()->addTaskList([
             $this->taskWriteConfiguration($options['root'] . '/sites/default/drushrc.php', $config)
-                ->setConfigKey('drupal.drush'),
+                ->setConfigKey($config_source),
             $this->taskWriteToFile($options['config-dir'] . '/drush.yml')->text($yaml),
         ]);
     }
@@ -348,6 +358,9 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      * @option root                     Drupal root.
      * @option sites-subdir             Drupal site subdirectory.
      * @option settings-override-file   Drupal site settings override filename.
+     * @option config-source            Config path of contents to write.
+     * @default config-source           drupal.settings
+     * @option fail-on-missing          Fail on missing config-source.
      * @option force                    Drupal force generation of a new settings.php.
      * @option skip-permissions-setup   Drupal skip permissions setup.
      *
@@ -359,6 +372,8 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         'root' => InputOption::VALUE_REQUIRED,
         'sites-subdir' => InputOption::VALUE_REQUIRED,
         'settings-override-file' => InputOption::VALUE_REQUIRED,
+        'config-source' => InputOption::VALUE_REQUIRED,
+        'fail-on-missing' => true,
         'force' => false,
         'skip-permissions-setup' => false,
     ])
@@ -381,10 +396,16 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
             $collection[] = $this->taskFilesystemStack()->copy($settings_default_path, $settings_path, true);
         }
 
+        $config = $this->getConfig();
+        $config_source = $options['config-source'];
+        if (!$config->has($config_source) && !$options['fail-on-missing']) {
+            // Add missing config so taskWriteConfiguration won't throw.
+            $config->set($config_source, []);
+        }
         $collection[] = $this->taskWriteConfiguration(
             $settings_override_path,
             $this->getConfig()
-        )->setConfigKey('drupal.settings');
+        )->setConfigKey($config_source);
 
         if (!$options['skip-permissions-setup']) {
             $collection[] = $this->permissionsSetup($options);
