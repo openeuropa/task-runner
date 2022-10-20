@@ -4,7 +4,7 @@
     "keywords": ["Robo", "automation", "task-runner", "yaml"],
     "license": "EUPL-1.2",
     "type": "library",
-    "minimum-stability": "dev",
+    "minimum-stability": "alpha",
     "prefer-stable": true,
     "require": {
         "php": ">=7.4",
