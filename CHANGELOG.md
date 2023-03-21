@@ -1,11 +1,20 @@
 # Changelog
 
+## [2.0.0-alpha4](https://github.com/openeuropa/task-runner/tree/2.0.0-alpha4) (2023-03-21)
+
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/2.0.0-alpha3...2.0.0-alpha4)
+
+**Merged pull requests:**
+
+- EWPP-2864: Update to PHP8.1. [\#169](https://github.com/openeuropa/task-runner/pull/169) ([22Alexandra](https://github.com/22Alexandra))
+
 ## [2.0.0-alpha3](https://github.com/openeuropa/task-runner/tree/2.0.0-alpha3) (2022-10-21)
 
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/2.0.0-alpha2...2.0.0-alpha3)
 
 **Merged pull requests:**
 
+- Prepare release 2.0.0-alpha3. [\#167](https://github.com/openeuropa/task-runner/pull/167) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - OEL-2096: Changes in consolidation/annotated-command 4.5.7 break configuration initialisation. [\#166](https://github.com/openeuropa/task-runner/pull/166) ([brummbar](https://github.com/brummbar))
 - ISAICP-5988: Command config cannot be overridden [\#135](https://github.com/openeuropa/task-runner/pull/135) ([claudiu-cristea](https://github.com/claudiu-cristea))
 
@@ -284,6 +293,9 @@
 - Fix Drush "ignored-directories" [\#14](https://github.com/openeuropa/task-runner/issues/14)
 
 ## [0.1.0](https://github.com/openeuropa/task-runner/tree/0.1.0) (2018-01-05)
+
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/b8cd25ce88fcd91dcbf62ee4d83d095f08f737ad...0.1.0)
+
 **Closed issues:**
 
 - NEPT-1688: Allow host projects to expose their own commands [\#12](https://github.com/openeuropa/task-runner/issues/12)
