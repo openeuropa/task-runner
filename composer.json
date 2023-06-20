@@ -11,8 +11,7 @@
         "consolidation/robo": "^4.0",
         "gitonomy/gitlib": "^1.0",
         "jakeasmith/http_build_url": "^1.0.1",
-        "nuvoleweb/robo-config": "^3.0.0",
-        "grasmash/expander": "^1"
+        "nuvoleweb/robo-config": "^3.0.0"
     },
     "require-dev": {
         "openeuropa/code-review": "2.x-dev",
@@ -35,9 +34,6 @@
         "composer-exit-on-patch-failure": true
     },
     "bin": ["bin/run"],
-    "_readme": [
-        "We need to use the 1.x version of grasmash/expander so that null values are treated the same way they were treated until release 2.0.0-alpha2 ."
-    ],
     "config": {
         "sort-packages": true,
         "allow-plugins": {
