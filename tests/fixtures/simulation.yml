@@ -402,7 +402,7 @@
         update_status_emails: ~
   composer: ''
   contains:
-    - "standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=NULL"
+    - "standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=true"
 
 - command: 'drupal:site-install'
   configuration:
@@ -432,7 +432,7 @@
         update_status_emails: ~
   composer: ''
   contains:
-    - "standard install_configure_form.enable_update_status_module=true install_configure_form.enable_update_status_emails=NULL"
+    - "standard install_configure_form.enable_update_status_module=true install_configure_form.enable_update_status_emails=true"
 
 - command: 'drupal:site-install'
   configuration:
@@ -462,7 +462,7 @@
         update_status_emails: true
   composer: ''
   contains:
-    - "standard install_configure_form.enable_update_status_module=NULL install_configure_form.enable_update_status_emails=true"
+    - "standard install_configure_form.enable_update_status_module=true install_configure_form.enable_update_status_emails=true"
 
 - command: 'drupal:site-install'
   configuration:
