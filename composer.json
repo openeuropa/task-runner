@@ -4,20 +4,20 @@
     "keywords": ["Robo", "automation", "task-runner", "yaml"],
     "license": "EUPL-1.2",
     "type": "library",
-    "minimum-stability": "dev",
+    "minimum-stability": "alpha",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.4",
-        "consolidation/robo": "^3.0",
+        "php": ">=8.0",
+        "consolidation/robo": "^4.0",
         "gitonomy/gitlib": "^1.0",
         "jakeasmith/http_build_url": "^1.0.1",
-        "nuvoleweb/robo-config": "^2.0",
+        "nuvoleweb/robo-config": "^3.0.0",
         "grasmash/expander": "^1"
     },
     "require-dev": {
-        "openeuropa/code-review": "^2.0",
+        "openeuropa/code-review": "2.x-dev",
         "phpunit/phpunit": "^9.4",
-        "slevomat/coding-standard": "~6.0"
+        "slevomat/coding-standard": "^7.0 || ^8.0"
     },
     "autoload": {
         "psr-4": {

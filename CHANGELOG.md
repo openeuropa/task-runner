@@ -1,4 +1,22 @@
-# Change Log
+# Changelog
+
+## [2.0.0-alpha4](https://github.com/openeuropa/task-runner/tree/2.0.0-alpha4) (2023-03-21)
+
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/2.0.0-alpha3...2.0.0-alpha4)
+
+**Merged pull requests:**
+
+- EWPP-2864: Update to PHP8.1. [\#169](https://github.com/openeuropa/task-runner/pull/169) ([22Alexandra](https://github.com/22Alexandra))
+
+## [2.0.0-alpha3](https://github.com/openeuropa/task-runner/tree/2.0.0-alpha3) (2022-10-21)
+
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/2.0.0-alpha2...2.0.0-alpha3)
+
+**Merged pull requests:**
+
+- Prepare release 2.0.0-alpha3. [\#167](https://github.com/openeuropa/task-runner/pull/167) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- OEL-2096: Changes in consolidation/annotated-command 4.5.7 break configuration initialisation. [\#166](https://github.com/openeuropa/task-runner/pull/166) ([brummbar](https://github.com/brummbar))
+- ISAICP-5988: Command config cannot be overridden [\#135](https://github.com/openeuropa/task-runner/pull/135) ([claudiu-cristea](https://github.com/claudiu-cristea))
 
 ## [2.0.0-alpha2](https://github.com/openeuropa/task-runner/tree/2.0.0-alpha2) (2022-02-21)
 
@@ -6,16 +24,20 @@
 
 **Merged pull requests:**
 
+- EWPP-0000: Prepare for 2.0.0-alpha2 release. [\#164](https://github.com/openeuropa/task-runner/pull/164) ([hernani](https://github.com/hernani))
 - EWPP-2006: Support for --zip in create-archive. [\#163](https://github.com/openeuropa/task-runner/pull/163) ([hernani](https://github.com/hernani))
 
 ## [2.0.0-alpha1](https://github.com/openeuropa/task-runner/tree/2.0.0-alpha1) (2022-01-17)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta7...2.0.0-alpha1)
 
 **Merged pull requests:**
 
+- EWPP-0000: Prepare for 2.0.0-alpha1: [\#162](https://github.com/openeuropa/task-runner/pull/162) ([hernani](https://github.com/hernani))
 - EWPP-1846: Upgrade task-runner to PHP 8. [\#160](https://github.com/openeuropa/task-runner/pull/160) ([yenyasinn](https://github.com/yenyasinn))
 
 ## [1.0.0-beta7](https://github.com/openeuropa/task-runner/tree/1.0.0-beta7) (2022-01-17)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta6...1.0.0-beta7)
 
 **Closed issues:**
@@ -48,6 +70,7 @@
 - OPENEUROPA-2258: Use PHP 7.2 [\#106](https://github.com/openeuropa/task-runner/pull/106) ([dxvargas](https://github.com/dxvargas))
 
 ## [1.0.0-beta6](https://github.com/openeuropa/task-runner/tree/1.0.0-beta6) (2019-06-27)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta5...1.0.0-beta6)
 
 **Closed issues:**
@@ -61,6 +84,7 @@
 - OPENEUROPA-1897: Use ci image. [\#101](https://github.com/openeuropa/task-runner/pull/101) ([imanoleguskiza](https://github.com/imanoleguskiza))
 
 ## [1.0.0-beta5](https://github.com/openeuropa/task-runner/tree/1.0.0-beta5) (2019-03-13)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta4...1.0.0-beta5)
 
 **Closed issues:**
@@ -78,6 +102,7 @@
 - OPENEUROPA-1371: Allow users to define a custom Task Runner configuration in their home directory. [\#63](https://github.com/openeuropa/task-runner/pull/63) ([drupol](https://github.com/drupol))
 
 ## [1.0.0-beta4](https://github.com/openeuropa/task-runner/tree/1.0.0-beta4) (2019-01-07)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta3...1.0.0-beta4)
 
 **Closed issues:**
@@ -91,6 +116,7 @@
 - OPENEUROPA-1322: Use the proper Docker way of overriding docker-composer.yml file. [\#88](https://github.com/openeuropa/task-runner/pull/88) ([drupol](https://github.com/drupol))
 
 ## [1.0.0-beta3](https://github.com/openeuropa/task-runner/tree/1.0.0-beta3) (2018-10-16)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta2...1.0.0-beta3)
 
 **Merged pull requests:**
@@ -101,6 +127,7 @@
 - Express permission values in octal [\#84](https://github.com/openeuropa/task-runner/pull/84) ([pfrenssen](https://github.com/pfrenssen))
 
 ## [1.0.0-beta2](https://github.com/openeuropa/task-runner/tree/1.0.0-beta2) (2018-10-03)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/1.0.0-beta1...1.0.0-beta2)
 
 **Merged pull requests:**
@@ -110,6 +137,7 @@
 - OPENEUROPA-1140: Add pre and post install perms commands. [\#75](https://github.com/openeuropa/task-runner/pull/75) ([richardcanoe](https://github.com/richardcanoe))
 
 ## [1.0.0-beta1](https://github.com/openeuropa/task-runner/tree/1.0.0-beta1) (2018-09-18)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.8.0...1.0.0-beta1)
 
 **Closed issues:**
@@ -127,6 +155,7 @@
 - OPENEUROPA-540: Fix badges on README.md [\#74](https://github.com/openeuropa/task-runner/pull/74) ([ademarco](https://github.com/ademarco))
 
 ## [0.8.0](https://github.com/openeuropa/task-runner/tree/0.8.0) (2018-08-28)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.7.1...0.8.0)
 
 **Merged pull requests:**
@@ -136,6 +165,7 @@
 - OPENEUROPA-1119: Create a docker-compose.yml.dist file [\#71](https://github.com/openeuropa/task-runner/pull/71) ([netlooker](https://github.com/netlooker))
 
 ## [0.7.1](https://github.com/openeuropa/task-runner/tree/0.7.1) (2018-08-13)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.7.0...0.7.1)
 
 **Merged pull requests:**
@@ -148,6 +178,7 @@
 - OPENEUROPA-623: Update to Phpunit 6. [\#58](https://github.com/openeuropa/task-runner/pull/58) ([imanoleguskiza](https://github.com/imanoleguskiza))
 
 ## [0.7.0](https://github.com/openeuropa/task-runner/tree/0.7.0) (2018-06-25)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.6.0...0.7.0)
 
 **Merged pull requests:**
@@ -156,6 +187,7 @@
 - OPENEUROPA-696 Make sure the Task Runner provides current working directory as a replaceable token [\#56](https://github.com/openeuropa/task-runner/pull/56) ([ademarco](https://github.com/ademarco))
 
 ## [0.6.0](https://github.com/openeuropa/task-runner/tree/0.6.0) (2018-06-19)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.5.0...0.6.0)
 
 **Merged pull requests:**
@@ -165,6 +197,7 @@
 - OPENEUROPA-287: Add sanity check before starting site install. [\#53](https://github.com/openeuropa/task-runner/pull/53) ([richardcanoe](https://github.com/richardcanoe))
 
 ## [0.5.0](https://github.com/openeuropa/task-runner/tree/0.5.0) (2018-04-19)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.4.0...0.5.0)
 
 **Closed issues:**
@@ -181,6 +214,7 @@
 - Fix README reference to old robo file [\#43](https://github.com/openeuropa/task-runner/pull/43) ([claudiu-cristea](https://github.com/claudiu-cristea))
 
 ## [0.4.0](https://github.com/openeuropa/task-runner/tree/0.4.0) (2018-02-21)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.3.1...0.4.0)
 
 **Merged pull requests:**
@@ -189,6 +223,7 @@
 - OPENEUROPA-197: Use OpenEuropa namespace to avoid redundant prefixes [\#45](https://github.com/openeuropa/task-runner/pull/45) ([ademarco](https://github.com/ademarco))
 
 ## [0.3.1](https://github.com/openeuropa/task-runner/tree/0.3.1) (2018-02-09)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.3.0...0.3.1)
 
 **Closed issues:**
@@ -200,6 +235,7 @@
 - OPENEUROPA-206: Fix Task Runner default Drush settings [\#41](https://github.com/openeuropa/task-runner/pull/41) ([ademarco](https://github.com/ademarco))
 
 ## [0.3.0](https://github.com/openeuropa/task-runner/tree/0.3.0) (2018-01-14)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.2.0...0.3.0)
 
 **Closed issues:**
@@ -219,6 +255,7 @@
 - Issue \#26: Fix setup:replace aliases. [\#27](https://github.com/openeuropa/task-runner/pull/27) ([dxvargas](https://github.com/dxvargas))
 
 ## [0.2.0](https://github.com/openeuropa/task-runner/tree/0.2.0) (2018-01-09)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.1.2...0.2.0)
 
 **Closed issues:**
@@ -234,6 +271,7 @@
 - NEPT-1105: Remove exclude flag from Drush site install \#19 [\#20](https://github.com/openeuropa/task-runner/pull/20) ([ademarco](https://github.com/ademarco))
 
 ## [0.1.2](https://github.com/openeuropa/task-runner/tree/0.1.2) (2018-01-07)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.1.1...0.1.2)
 
 **Closed issues:**
@@ -247,6 +285,7 @@
 - NEPT-1105: Fix command discovery \#16 [\#17](https://github.com/openeuropa/task-runner/pull/17) ([ademarco](https://github.com/ademarco))
 
 ## [0.1.1](https://github.com/openeuropa/task-runner/tree/0.1.1) (2018-01-05)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/0.1.0...0.1.1)
 
 **Closed issues:**
@@ -254,6 +293,9 @@
 - Fix Drush "ignored-directories" [\#14](https://github.com/openeuropa/task-runner/issues/14)
 
 ## [0.1.0](https://github.com/openeuropa/task-runner/tree/0.1.0) (2018-01-05)
+
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/b8cd25ce88fcd91dcbf62ee4d83d095f08f737ad...0.1.0)
+
 **Closed issues:**
 
 - NEPT-1688: Allow host projects to expose their own commands [\#12](https://github.com/openeuropa/task-runner/issues/12)
@@ -275,4 +317,4 @@
 
 
 
-\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
