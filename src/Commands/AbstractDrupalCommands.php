@@ -113,26 +113,28 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
      *
      * @command drupal:site-install
      *
-     * @option root                   Drupal root.
-     * @option site-name              Site name.
-     * @option site-mail              Site mail.
-     * @option site-profile           Installation profile
-     * @option site-update            Whereas to enable the update module or not.
-     * @option site-locale            Default site locale.
-     * @option account-name           Admin account name.
-     * @option account-password       Admin account password.
-     * @option account-mail           Admin email.
-     * @option database-type          Deprecated, use "database-scheme"
-     * @option database-scheme        Database scheme.
-     * @option database-host          Database host.
-     * @option database-port          Database port.
-     * @option database-name          Database name.
-     * @option database-user          Database username.
-     * @option database-password      Database password.
-     * @option sites-subdir           Sites sub-directory.
-     * @option config-dir             Deprecated, use "existing-config" for Drupal 8.6 and higher.
-     * @option existing-config        Whether existing config should be imported during installation.
-     * @option skip-permissions-setup Whether to skip making the settings file and folder writable during installation.
+     * @option root                        Drupal root.
+     * @option site-name                   Site name.
+     * @option site-mail                   Site mail.
+     * @option site-profile                Installation profile
+     * @option site-update                 Whereas to enable the update module or not.
+     * @option site-locale                 Default site locale.
+     * @option account-name                Admin account name.
+     * @option account-password            Admin account password.
+     * @option account-mail                Admin email.
+     * @option database-type               Deprecated, use "database-scheme"
+     * @option database-scheme             Database scheme.
+     * @option database-host               Database host.
+     * @option database-port               Database port.
+     * @option database-name               Database name.
+     * @option database-user               Database username.
+     * @option database-password           Database password.
+     * @option sites-subdir                Sites sub-directory.
+     * @option config-dir                  Deprecated, use "existing-config" for Drupal 8.6 and higher.
+     * @option existing-config             Whether existing config should be imported during installation.
+     * @option skip-permissions-setup      Whether to skip making the settings file and folder writable during installation.
+     * @option enable-update-status-module Check for updates automatically.
+     * @option enable-update-status-emails Receive email notifications regarding updates.
      *
      * @aliases drupal:si,dsi
      *
@@ -162,6 +164,8 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         'config-dir' => InputOption::VALUE_REQUIRED,
         'existing-config' => false,
         'skip-permissions-setup' => false,
+        'enable-update-status-module' => true,
+        'enable-update-status-emails' => true,
     ])
     {
         if ($options['database-type']) {
@@ -173,6 +177,10 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
             $this->io()->warning("The 'config-dir' option is deprecated. Use 'existing-config' instead.");
             $options['existing-config'] = true;
         }
+
+        // Pass value as boolean type only.
+        $options['enable-update-status-module'] = filter_var($options['enable-update-status-module'], FILTER_VALIDATE_BOOLEAN);
+        $options['enable-update-status-emails'] = filter_var($options['enable-update-status-emails'], FILTER_VALIDATE_BOOLEAN);
 
         $drush = $this->getConfig()->get('runner.bin_dir') . '/drush';
         $task = $this->taskDrush($drush)
@@ -190,7 +198,9 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
             ->databasePort($options['database-port'])
             ->databaseName($options['database-name'])
             ->sitesSubdir($options['sites-subdir'])
-            ->siteProfile($options['site-profile']);
+            ->siteProfile($options['site-profile'])
+            ->enableUpdateStatusModuleOnInstall($options['enable-update-status-module'])
+            ->enableUpdateStatusEmailsOnInstall($options['enable-update-status-emails']);
 
         $task->setGenerateDbUrl($this->getConfig()->get('drupal.site.generate_db_url'));
 
