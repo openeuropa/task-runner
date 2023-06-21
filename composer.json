@@ -35,9 +35,6 @@
         "composer-exit-on-patch-failure": true
     },
     "bin": ["bin/run"],
-    "_readme": [
-        "We need to use the 1.x version of grasmash/expander so that null values are treated the same way they were treated until release 2.0.0-alpha2 ."
-    ],
     "config": {
         "sort-packages": true,
         "allow-plugins": {
