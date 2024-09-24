@@ -8,15 +8,21 @@
     "prefer-stable": true,
     "require": {
         "php": ">=8.0",
-        "consolidation/robo": "^4.0",
+        "consolidation/robo": "^4.0 || ^5.0",
         "gitonomy/gitlib": "^1.0",
         "jakeasmith/http_build_url": "^1.0.1",
-        "nuvoleweb/robo-config": "^3.0.0"
+        "nuvoleweb/robo-config": "dev-OEL-3318"
     },
     "require-dev": {
         "openeuropa/code-review": "2.x-dev",
         "phpunit/phpunit": "^9.4",
         "slevomat/coding-standard": "^7.0 || ^8.0"
+    },
+    "repositories": {
+        "nuvoleweb/robo-config": {
+            "type": "github",
+            "url": "https://github.com/AaronGilMartinez/robo-config.git"
+        }
     },
     "autoload": {
         "psr-4": {
