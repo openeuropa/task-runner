@@ -247,6 +247,7 @@ class TaskRunner
         $discovery->setRelativeNamespace('TaskRunner\ConfigProviders')
             ->setSearchPattern('/.*ConfigProvider\.php$/');
 
+        $classes = [];
         // Discover config providers.
         foreach ($discovery->getClasses() as $class) {
             if (is_subclass_of($class, ConfigProviderInterface::class)) {
