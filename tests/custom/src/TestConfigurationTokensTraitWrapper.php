@@ -14,4 +14,8 @@ use OpenEuropa\TaskRunner\Traits\ConfigurationTokensTrait;
 class TestConfigurationTokensTraitWrapper
 {
     use ConfigurationTokensTrait;
+
+    public function getConfig()
+    {
+    }
 }
