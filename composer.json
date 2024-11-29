@@ -15,7 +15,7 @@
     },
     "require-dev": {
         "openeuropa/code-review-library": "*",
-        "phpunit/phpunit": "^9.4",
+        "phpunit/phpunit": "^9.5",
         "slevomat/coding-standard": "^7.0 || ^8.0"
     },
     "repositories": [
