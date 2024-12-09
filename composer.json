@@ -42,9 +42,6 @@
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            "cweagans/composer-patches": true,
-            "phpro/grumphp": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true,
             "phpro/grumphp-shim": true
         }
     }
