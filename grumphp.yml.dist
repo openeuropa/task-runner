@@ -1,10 +1,5 @@
 imports:
   - { resource: ./vendor/openeuropa/code-review-library/dist/library-conventions.yml }
-parameters:
-  tasks.phpcs.standard: phpcs.xml
-  tasks.phpcs.ignore_patterns:
-    - vendor/
-    - loadTasks.php
 
 grumphp:
   git_hook_variables:
