@@ -34,10 +34,6 @@
             "My\\Custom\\": "./tests/custom/src/"
         }
     },
-    "extra": {
-        "enable-patching": true,
-        "composer-exit-on-patch-failure": true
-    },
     "bin": ["bin/run"],
     "config": {
         "sort-packages": true,
