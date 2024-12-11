@@ -4,7 +4,7 @@
     "keywords": ["Robo", "automation", "task-runner", "yaml"],
     "license": "EUPL-1.2",
     "type": "library",
-    "minimum-stability": "dev",
+    "minimum-stability": "alpha",
     "prefer-stable": true,
     "require": {
         "php": ">=8.1",
@@ -14,15 +14,10 @@
         "nuvoleweb/robo-config": "^3.1"
     },
     "require-dev": {
-        "openeuropa/code-review-library": "1.x-dev",
-        "phpunit/phpunit": "^9.4",
-        "slevomat/coding-standard": "^7.0 || ^8.0"
+        "openeuropa/code-review-library": "^1.0.0-alpha1",
+        "phpunit/phpunit": "^9.5"
     },
     "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/AaronGilMartinez/robo-config.git"
-        },
         {
             "type": "git",
             "url": "https://github.com/openeuropa/code-review-library.git"
@@ -39,17 +34,10 @@
             "My\\Custom\\": "./tests/custom/src/"
         }
     },
-    "extra": {
-        "enable-patching": true,
-        "composer-exit-on-patch-failure": true
-    },
     "bin": ["bin/run"],
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            "cweagans/composer-patches": true,
-            "phpro/grumphp": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true,
             "phpro/grumphp-shim": true
         }
     }
