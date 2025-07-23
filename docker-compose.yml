@@ -1,7 +1,7 @@
-version: '2'
 services:
   web:
-    image: fpfis/httpd-php-dev:8.1
+    # Use the -dev image for debugging.
+    image: registry.fpfis.eu/digit/devsecops/httpd-php:8.3-ci
     working_dir: /var/www/html
     ports:
       - 8080:8080
