@@ -1,0 +1,9 @@
+# When the site-update option is absent, the "update" module should not be installed.
+- options: ""
+  contains: "install_configure_form.enable_update_status_module=NULL"
+  not_contains: ""
+
+# When the site-update option is present, the "update" module should be installed.
+- options: "--site-update"
+  contains: ""
+  not_contains: "install_configure_form.enable_update_status_module=NULL"
