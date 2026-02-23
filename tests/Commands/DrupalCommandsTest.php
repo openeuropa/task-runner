@@ -80,4 +80,43 @@ class DrupalCommandsTest extends AbstractTest
     {
         return $this->getFixtureContent('commands/drupal-site-install.yml');
     }
+
+    /**
+     * @param string $options
+     *   The options to pass to the command.
+     * @param string $contains
+     *   A string that is expected to be contained in the output.
+     * @param string $not_contains
+     *  A string that is not expected to be contained in the output.
+     *
+     * @dataProvider moduleUpdateInstallDataProvider
+     */
+    public function testModuleUpdateInstall(
+        string $options,
+        string $contains,
+        string $not_contains,
+    ) {
+        $input = new StringInput(
+            "drupal:site-install {$options} --simulate --working-dir=" . $this->getSandboxRoot()
+        );
+        $output = new BufferedOutput();
+        $runner = new TaskRunner($input, $output, $this->getClassLoader());
+        $runner->run();
+
+        $text = $output->fetch();
+        if (!empty($contains)) {
+            $this->assertStringContainsString($contains, $text);
+        }
+        if (!empty($not_contains)) {
+            $this->assertStringNotContainsString($not_contains, $text);
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function moduleUpdateInstallDataProvider()
+    {
+        return $this->getFixtureContent('commands/drupal-module-update-install.yml');
+    }
 }

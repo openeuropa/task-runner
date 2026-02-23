@@ -146,7 +146,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
         'site-name' => InputOption::VALUE_REQUIRED,
         'site-mail' => InputOption::VALUE_REQUIRED,
         'site-profile' => InputOption::VALUE_REQUIRED,
-        'site-update' => InputOption::VALUE_REQUIRED,
+        'site-update' => InputOption::VALUE_NONE,
         'site-locale' => InputOption::VALUE_REQUIRED,
         'account-name' => InputOption::VALUE_REQUIRED,
         'account-password' => InputOption::VALUE_REQUIRED,
@@ -179,6 +179,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
             ->root($options['root'])
             ->siteName($options['site-name'])
             ->siteMail($options['site-mail'])
+            ->siteUpdate($options['site-update'] === true)
             ->locale($options['site-locale'])
             ->accountMail($options['account-mail'])
             ->accountName($options['account-name'])

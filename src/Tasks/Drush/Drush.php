@@ -18,6 +18,7 @@ class Drush extends Exec
     protected $siteName = '';
     protected $siteMail = '';
     protected $siteLocale = '';
+    protected $siteUpdate = false;
     protected $siteProfile = '';
     protected $accountMail = '';
     protected $accountName = '';
@@ -69,7 +70,15 @@ class Drush extends Exec
             $this->option('existing-config');
         }
 
-        return $this->arg('site-install')->arg($this->siteProfile);
+        # Add arguments to Drush command.
+        $this->arg('site-install');
+        $this->arg($this->siteProfile);
+
+        if ($this->siteUpdate === false) {
+            $this->arg('install_configure_form.enable_update_status_module=NULL');
+        }
+
+        return $this;
     }
 
     /**
@@ -128,6 +137,18 @@ class Drush extends Exec
     public function siteLocale($siteLocale)
     {
         $this->siteLocale = $siteLocale;
+
+        return $this;
+    }
+
+    /**
+     * @param string $siteUpdate
+     *
+     * @return $this
+     */
+    public function siteUpdate($siteUpdate)
+    {
+        $this->siteUpdate = $siteUpdate;
 
         return $this;
     }
