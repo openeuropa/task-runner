@@ -1,14 +1,26 @@
-# Change Log
+# Changelog
+
+## [2.0.0-beta1](https://github.com/openeuropa/task-runner/tree/2.0.0-beta1) (2026-03-02)
+
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/2.0.0-alpha5...2.0.0-beta1)
+
+**Merged pull requests:**
+
+- EWPP-6384: Fix the support for site-update parameter. [\#177](https://github.com/openeuropa/task-runner/pull/177) ([intelektron](https://github.com/intelektron))
+- EWPP-5776: Remove drone and setup github actions. [\#176](https://github.com/openeuropa/task-runner/pull/176) ([nagyad](https://github.com/nagyad))
 
 ## [2.0.0-alpha5](https://github.com/openeuropa/task-runner/tree/2.0.0-alpha5) (2024-12-11)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/2.0.0-alpha4...2.0.0-alpha5)
 
 **Merged pull requests:**
 
+- Prepare release 2.0.0-alpha5. [\#174](https://github.com/openeuropa/task-runner/pull/174) ([drishu](https://github.com/drishu))
 - OEL-3318: Prepare for php8.3 [\#173](https://github.com/openeuropa/task-runner/pull/173) ([drishu](https://github.com/drishu))
 - OEL-3318: Support for Drupal 11 [\#172](https://github.com/openeuropa/task-runner/pull/172) ([AaronGilMartinez](https://github.com/AaronGilMartinez))
 
 ## [2.0.0-alpha4](https://github.com/openeuropa/task-runner/tree/2.0.0-alpha4) (2023-03-21)
+
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/2.0.0-alpha3...2.0.0-alpha4)
 
 **Merged pull requests:**
