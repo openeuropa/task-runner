@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenEuropa\TaskRunner\Tasks\Drush;
 
+use League\Uri\UriString;
 use Robo\Task\Base\Exec;
 
 /**
@@ -53,15 +54,24 @@ class Drush extends Exec
             ], '=');
 
         if ($this->generateDbUrl) {
+            $hasUser = !empty($this->databaseUser);
             $dbArray = [
                 'scheme' => $this->databaseScheme,
-                'user' => $this->databaseUser,
-                'pass' => $this->databasePassword,
+                'user' => $hasUser ? $this->databaseUser : null,
+                'pass' => $hasUser ? $this->databasePassword : null,
                 'host' => $this->databaseHost,
-                'port' => $this->databasePort,
-                'path' => $this->databaseName,
+                'port' => (int) $this->databasePort ?: null,
+                'path' => '/' . ltrim((string) $this->databaseName, '/'),
             ];
-            $dbUrl = http_build_url($dbArray, $dbArray);
+
+            // Drop empty components, and the password when there is no user.
+            // Use callback to avoid dropping strings like "0".
+            $dbArray = array_filter(
+                $dbArray,
+                static fn ($value): bool => (string) $value !== ''
+            );
+
+            $dbUrl = UriString::build($dbArray);
 
             $this->option('db-url', $dbUrl, '=');
         }
