@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.0-beta2](https://github.com/openeuropa/task-runner/tree/2.0.0-beta2) (2026-10-06)
+
+[Full Changelog](https://github.com/openeuropa/task-runner/compare/2.0.0-beta1...2.0.0-beta2)
+
+**Merged pull requests:**
+
+- EWPP-7314: Replace jakeasmith/http\_build\_url with League\Uri\UriString::build [\#179](https://github.com/openeuropa/task-runner/pull/179) ([bircher](https://github.com/bircher))
+
 ## [2.0.0-beta1](https://github.com/openeuropa/task-runner/tree/2.0.0-beta1) (2026-03-02)
 
 [Full Changelog](https://github.com/openeuropa/task-runner/compare/2.0.0-alpha5...2.0.0-beta1)
