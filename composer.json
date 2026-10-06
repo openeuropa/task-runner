@@ -10,7 +10,7 @@
         "php": ">=8.1",
         "consolidation/robo": "^4.0 || ^5.0",
         "gitonomy/gitlib": "^1.0",
-        "jakeasmith/http_build_url": "^1.0.1",
+        "league/uri-interfaces": "^7.8",
         "nuvoleweb/robo-config": "^3.1"
     },
     "require-dev": {

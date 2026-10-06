@@ -235,6 +235,89 @@
   contains:
     - "[Simulator] Running ./vendor/bin/drush -y --root=$(pwd)/build --site-name='Site name' --site-mail=info@example.org --locale=en --account-mail=admin@example.org --account-name=admin --account-pass=admin --sites-subdir=default --db-url='pgsql://root:root@127.0.0.1:3306/drupal' site-install standard"
 
+# A user without a password is kept in the database URL.
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      post_install: []
+      database:
+        name: "drupal"
+        user: 'root'
+        password: ''
+  composer: ''
+  contains:
+    - "--db-url='mysql://root@127.0.0.1:3306/drupal'"
+
+# A password without a user is dropped from the database URL.
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      post_install: []
+      database:
+        name: "drupal"
+        user: ''
+        password: 'secret'
+  composer: ''
+  contains:
+    - "--db-url='mysql://127.0.0.1:3306/drupal'"
+  not_contains:
+    - "secret@"
+
+# Null user and password are dropped from the database URL.
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      post_install: []
+      database:
+        name: "drupal"
+        user: ~
+        password: ~
+  composer: ''
+  contains:
+    - "--db-url='mysql://127.0.0.1:3306/drupal'"
+
+# An empty port is dropped from the database URL.
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      post_install: []
+      database:
+        name: "drupal"
+        user: 'root'
+        password: 'root'
+        port: ''
+  composer: ''
+  contains:
+    - "--db-url='mysql://root:root@127.0.0.1/drupal'"
+
+# A leading slash in the database name is not doubled.
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      post_install: []
+      database:
+        name: "/drupal"
+        user: 'root'
+        password: 'root'
+  composer: ''
+  contains:
+    - "--db-url='mysql://root:root@127.0.0.1:3306/drupal'"
+  not_contains:
+    - "3306//drupal"
+
+# An empty database name leaves only the root path.
+- command: 'drupal:site-install'
+  configuration:
+    drupal:
+      post_install: []
+      database:
+        name: ''
+        user: 'root'
+        password: 'root'
+  composer: ''
+  contains:
+    - "--db-url='mysql://root:root@127.0.0.1:3306/'"
+
 - command: 'custom:run-tasks'
   configuration:
     commands:
